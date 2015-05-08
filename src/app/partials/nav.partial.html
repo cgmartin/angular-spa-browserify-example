@@ -1,0 +1,26 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" ui-sref="home">tsSPA</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li ui-sref-active="active"><a ui-sref="todos">Todo List</a></li>
+                <li ui-sref-active="active"><a ui-sref="chat">Chat Room</a></li>
+            </ul>
+            <!-- Right side -->
+            <a ui-sref="login">
+                <button type="button" class="btn btn-primary navbar-btn navbar-right">Log In</button>
+            </a>
+        </div>
+    </div>
+</nav>

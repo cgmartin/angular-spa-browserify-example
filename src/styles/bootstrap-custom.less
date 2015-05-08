@@ -1,0 +1,28 @@
+@import "bootstrap-variables.less";
+@import "buttons.less";
+
+h1, .h1,
+h2, .h2,
+h3, .h3 {
+  margin-bottom: (@line-height-computed * 1.5);
+}
+
+[ng-click], [data-ng-click], [x-ng-click] {
+  cursor: pointer;
+  .user-select(none);
+}
+
+.strikethru {
+  text-decoration: line-through;
+}
+
+.nav, .pagination, .carousel, .panel-title a {
+  cursor: pointer;
+}
+
+.login-oauth-group a {
+  padding-right: 30px;
+  padding-left: 30px;
+}
+
+
