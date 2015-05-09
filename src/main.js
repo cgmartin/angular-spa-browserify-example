@@ -1,4 +1,5 @@
-var angular = require('angular');
-var chatPartial = require('./app/partials/chat.partial.html');
+'use strict';
 
-console.log('hello!', angular, chatPartial);
+var App = require('./app/app.js');
+var myApp = new App();
+myApp.bootstrap(true);
