@@ -1,4 +1,4 @@
-/*jshint -W030 */
+/*jshint -W030,-W098 */
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var compileConfig = require('./compile-config');

@@ -1,4 +1,4 @@
-/*jshint -W030 */
+/*jshint -W030, -W098 */
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var angular = require('angular');
@@ -21,7 +21,7 @@ describe('app', function() {
         bootConfigRequestHandler = $httpBackend
             .when('GET', '/spa-boot.json')
             .respond({
-                isDbugInfoEnabled: true,
+                isDebugInfoEnabled: true,
                 isHtml5ModeEnabled: false,
                 isStubsEnabled: false,
                 apiBaseUrl: '/api/'

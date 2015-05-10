@@ -1,7 +1,7 @@
 'use strict';
 
-var App = require('./app/app.js');
-var myApp = new App();
-myApp.bootstrap(true);
+var SPA = window.SPA = window.SPA || {};
 
-module.exports = myApp;
+var App = require('./app/app.js');
+SPA.app = new App();
+SPA.app.bootstrap(true);

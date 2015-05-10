@@ -19,7 +19,8 @@ process.setMaxListeners(0);    // Disable max listeners for gulp
 var isVerbose = args.verbose;  // Enable extra verbose logging
 var isProduction = args.prod;  // Run extra steps (minification) with production flag --prod
 var isWatching = false;        // Enable/disable tasks when running watch
-var jsWatchifyBundler;         // Watchify bundler stream
+var mainJsWatchifyBundler;     // Watchify bundler streams
+var stubsJsWatchifyBundler;
 
 /************************************************************************
  * Functions/Utilities
@@ -82,8 +83,8 @@ var ngHtml2JsOptions = {
     prefix: '' // optionally specify a prefix to be added to the filename
 };
 
-gulp.task('app-js', false, function() {
-    return addJsProcessing(
+gulp.task('main-js', false, function() {
+    return addMainJsProcessing(
         browserify({debug: true})
             .require('./src/main.js', {entry: true})
             .transform(ngHtml2Js(ngHtml2JsOptions))
@@ -91,14 +92,14 @@ gulp.task('app-js', false, function() {
     );
 });
 
-function addJsProcessing(stream) {
+function addMainJsProcessing(stream) {
     var destDir  = 'dist/js';
     var destFile = 'main.js';
     return stream
         .on('error', onError.bind(gulp))
         .pipe(source(destFile))
         .pipe(buffer())
-        .pipe(verbosePrintFiles('app-js'))
+        .pipe(verbosePrintFiles('main-js'))
         .pipe($.if(isProduction, $.sourcemaps.init({loadMaps: true})))
         .pipe($.ngAnnotate({'single_quotes': true}))
         .pipe($.if(isProduction, $.uglify()))
@@ -107,8 +108,8 @@ function addJsProcessing(stream) {
         .pipe(browserSync.reload({stream:true}));
 }
 
-function bundleJs() {
-    jsWatchifyBundler = jsWatchifyBundler || watchify(
+function bundleMainJs() {
+    mainJsWatchifyBundler = mainJsWatchifyBundler || watchify(
             browserify('./src/main.js', {
                 entry:        true,
                 cache:        {},
@@ -117,11 +118,52 @@ function bundleJs() {
                 debug:        true
             }).transform(ngHtml2Js(ngHtml2JsOptions))
         )
-        .on('update', bundleJs)
+        .on('update', bundleMainJs)
         .on('log', (isVerbose) ? $.util.log : $.util.noop);
 
-    return addJsProcessing(jsWatchifyBundler.bundle());
+    return addMainJsProcessing(mainJsWatchifyBundler.bundle());
 }
+
+gulp.task('stubs-js', false, function() {
+    return addStubsJsProcessing(
+        browserify({debug: true})
+            .require('./src/stubs.js', {entry: true})
+            .bundle()
+    );
+});
+
+function addStubsJsProcessing(stream) {
+    var destDir  = 'dist/js';
+    var destFile = 'stubs.js';
+    return stream
+        .on('error', onError.bind(gulp))
+        .pipe(source(destFile))
+        .pipe(buffer())
+        .pipe(verbosePrintFiles('stubs-js'))
+        .pipe($.if(isProduction, $.sourcemaps.init({loadMaps: true})))
+        .pipe($.ngAnnotate({'single_quotes': true}))
+        .pipe($.if(isProduction, $.uglify()))
+        .pipe($.if(isProduction, $.sourcemaps.write('.')))
+        .pipe(gulp.dest(destDir))
+        .pipe(browserSync.reload({stream:true}));
+}
+
+function bundleStubsJs() {
+    stubsJsWatchifyBundler = stubsJsWatchifyBundler || watchify(
+            browserify('./src/stubs.js', {
+                entry:        true,
+                cache:        {},
+                packageCache: {},
+                fullPaths:    false,
+                debug:        true
+            })
+        )
+        .on('update', bundleStubsJs)
+        .on('log', (isVerbose) ? $.util.log : $.util.noop);
+
+    return addStubsJsProcessing(stubsJsWatchifyBundler.bundle());
+}
+
 
 /************************************************************************
  * LESS (and other assets) tasks
@@ -192,7 +234,8 @@ gulp.task('www-root', false, function() {
         .src(['src/www-root/**'])
         .pipe($.newer(destDir))
         .pipe(verbosePrintFiles('www-root'))
-        .pipe(gulp.dest(destDir));
+        .pipe(gulp.dest(destDir))
+        .pipe(browserSync.reload({stream:true}));
 });
 
 /************************************************************************
@@ -252,7 +295,7 @@ gulp.task('build', 'Builds the source files into a distributable package', funct
 gulp.task('build-iterate', false, function(cb) {
     runSequence(
         'lint',
-        ['app-js', 'index-html', 'fonts', 'images', 'www-root', 'less'],
+        ['main-js', 'stubs-js', 'index-html', 'fonts', 'images', 'www-root', 'less'],
         cb
     );
 });
@@ -288,18 +331,19 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
         open: false
     });
 
-    gulp.watch('src/**/*.js',           ['lint-js']);
-    gulp.watch('src/index.html',        ['index-html']);
-    gulp.watch('src/**/*.less',         ['less']);
+    gulp.watch('src/**/*.js',     ['lint-js']);
+    gulp.watch('src/index.html',  ['index-html']);
+    gulp.watch('src/**/*.less',   ['less']);
+    gulp.watch('src/www-root/**', ['www-root']);
 
-    return bundleJs();
+    return merge(bundleMainJs(), bundleStubsJs());
 }, {
     options: {
         'prod': 'Enable production minification, sourcemaps, etc.'
     }
 });
 
-// Don't run app-js during watch, handled by watchify
+// Don't run main-js/stubs-js during watch, handled by watchify
 gulp.task('build-watch', false, ['clean-build'], function(cb) {
     runSequence(
         'lint',
