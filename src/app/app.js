@@ -50,22 +50,23 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
     var $http = injector.get('$http');
     return $http.get('/spa-boot.json')
         .then(function success(response) {
+            console.log('[Boot] Config success:', response.data);
             continueBootstrap(response.data);
         }, function error() {
+            console.error('[Boot] Config failed');
             // Bootstrap the app regardless of failure...
             // Error handling for missing config will be within app
             continueBootstrap({});
         });
 
     function continueBootstrap(bootConfig) {
-        console.log('continuing bootstrap...', bootConfig);
         if (bootConfig.isStubsEnabled) {
             $.getScript('/js/stubs.js')
                 .done(function(script, status) {
                     finallyBootstrap(bootConfig);
                 })
                 .fail(function(jqxhr, settings, exception) {
-                    console.error('Unable to load stubs bundle.', exception);
+                    console.error('[Boot] Unable to load stubs bundle.', exception);
                     finallyBootstrap(bootConfig);
                 });
         } else {
@@ -74,7 +75,7 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
     }
 
     function finallyBootstrap(bootConfig) {
-        console.log('Finally bootstrapping...');
+        console.log('[Boot] Final bootstrap...');
         _this.module = angular
             .module(_this.name, _this.dependencies)
             .config(ngConfigs.compileConfig)

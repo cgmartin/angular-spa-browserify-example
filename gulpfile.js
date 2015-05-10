@@ -1,4 +1,5 @@
 'use strict';
+var path        = require('path');
 var _           = require('lodash');
 var gulp        = require('gulp-help')(require('gulp'));
 var $           = require('gulp-load-plugins')({lazy: true});
@@ -19,8 +20,7 @@ process.setMaxListeners(0);    // Disable max listeners for gulp
 var isVerbose = args.verbose;  // Enable extra verbose logging
 var isProduction = args.prod;  // Run extra steps (minification) with production flag --prod
 var isWatching = false;        // Enable/disable tasks when running watch
-var mainJsWatchifyBundler;     // Watchify bundler streams
-var stubsJsWatchifyBundler;
+var jsBundles;                 // JS Browserify bundles
 
 /************************************************************************
  * Functions/Utilities
@@ -76,94 +76,68 @@ gulp.task('lint-js', false, function() {
         .pipe($.jshint.reporter('fail'));
 });
 
-var ngHtml2JsOptions = {
-    //module: 'app.templates', // optional module name (default: each partial has own module name)
-    extension: 'partial.html', // optionally specify what file types to look for
-    baseDir: 'src', // optionally specify base directory for filename
-    prefix: '' // optionally specify a prefix to be added to the filename
-};
+// Browserify Bundles
+jsBundles = [{
+    task: 'main-js',
+    src: './src/main.js'
+}, {
+    task: 'stubs-js',
+    src: './src/stubs.js'
+}].map(createBrowserifyBundle);
 
-gulp.task('main-js', false, function() {
-    return addMainJsProcessing(
-        browserify({debug: true})
-            .require('./src/main.js', {entry: true})
-            .transform(ngHtml2Js(ngHtml2JsOptions))
-            .bundle()
-    );
-});
+function createBrowserifyBundle(bundle) {
+    var destDir = 'dist/js';
+    var destFile = path.basename(bundle.src);
+    var ngHtml2JsOptions = {
+        //module: 'app.templates', // optional module name (default: each partial has own module name)
+        extension: 'partial.html', // optionally specify what file types to look for
+        baseDir: 'src', // optionally specify base directory for filename
+        prefix: '' // optionally specify a prefix to be added to the filename
+    };
 
-function addMainJsProcessing(stream) {
-    var destDir  = 'dist/js';
-    var destFile = 'main.js';
-    return stream
-        .on('error', onError.bind(gulp))
-        .pipe(source(destFile))
-        .pipe(buffer())
-        .pipe(verbosePrintFiles('main-js'))
-        .pipe($.if(isProduction, $.sourcemaps.init({loadMaps: true})))
-        .pipe($.ngAnnotate({'single_quotes': true}))
-        .pipe($.if(isProduction, $.uglify()))
-        .pipe($.if(isProduction, $.sourcemaps.write('.')))
-        .pipe(gulp.dest(destDir))
-        .pipe(browserSync.reload({stream:true}));
+    // Create gulp task
+    gulp.task(bundle.task, false, function() {
+        return addJsProcessing(
+            browserify({debug: true})
+                .require(bundle.src, {entry: true})
+                .transform(ngHtml2Js(ngHtml2JsOptions))
+                .bundle()
+        );
+    });
+
+    bundle.bundle = bundleJs;
+    return bundle;
+
+    function addJsProcessing(stream) {
+        return stream
+            .on('error', onError.bind(gulp))
+            .pipe(source(destFile))
+            .pipe(buffer())
+            .pipe(verbosePrintFiles(bundle.task))
+            .pipe($.if(isProduction, $.sourcemaps.init({loadMaps: true})))
+            .pipe($.ngAnnotate({'single_quotes': true}))
+            .pipe($.if(isProduction, $.uglify()))
+            .pipe($.if(isProduction, $.sourcemaps.write('.')))
+            .pipe(gulp.dest(destDir))
+            .pipe(browserSync.reload({stream:true}));
+    }
+
+    function bundleJs() {
+        bundle.bundler = bundle.bundler || watchify(
+                browserify(bundle.src, {
+                    entry:        true,
+                    cache:        {},
+                    packageCache: {},
+                    fullPaths:    false,
+                    debug:        true
+                }).transform(ngHtml2Js(ngHtml2JsOptions))
+            )
+            .on('update', bundleJs)
+            .on('log', (isVerbose) ? $.util.log : $.util.noop);
+
+        return addJsProcessing(bundle.bundler.bundle());
+    }
 }
-
-function bundleMainJs() {
-    mainJsWatchifyBundler = mainJsWatchifyBundler || watchify(
-            browserify('./src/main.js', {
-                entry:        true,
-                cache:        {},
-                packageCache: {},
-                fullPaths:    false,
-                debug:        true
-            }).transform(ngHtml2Js(ngHtml2JsOptions))
-        )
-        .on('update', bundleMainJs)
-        .on('log', (isVerbose) ? $.util.log : $.util.noop);
-
-    return addMainJsProcessing(mainJsWatchifyBundler.bundle());
-}
-
-gulp.task('stubs-js', false, function() {
-    return addStubsJsProcessing(
-        browserify({debug: true})
-            .require('./src/stubs.js', {entry: true})
-            .bundle()
-    );
-});
-
-function addStubsJsProcessing(stream) {
-    var destDir  = 'dist/js';
-    var destFile = 'stubs.js';
-    return stream
-        .on('error', onError.bind(gulp))
-        .pipe(source(destFile))
-        .pipe(buffer())
-        .pipe(verbosePrintFiles('stubs-js'))
-        .pipe($.if(isProduction, $.sourcemaps.init({loadMaps: true})))
-        .pipe($.ngAnnotate({'single_quotes': true}))
-        .pipe($.if(isProduction, $.uglify()))
-        .pipe($.if(isProduction, $.sourcemaps.write('.')))
-        .pipe(gulp.dest(destDir))
-        .pipe(browserSync.reload({stream:true}));
-}
-
-function bundleStubsJs() {
-    stubsJsWatchifyBundler = stubsJsWatchifyBundler || watchify(
-            browserify('./src/stubs.js', {
-                entry:        true,
-                cache:        {},
-                packageCache: {},
-                fullPaths:    false,
-                debug:        true
-            })
-        )
-        .on('update', bundleStubsJs)
-        .on('log', (isVerbose) ? $.util.log : $.util.noop);
-
-    return addStubsJsProcessing(stubsJsWatchifyBundler.bundle());
-}
-
 
 /************************************************************************
  * LESS (and other assets) tasks
@@ -255,6 +229,7 @@ gulp.task('index-html', false, function() {
         .pipe(browserSync.reload({stream:true}));
 });
 
+// Replaced by browserify-ng-html2js
 //gulp.task('partials', false, function() {
 //    var destDir  = 'dist/js';
 //    var destFile = 'partials.js';
@@ -295,7 +270,8 @@ gulp.task('build', 'Builds the source files into a distributable package', funct
 gulp.task('build-iterate', false, function(cb) {
     runSequence(
         'lint',
-        ['main-js', 'stubs-js', 'index-html', 'fonts', 'images', 'www-root', 'less'],
+        ['index-html', 'fonts', 'images', 'www-root', 'less']
+            .concat(_.pluck(jsBundles, 'task')),
         cb
     );
 });
@@ -323,7 +299,7 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
         injectChanges: true,
         logFileChanges: true,
         logLevel: 'info',
-        logPrefix: 'tsSPA',
+        logPrefix: 'ngSPA',
         notify: true,
         minify: false,
         reloadDelay: 1000,
@@ -336,14 +312,12 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
     gulp.watch('src/**/*.less',   ['less']);
     gulp.watch('src/www-root/**', ['www-root']);
 
-    return merge(bundleMainJs(), bundleStubsJs());
-}, {
-    options: {
-        'prod': 'Enable production minification, sourcemaps, etc.'
-    }
+    var bundleStreams = _.pluck(jsBundles, 'bundle')
+        .map(function(bundle) { return bundle(); });
+    return merge.apply(merge, bundleStreams);
 });
 
-// Don't run main-js/stubs-js during watch, handled by watchify
+// Don't run jsBundles during watch, handled by watchify
 gulp.task('build-watch', false, ['clean-build'], function(cb) {
     runSequence(
         'lint',
