@@ -76,7 +76,7 @@ gulp.task('lint-js', false, function() {
 });
 
 var ngHtml2JsOptions = {
-    //module: 'app.templates', // optional module name
+    //module: 'app.templates', // optional module name (default: each partial has own module name)
     extension: 'partial.html', // optionally specify what file types to look for
     baseDir: 'src', // optionally specify base directory for filename
     prefix: '' // optionally specify a prefix to be added to the filename

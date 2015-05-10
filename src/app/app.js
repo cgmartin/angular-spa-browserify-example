@@ -3,17 +3,8 @@
 var angular = require('angular');
 var uiRouter = require('angular-ui-router');
 var _ = require('lodash');
-
-// Config Functions
-var compileConfig = require('./config/compile-config');
-var locationConfig = require('./config/location-config');
-var routerConfig = require('./config/router-config');
-
-// Partials
-var navPartial = require('./partials/nav.partial.html');
-var homePartial = require('./partials/home.partial.html');
-var loginPartial = require('./partials/login.partial.html');
-var chatPartial = require('./partials/chat.partial.html');
+var ngConfigs = require('./config');
+var partials = require('./partials');
 
 module.exports = App;
 
@@ -23,17 +14,17 @@ function App(depModules, name) {
 
     var dependencies = [
         uiRouter,
-        navPartial.name,
-        homePartial.name,
-        loginPartial.name,
-        chatPartial.name
+        partials.nav.name,
+        partials.home.name,
+        partials.login.name,
+        partials.chat.name
     ].concat(_.pluck(depModules, 'name'));
 
     this.module = angular
         .module(name, dependencies)
-        .config(compileConfig)
-        .config(locationConfig)
-        .config(routerConfig);
+        .config(ngConfigs.compileConfig)
+        .config(ngConfigs.locationConfig)
+        .config(ngConfigs.routerConfig);
 }
 
 App.prototype.getName = function() {
@@ -42,22 +33,23 @@ App.prototype.getName = function() {
 
 App.prototype.bootstrap = function(strictDi, domElement, injector) {
     injector = injector || angular.injector(['ng']);
+    var _this = this;
+
+    function continueBootstrap(bootConfig, strictDi, domElement) {
+        domElement = domElement || document;
+        _this.module.constant('config', bootConfig);
+        angular.bootstrap(domElement, [_this.getName()], {strictDi: strictDi});
+    }
 
     // Load boot config file first before angular bootstrapping
-    var _this = this;
     var $http = injector.get('$http');
     return $http.get('/spa-boot.json')
         .then(function success(response) {
-            _this.continueBootstrap(response.data, strictDi, domElement);
+            continueBootstrap(response.data, strictDi, domElement);
         }, function error() {
             // Bootstrap the app regardless of failure...
             // Error handling for missing config will be within app
-            _this.continueBootstrap({}, strictDi, domElement);
+            continueBootstrap({}, strictDi, domElement);
         });
 };
 
-App.prototype.continueBootstrap = function(bootConfig, strictDi, domElement) {
-    domElement = domElement || document;
-    this.module.constant('config', bootConfig);
-    angular.bootstrap(domElement, [this.getName()], {strictDi: strictDi});
-};

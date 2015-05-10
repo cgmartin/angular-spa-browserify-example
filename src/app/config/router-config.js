@@ -1,18 +1,16 @@
 'use strict';
 
 var RouterState = require('../../lib/router-state');
-var homePartial = require('../partials/home.partial.html');
-var loginPartial = require('../partials/login.partial.html');
-var chatPartial = require('../partials/chat.partial.html');
+var partials = require('../partials');
 
 module.exports = routerConfig;
 
 // @ngInject
 function routerConfig($stateProvider, $urlRouterProvider) {
     $stateProvider
-        .state('home',  new RouterState('/home',  homePartial.name))
-        .state('login', new RouterState('/login', loginPartial.name))
-        .state('chat',  new RouterState('/chat',  chatPartial.name));
+        .state('home',  new RouterState('/home',  partials.home.name))
+        .state('login', new RouterState('/login', partials.login.name))
+        .state('chat',  new RouterState('/chat',  partials.chat.name));
 
     $urlRouterProvider.otherwise('/home');
 }
