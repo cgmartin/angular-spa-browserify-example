@@ -1,54 +1,97 @@
 /*jshint -W030, -W098 */
 var expect = require('chai').expect;
 var sinon = require('sinon');
-var angular = require('angular');
-var angularMocks = require('angular-mocks');
-var App = require('./app');
+
+var proxyquire = require('proxyquireify')(require);
+var scriptjsStub = sinon.stub();
+
+var angularStub = {
+    module: sinon.stub(),
+    config: sinon.stub(),
+    service: sinon.stub(),
+    directive: sinon.stub(),
+    constant: sinon.stub(),
+    run: sinon.stub(),
+    bootstrap: sinon.stub()
+};
+angularStub.module.returns(angularStub);
+angularStub.config.returns(angularStub);
+angularStub.service.returns(angularStub);
+angularStub.directive.returns(angularStub);
+angularStub.constant.returns(angularStub);
+angularStub.run.returns(angularStub);
+
+var configStub = {
+    log: 'logConfig',
+    compile: 'compileConfig',
+    location: 'locationConfig',
+    router: 'routerConfig',
+    translate: 'translateConfig'
+};
+var partialsStub = {
+    nav: {name: 'nav'},
+    home: {name: 'home'},
+    login: {name: 'login'},
+    chat: {name: 'chat'}
+};
+var serviceStub = {
+    translateStorage: 'translateStorage'
+};
+var directiveStub = {
+    spaNav: 'spaNav'
+};
+
+var App = proxyquire('./app', {
+    scriptjs: scriptjsStub,
+    'angular': angularStub,
+    'angular-ui-router': 'angular-ui-router',
+    'angular-translate': 'angular-translate',
+    './config': configStub,
+    './partials': partialsStub,
+    './service': serviceStub,
+    './directive': directiveStub,
+    '@noCallThru': true
+});
 
 describe('app', function() {
     var app;
-    var $httpBackend;
-    var bootConfigRequestHandler;
+    var injectorStub;
+    var httpStub;
+    var spaBootJsonPromise;
 
     beforeEach(function() {
         app = new App();
+
+        spaBootJsonPromise = { then: sinon.stub() };
+        spaBootJsonPromise.then.yields({ data: { isStubsEnabled: false } });
+
+        httpStub = { get: sinon.stub() };
+        httpStub.get.withArgs('/spa-boot.json').returns(spaBootJsonPromise);
+
+        injectorStub = { get: sinon.stub() };
+        injectorStub.get.withArgs('$http').returns(httpStub);
     });
 
-    beforeEach(inject(function($injector) {
-        // Set up the mock http service responses
-        $httpBackend = $injector.get('$httpBackend');
-        // backend definition common for all tests
-        bootConfigRequestHandler = $httpBackend
-            .when('GET', '/spa-boot.json')
-            .respond({
-                isCompileDebugInfoEnabled: true,
-                isHtml5ModeEnabled: false,
-                isStubsEnabled: false,
-                apiBaseUrl: '/api/'
-            });
-    }));
-
     afterEach(function() {
-        $httpBackend.verifyNoOutstandingExpectation();
-        $httpBackend.verifyNoOutstandingRequest();
+        scriptjsStub.reset();
     });
 
     it('should create default name', function() {
         expect(app.getName()).to.eql('app');
     });
 
-    it('should bootstrap', inject(function($injector) {
-        // Clone document in case we want to bootstrap again.
-        // Bootstrap is not designed to "unbootstrap", must destroy
-        // DOM element to achieve this.
+    it('should bootstrap', function() {
         var documentClone = document.cloneNode(true);
+        app.bootstrap(false, documentClone, injectorStub);
+        expect(app.module).to.be.a('object');
+    });
 
-        $httpBackend.expectGET('/spa-boot.json');
-        app.bootstrap(false, documentClone, $injector);
-        $httpBackend.flush();
+    it('should bootstrap with stubs', function() {
+        spaBootJsonPromise.then.yields({ data: { isStubsEnabled: true } });
+        scriptjsStub.yields();
 
-        var appModule = angular.module('app');
-        expect(appModule).to.be.an('object');
-        expect(app.module).to.eql(appModule);
-    }));
+        var documentClone = document.cloneNode(true);
+        app.bootstrap(false, documentClone, injectorStub);
+        expect(app.module).to.be.a('object');
+    });
 });

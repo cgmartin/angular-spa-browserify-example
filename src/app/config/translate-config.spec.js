@@ -21,12 +21,18 @@ describe('app', function() {
             .forEach(function(testData) {
                 var bootConfig = testData.bootConfig;
                 var translateProvider = {
-                    preferredLanguage: sinon.spy()
+                    preferredLanguage: sinon.spy(),
+                    useSanitizeValueStrategy: sinon.spy(),
+                    useStaticFilesLoader: sinon.spy(),
+                    useStorage: sinon.spy()
                 };
                 translateConfig(translateProvider, bootConfig);
                 expect(translateProvider.preferredLanguage.called).to.be.true;
                 expect(translateProvider.preferredLanguage.getCall(0)
                     .calledWith(testData.expected.preferredLanguageCalledWith)).to.be.true;
+                expect(translateProvider.useSanitizeValueStrategy.called).to.be.true;
+                expect(translateProvider.useStaticFilesLoader.called).to.be.true;
+                expect(translateProvider.useStorage.called).to.be.true;
             });
         });
 
