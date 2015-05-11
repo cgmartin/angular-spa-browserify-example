@@ -21,7 +21,7 @@ describe('app', function() {
         bootConfigRequestHandler = $httpBackend
             .when('GET', '/spa-boot.json')
             .respond({
-                isDebugInfoEnabled: true,
+                isCompileDebugInfoEnabled: true,
                 isHtml5ModeEnabled: false,
                 isStubsEnabled: false,
                 apiBaseUrl: '/api/'

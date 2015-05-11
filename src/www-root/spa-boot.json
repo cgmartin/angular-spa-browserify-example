@@ -1,5 +1,6 @@
 {
   "isDebugInfoEnabled": true,
+  "isLogDebugEnabled": true,
   "apiBaseUrl": "/api/",
   "isStubsEnabled": true
 }

@@ -4,7 +4,7 @@
 var angular = require('angular');
 var uiRouter = require('angular-ui-router');
 var _ = require('lodash');
-var $ = require('jquery');
+var $script = require('scriptjs');
 var ngConfigs = require('./config');
 var partials = require('./partials');
 
@@ -41,18 +41,25 @@ App.prototype.addRun = function(runFn) {
     return this;
 };
 
+/**
+ *
+ * @param strictDi
+ * @param domElement
+ * @param injector
+ */
 App.prototype.bootstrap = function(strictDi, domElement, injector) {
     domElement = domElement || document;
     injector = injector || angular.injector(['ng']);
     var _this = this;
 
     // Load boot config file first before angular bootstrapping
+    console.debug('[Boot] Loading config...');
     var $http = injector.get('$http');
     return $http.get('/spa-boot.json')
-        .then(function success(response) {
-            console.log('[Boot] Config success:', response.data);
+        .then(function bootConfigSuccess(response) {
+            console.debug('[Boot] Config success:', response.data);
             continueBootstrap(response.data);
-        }, function error() {
+        }, function bootConfigError() {
             console.error('[Boot] Config failed');
             // Bootstrap the app regardless of failure...
             // Error handling for missing config will be within app
@@ -61,23 +68,20 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
 
     function continueBootstrap(bootConfig) {
         if (bootConfig.isStubsEnabled) {
-            $.getScript('/js/stubs.js')
-                .done(function(script, status) {
-                    finallyBootstrap(bootConfig);
-                })
-                .fail(function(jqxhr, settings, exception) {
-                    console.error('[Boot] Unable to load stubs bundle.', exception);
-                    finallyBootstrap(bootConfig);
-                });
+            console.debug('[Boot] Loading stubs.js...');
+            $script('/js/stubs.js', function() {
+                finallyBootstrap(bootConfig);
+            });
         } else {
             finallyBootstrap(bootConfig);
         }
     }
 
     function finallyBootstrap(bootConfig) {
-        console.log('[Boot] Final bootstrap...');
+        console.debug('[Boot] Bootstrap angular app...');
         _this.module = angular
             .module(_this.name, _this.dependencies)
+            .config(ngConfigs.logConfig)
             .config(ngConfigs.compileConfig)
             .config(ngConfigs.locationConfig)
             .config(ngConfigs.routerConfig);

@@ -116,6 +116,7 @@ function createBrowserifyBundle(bundle) {
             .pipe(verbosePrintFiles(bundle.task))
             .pipe($.if(isProduction, $.sourcemaps.init({loadMaps: true})))
             .pipe($.ngAnnotate({'single_quotes': true}))
+            .pipe($.if(isProduction, $.stripDebug()))
             .pipe($.if(isProduction, $.uglify()))
             .pipe($.if(isProduction, $.sourcemaps.write('.')))
             .pipe(gulp.dest(destDir))
@@ -312,9 +313,8 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
     gulp.watch('src/**/*.less',   ['less']);
     gulp.watch('src/www-root/**', ['www-root']);
 
-    var bundleStreams = _.pluck(jsBundles, 'bundle')
-        .map(function(bundle) { return bundle(); });
-    return merge.apply(merge, bundleStreams);
+    // Run the browserify bundles and merge their streams
+    return merge.apply(merge, _.pluck(jsBundles, 'bundle').map(function(b) {return b();}));
 });
 
 // Don't run jsBundles during watch, handled by watchify

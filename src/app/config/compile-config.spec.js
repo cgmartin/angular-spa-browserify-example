@@ -12,7 +12,7 @@ describe('app', function() {
 
         it('should configure compileProvider', function() {
             [{
-                bootConfig: {isDebugInfoEnabled: false},
+                bootConfig: {isCompileDebugInfoEnabled: false},
                 expected: {debugInfoEnabledCalledWith: false}
             }, {
                 bootConfig: {}, // Test default condition

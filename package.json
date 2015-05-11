@@ -37,6 +37,7 @@
     "gulp-plumber": "^1.0.0",
     "gulp-print": "^1.1.0",
     "gulp-sourcemaps": "^1.5.2",
+    "gulp-strip-debug": "^1.0.2",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.4",
     "jshint-stylish": "^1.0.2",
@@ -71,6 +72,7 @@
     "bootstrap": "^3.3.4",
     "bootstrap-social": "^4.8.0",
     "font-awesome": "^4.3.0",
-    "lazyload": "^1.8.4"
+    "lazyload": "^1.8.4",
+    "scriptjs": "^2.5.7"
   }
 }
