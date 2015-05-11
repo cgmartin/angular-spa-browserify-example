@@ -14,5 +14,6 @@ function defineFakeBackend($httpBackend, $log) {
     var todos = [{title: 'Todo1'}, {title: 'Todo2'}];
     $httpBackend.whenGET('/todos').respond(todos);
 
-    //$httpBackend.whenGET(/^\/templates\//).passThrough();
+    // Language bundles
+    $httpBackend.whenGET(/^\/lang\//).passThrough();
 }

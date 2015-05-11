@@ -1,12 +1,15 @@
 /*jshint -W098 */
 'use strict';
 
-var angular = require('angular');
-var uiRouter = require('angular-ui-router');
 var _ = require('lodash');
 var $script = require('scriptjs');
+var angular = require('angular');
+var uiRouter = require('angular-ui-router');
+var ngTranslate = require('angular-translate');
 var ngConfigs = require('./config');
-var partials = require('./partials');
+var ngPartials = require('./partials');
+var ngServices = require('./service');
+var ngDirectives = require('./directive');
 
 module.exports = App;
 
@@ -16,10 +19,11 @@ function App(depModules, name) {
 
     this.dependencies = [
         uiRouter,
-        partials.nav.name,
-        partials.home.name,
-        partials.login.name,
-        partials.chat.name
+        ngTranslate,
+        ngPartials.nav.name,
+        ngPartials.home.name,
+        ngPartials.login.name,
+        ngPartials.chat.name
     ].concat(_.pluck(depModules, 'name'));
 
     this.runs = [];
@@ -81,10 +85,13 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
         console.debug('[Boot] Bootstrap angular app...');
         _this.module = angular
             .module(_this.name, _this.dependencies)
-            .config(ngConfigs.logConfig)
-            .config(ngConfigs.compileConfig)
-            .config(ngConfigs.locationConfig)
-            .config(ngConfigs.routerConfig);
+            .config(ngConfigs.log)
+            .config(ngConfigs.compile)
+            .config(ngConfigs.location)
+            .config(ngConfigs.router)
+            .config(ngConfigs.translate)
+            .service('translateStorage', ngServices.translateStorage)
+            .directive('spaNav', ngDirectives.spaNav);
 
         _this.module.constant('config', bootConfig);
 

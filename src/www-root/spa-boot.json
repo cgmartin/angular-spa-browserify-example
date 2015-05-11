@@ -1,6 +1,11 @@
 {
   "isDebugInfoEnabled": true,
   "isLogDebugEnabled": true,
+  "preferredLanguage": "en",
   "apiBaseUrl": "/api/",
-  "isStubsEnabled": true
+  "isStubsEnabled": true,
+  "supportedLanguages": [
+    { "locale": "en", "nameKey": "LANGUAGE_ENGLISH" },
+    { "locale": "fr", "nameKey": "LANGUAGE_FRENCH" }
+  ]
 }

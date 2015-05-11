@@ -1,8 +1,9 @@
 'use strict';
 
 module.exports = {
-    compileConfig: require('./compile-config'),
-    locationConfig: require('./location-config'),
-    routerConfig: require('./router-config'),
-    logConfig: require('./log-config')
+    compile:   require('./compile-config'),
+    location:  require('./location-config'),
+    router:    require('./router-config'),
+    log:       require('./log-config'),
+    translate: require('./translate-config')
 };

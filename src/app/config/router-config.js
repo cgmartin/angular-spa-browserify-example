@@ -1,5 +1,6 @@
 'use strict';
 
+require('angular-ui-router');
 var RouterState = require('../../lib/router-state');
 var partials = require('../partials');
 
