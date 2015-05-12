@@ -2,6 +2,8 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 
+// Example mocking with proxyquireify
+// https://github.com/thlorenz/proxyquireify
 var proxyquire = require('proxyquireify')(require);
 var scriptjsStub = sinon.stub();
 
@@ -50,7 +52,9 @@ var App = proxyquire('./app', {
     './partials': partialsStub,
     './service': serviceStub,
     './directive': directiveStub,
-    '@noCallThru': true
+    // By default proxyquireify calls the function defined on the
+    // original dependency whenever it is not found on the stub.
+    '@noCallThru': true  // Prevent call thru for all contained stubs.
 });
 
 describe('app', function() {

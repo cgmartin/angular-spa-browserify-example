@@ -4,8 +4,13 @@
 window.$ = window.jQuery = require('jquery');
 require('bootstrap');
 
-// Manually bootstrap the angular SPA
+// Global SPA namespace
 var SPA = window.SPA = window.SPA || {};
+SPA.bootLogging = true;
+
+// Manually bootstrap the angular SPA
 var App = require('./app/app.js');
-SPA.app = new App();
+SPA.app = new App([], {
+    enableBootLogging: (document.location.hostname === 'localhost')
+});
 SPA.app.bootstrap(true);

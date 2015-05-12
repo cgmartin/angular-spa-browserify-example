@@ -41,3 +41,4 @@ function TranslateStorage($window) {
     };
     this.put = this.set;
 }
+

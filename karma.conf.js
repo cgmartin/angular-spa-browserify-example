@@ -23,7 +23,7 @@ module.exports = function karmaConfig(config) {
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             'src/**/*.spec.js': ['browserify'],
-            //'src/**/!(*spec).js': ['coverage']
+            //'src/**/!(*spec).js': ['coverage'] // coverage is handled by browserify-istanbul
         },
 
         browserify: {
