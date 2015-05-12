@@ -79,10 +79,12 @@ gulp.task('lint-js', false, function() {
 // Browserify Bundles
 jsBundles = [{
     task: 'main-js',
-    src: './src/main.js'
+    src: './src/main.js',
+    externals: [/*require.resolve('react', {expose: 'react'})*/]
 }, {
     task: 'stubs-js',
-    src: './src/stubs.js'
+    src: './src/stubs.js',
+    externals: [/*require.resolve('react', {expose: 'react'})*/]
 }].map(createBrowserifyBundle);
 
 function createBrowserifyBundle(bundle) {
@@ -95,18 +97,35 @@ function createBrowserifyBundle(bundle) {
         prefix: '' // optionally specify a prefix to be added to the filename
     };
 
-    // Create gulp task
+    function initBrowserify() {
+        var b = browserify(bundle.src, {
+            entry:        true,
+            cache:        {},
+            packageCache: {},
+            fullPaths:    false,
+            debug:        true
+        }).transform(ngHtml2Js(ngHtml2JsOptions));
+
+        bundle.externals.forEach(function (external) {
+            b.external(external);
+        });
+        return b;
+    }
+
+    // Create bundle for single-run gulp task
     gulp.task(bundle.task, false, function() {
-        return addJsProcessing(
-            browserify({debug: true})
-                .require(bundle.src, {entry: true})
-                .transform(ngHtml2Js(ngHtml2JsOptions))
-                .bundle()
-        );
+        return addJsProcessing(initBrowserify().bundle());
     });
 
-    bundle.bundle = bundleJs;
-    return bundle;
+    // Bundle when watchify updates
+    function runWatchBundle() {
+        if (!bundle.bundler) {
+            bundle.bundler = watchify(initBrowserify())
+                .on('update', runWatchBundle)
+                .on('log', (isVerbose) ? $.util.log : $.util.noop);
+        }
+        return addJsProcessing(bundle.bundler.bundle());
+    }
 
     function addJsProcessing(stream) {
         return stream
@@ -123,21 +142,8 @@ function createBrowserifyBundle(bundle) {
             .pipe(browserSync.reload({stream:true}));
     }
 
-    function bundleJs() {
-        bundle.bundler = bundle.bundler || watchify(
-                browserify(bundle.src, {
-                    entry:        true,
-                    cache:        {},
-                    packageCache: {},
-                    fullPaths:    false,
-                    debug:        true
-                }).transform(ngHtml2Js(ngHtml2JsOptions))
-            )
-            .on('update', bundleJs)
-            .on('log', (isVerbose) ? $.util.log : $.util.noop);
-
-        return addJsProcessing(bundle.bundler.bundle());
-    }
+    bundle.runWatchBundle = runWatchBundle;
+    return bundle;
 }
 
 /************************************************************************
@@ -314,7 +320,7 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
     gulp.watch('src/www-root/**', ['www-root']);
 
     // Run the browserify bundles and merge their streams
-    return merge.apply(merge, _.pluck(jsBundles, 'bundle').map(function(b) {return b();}));
+    return merge.apply(merge, _.pluck(jsBundles, 'runWatchBundle').map(function(b) {return b();}));
 });
 
 // Don't run jsBundles during watch, handled by watchify
