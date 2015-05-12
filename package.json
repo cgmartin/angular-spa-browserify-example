@@ -5,7 +5,10 @@
   "main": "src/main.js",
   "private": true,
   "scripts": {
-    "test": "node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
+    "postinstall": "npm dedupe",
+    "build": "gulp build --prod",
+    "start": "gulp watch",
+    "test": "gulp lint && node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
   },
   "author": "Christopher Martin <cgmartin@gmail.com>",
   "license": "MIT",
@@ -73,6 +76,7 @@
     "bootstrap": "^3.3.4",
     "bootstrap-social": "^4.8.0",
     "font-awesome": "^4.3.0",
+    "jquery": "^2.1.4",
     "lazyload": "^1.8.4",
     "scriptjs": "^2.5.7"
   }

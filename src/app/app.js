@@ -68,7 +68,7 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
     injector = injector || angular.injector(['ng']);
     var _this = this;
 
-    // Load boot config file first before angular bootstrapping
+    // 1. Load boot config file first before angular bootstrapping
     _this.bootLog('[Boot] Loading config...');
     var $http = injector.get('$http');
     return $http.get('/spa-boot.json')
@@ -82,6 +82,7 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
             continueBootstrap({});
         });
 
+    // 2. Continue bootstrapping and load fake backend stubs bundle, if enabled
     function continueBootstrap(bootConfig) {
         if (bootConfig.isStubsEnabled) {
             _this.bootLog('[Boot] Loading stubs.js...');
@@ -93,6 +94,7 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
         }
     }
 
+    // 3. OK, now finally bootstrap the angular app
     function finallyBootstrap(bootConfig) {
         _this.bootLog('[Boot] Bootstrap angular app...');
         _this.module = angular.module(_this.name, _this.dependencies);
