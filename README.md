@@ -64,9 +64,12 @@ After installation, the following actions are available:
     │   ├── partials
     │   ├── service
     │   └── styles
-    └── www-root             # Static files under web root
-        ├── lang             # Language bundles
-        └── spa-boot.json    # Boot configuration file
+    ├── www-root             # Static files under web root
+    │   ├── lang             # Language bundles
+    │   └── spa-boot.json    # Boot configuration file
+    ├── main.js              # Main JS bundle entrypoint
+    ├── stubs.js             # Fake HTTP stub bundle entrypoint
+    └── index.html           # SPA index
 ```
 
 ## Libraries & Tools
