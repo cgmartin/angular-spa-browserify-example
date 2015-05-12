@@ -19,7 +19,7 @@ deployed as a file or routed to a backing service (depending on environment).
 
 ## Features
 
-* Bootstraps angular with dynamic configuration.
+* Bootstrap angular with dynamic configuration.
 * Fake HTTP backend stubs for standalone testing (conditionally loaded via separate JS bundle).
 * Unit testing examples with karma/mocha/chai/sinon/proxyquireify.
 * Custom LESS bootstrap & font-awesome builds.
@@ -41,6 +41,33 @@ After installation, the following actions are available:
 * `npm test` : Runs TypeScript file linting and unit tests once.
 * `karma start` : Runs unit tests continuously, watching for changes.
 * `npm run build` : Builds a production distribution under the `dist/` folder, for deployment to a static webserver or CDN.
+
+## Folder Structure
+
+```
+├── coverage                 # Coverage reports
+├── dist                     # Build destination
+└── src
+    ├── app                  # Application Module
+    │   ├── config
+    │   ├── directive
+    │   ├── partials
+    │   └── service
+    ├── images
+    ├── lib                  # Global utilities
+    ├── styles               # Global styles
+    ├── todo                 # Todo MVC Module
+    │   ├── config
+    │   ├── controller
+    │   ├── directive
+    │   ├── model
+    │   ├── partials
+    │   ├── service
+    │   └── styles
+    └── www-root             # Static files under web root
+        ├── lang             # Language bundles
+        └── spa-boot.json    # Boot configuration file
+```
 
 ## Libraries & Tools
 
