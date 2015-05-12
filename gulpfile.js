@@ -77,15 +77,16 @@ gulp.task('lint-js', false, function() {
 });
 
 // Browserify Bundles
-jsBundles = [{
-    task: 'main-js',
-    src: './src/main.js',
-    externals: [/*require.resolve('react', {expose: 'react'})*/]
-}, {
-    task: 'stubs-js',
-    src: './src/stubs.js',
-    externals: [/*require.resolve('react', {expose: 'react'})*/]
-}].map(createBrowserifyBundle);
+function JsBundle(task, src, externals) {
+    this.task = task;
+    this.src = src;
+    this.externals = externals || []; // require.resolve('react', {expose: 'react'})
+}
+
+jsBundles = [
+    new JsBundle('main-js', './src/main.js'),
+    new JsBundle('stubs-js', './src/stubs.js')
+].map(createBrowserifyBundle);
 
 function createBrowserifyBundle(bundle) {
     var destDir = 'dist/js';
@@ -150,16 +151,19 @@ function createBrowserifyBundle(bundle) {
  * LESS (and other assets) tasks
  */
 
+function CssBundle(main, searchPaths) {
+    this.main = main;
+    this.searchPaths = searchPaths || [];
+}
+
 // Custom bootstrap/font-awesome builds
-var mainCssFiles = [{
-    main: 'src/styles/bootstrap.less',
-    searchPaths: ['src/styles', 'node_modules/bootstrap/less', 'node_modules/bootstrap-social']
-}, {
-    main: 'src/styles/font-awesome.less',
-    searchPaths: ['src/styles', 'node_modules/font-awesome/less']
-}, {
-    main: 'node_modules/angular/angular-csp.css'
-}];
+var mainCssFiles = [
+    new CssBundle('src/styles/bootstrap.less',
+        ['src/styles', 'node_modules/bootstrap/less', 'node_modules/bootstrap-social']),
+    new CssBundle('src/styles/font-awesome.less',
+        ['src/styles', 'node_modules/font-awesome/less']),
+    new CssBundle('node_modules/angular/angular-csp.css')
+];
 
 gulp.task('less', false, function() {
     var destDir  = 'dist/css';
