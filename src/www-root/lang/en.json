@@ -1,5 +1,7 @@
 {
   "LANGUAGE_ENGLISH": "English",
   "LANGUAGE_FRENCH": "French",
-  "HOME_TITLE": "The Home Page"
+  "HOME_TITLE": "The Home Page",
+  "TODO_TITLE": "Todo List",
+  "CHAT_TITLE": "Chat Room"
 }

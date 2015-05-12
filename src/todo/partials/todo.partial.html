@@ -1,0 +1,67 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center" translate>TODO_TITLE</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+
+        <div class="todo-panel panel panel-default">
+
+            <form role="form" ng-submit="vm.addNewTodo()">
+                <input type="text" id="newTodoTitle"
+                       placeholder="What needs to be done?"
+                       ng-model="newTodoTitle" class="form-control" autofocus/>
+            </form>
+
+            <ul class="list-group">
+                <li ng-repeat="todo in todos track by $index"
+                    ng-class="{
+                        'list-group-item': true,
+                        completed: todo.isComplete,
+                        editing: todo == editTodo
+                        }">
+                    <div class="view">
+                        <a ng-click="vm.removeTodo(todo)" class="pull-right">
+                            <i class="fa fa-times"></i></a>
+                        <a ng-click="vm.toggleCompleted(todo)">
+                            <i ng-class="{
+                                fa: true, 'fa-lg': true,
+                                'fa-check-circle-o': todo.isComplete,
+                                'fa-circle-o': !todo.isComplete }"></i></a>
+                        <span ng-class="{ strikethru: todo.isComplete }"
+                              ng-dblclick="vm.beginEditTodo(todo)">
+                            {{todo.title}}</span>
+                    </div>
+
+                    <form ng-submit="vm.endEditTodo(todo)" role="form">
+                        <input type="text" id="editTodoTitle"
+                               ng-model="todo.title" class="form-control"
+                               todo-blur="vm.endEditTodo(todo)"
+                               todo-focus="todo == editTodo" />
+                    </form>
+
+                </li>
+            </ul>
+
+            <div class="panel-footer clearfix">
+                <span class="pull-left">
+                    <strong>{{remainingCount}} </strong>
+                    <ng-pluralize count="remainingCount" when="{
+                            one: 'item left', other: 'items left'
+                        }"></ng-pluralize>
+                </span>
+
+                <button ng-click="vm.clearCompleted()" ng-show="remainingCount < todos.length"
+                        class="btn btn-default btn-xs pull-right"
+                        >Clear completed ({{todos.length - remainingCount}})</button>
+
+                <button ng-click="vm.markAllCompleted()" ng-show="remainingCount > 0"
+                        class="btn btn-default btn-xs pull-right"
+                        >Mark all completed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
