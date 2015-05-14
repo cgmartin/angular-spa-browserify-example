@@ -77,15 +77,16 @@ gulp.task('lint-js', false, function() {
 });
 
 // Browserify Bundles
-function JsBundle(task, src, externals) {
+function JsBundle(task, src, exposed, externals) {
     this.task = task;
     this.src = src;
-    this.externals = externals || []; // require.resolve('react', {expose: 'react'})
+    this.exposed = exposed || [];     // modules to expose
+    this.externals = externals || []; // external modules to exclude from bundle
 }
 
 jsBundles = [
-    new JsBundle('main-js', './src/main.js'),
-    new JsBundle('stubs-js', './src/stubs.js')
+    new JsBundle('main-js', './src/main.js', ['angular', 'lodash']),
+    new JsBundle('stubs-js', './src/stubs.js', null, ['angular', 'lodash'])
 ].map(createBrowserifyBundle);
 
 function createBrowserifyBundle(bundle) {
@@ -107,9 +108,17 @@ function createBrowserifyBundle(bundle) {
             debug:        true
         }).transform(ngHtml2Js(ngHtml2JsOptions));
 
-        bundle.externals.forEach(function (external) {
+        bundle.exposed.forEach(function(expose) {
+            if (typeof expose === 'string') {
+                expose = {resolve: expose, expose: expose};
+            }
+            b.require(expose.resolve, {expose: expose.expose});
+        });
+
+        bundle.externals.forEach(function(external) {
             b.external(external);
         });
+
         return b;
     }
 

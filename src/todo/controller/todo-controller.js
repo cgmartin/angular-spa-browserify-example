@@ -11,7 +11,7 @@ function TodoController($scope, todoStorage, filterFilter, $log) {
     this.todoStorage = todoStorage;
     this.filterFilter = filterFilter;
     this.$log = $log;
-    this.todos = $scope.todos = todoStorage.get();
+    this.todos = $scope.todos = [];
     $scope.newTodoTitle = '';
     $scope.editTodo = null;
     $scope.statusFilter = null;
@@ -20,11 +20,16 @@ function TodoController($scope, todoStorage, filterFilter, $log) {
     // for its methods to be accessible from view / HTML
     $scope.vm = this;
 
-    // watching for events/changes in scope, which are caused by view/user input
-    // if you subscribe to scope or event with lifetime longer than this controller, make sure you unsubscribe.
-    $scope.$watch('todos', function() {
-        return _this.onTodos();
-    }, true);
+    todoStorage.get().then(function(data) {
+        _this.todos.splice(0, Number.MAX_VALUE);
+        _this.todos.push.apply(_this.todos, data);
+
+        // watching for events/changes in scope, which are caused by view/user input
+        // if you subscribe to scope or event with lifetime longer than this controller, make sure you unsubscribe.
+        $scope.$watch('todos', function() {
+            return _this.onTodos();
+        }, true);
+    });
 }
 
 TodoController.prototype.onTodos = function() {
