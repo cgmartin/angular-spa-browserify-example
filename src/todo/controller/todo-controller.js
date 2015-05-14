@@ -5,16 +5,12 @@ var TodoItem = require('../model/todo-item');
 module.exports = TodoController;
 
 // @ngInject
-function TodoController($scope, todoStorage, filterFilter, $log) {
+function TodoController($scope, todoStorage, filterFilter) {
     var _this = this;
-    this.$scope = $scope;
-    this.todoStorage = todoStorage;
-    this.filterFilter = filterFilter;
-    this.$log = $log;
-    this.todos = $scope.todos = [];
-    $scope.newTodoTitle = '';
-    $scope.editTodo = null;
-    $scope.statusFilter = null;
+    this.todos = [];
+    this.newTodoTitle = '';
+    this.editTodo = null;
+    this.statusFilter = null;
 
     // 'vm' stands for 'view model'. We're adding a reference to the controller to the scope
     // for its methods to be accessible from view / HTML
@@ -23,71 +19,73 @@ function TodoController($scope, todoStorage, filterFilter, $log) {
     todoStorage.get().then(function(data) {
         _this.todos.splice(0, Number.MAX_VALUE);
         _this.todos.push.apply(_this.todos, data);
-
-        // watching for events/changes in scope, which are caused by view/user input
-        // if you subscribe to scope or event with lifetime longer than this controller, make sure you unsubscribe.
-        $scope.$watch('todos', function() {
-            return _this.onTodos();
-        }, true);
+        _this.onTodoChanges();
     });
-}
 
-TodoController.prototype.onTodos = function() {
-    this.$scope.remainingCount = this.filterFilter(this.todos, {isComplete: false}).length;
-    this.$scope.doneCount = this.todos.length - this.$scope.remainingCount;
-    this.$scope.allChecked = !this.$scope.remainingCount;
-    this.todoStorage.put(this.todos);
-};
+    this.onTodoChanges = function(save) {
+        this.remainingCount = filterFilter(this.todos, {isComplete: false}).length;
+        this.doneCount = this.todos.length - this.remainingCount;
+        this.allChecked = !this.remainingCount;
+        if (save) { todoStorage.put(this.todos); }
+    };
 
-TodoController.prototype.addNewTodo = function() {
-    var newTodoTitle = this.$scope.newTodoTitle.trim();
-    if (!newTodoTitle.length) {
-        return;
-    }
-    this.todos.push(new TodoItem(newTodoTitle, false));
-    this.$scope.newTodoTitle = '';
-};
+    this.addNewTodo = function() {
+        var newTodoTitle = this.newTodoTitle.trim();
+        if (!newTodoTitle.length) {
+            return;
+        }
+        this.todos.push(new TodoItem(newTodoTitle, false));
+        this.newTodoTitle = '';
+        this.onTodoChanges(true);
+    };
 
-TodoController.prototype.removeTodo = function(todo) {
-    this.todos.splice(this.todos.indexOf(todo), 1);
-};
+    this.removeTodo = function(todo) {
+        this.todos.splice(this.todos.indexOf(todo), 1);
+        this.onTodoChanges(true);
+    };
 
-TodoController.prototype.addTodo = function(todo) {
-    if (!todo.title.length) {
-        return;
-    }
-    todo.id = new Date().getTime();
-    this.todos.push(todo);
-};
+    this.addTodo = function(todo) {
+        if (!todo.title.length) {
+            return;
+        }
+        todo.id = new Date().getTime();
+        this.todos.push(todo);
+        this.onTodoChanges(true);
+    };
 
-TodoController.prototype.beginEditTodo = function(todo) {
-    this.$scope.editTodo = todo;
-};
+    this.beginEditTodo = function(todo) {
+        this.editTodo = todo;
+    };
 
-TodoController.prototype.endEditTodo = function(todo) {
-    this.$scope.editTodo = null;
-    todo.title = todo.title.trim();
-    if (!todo.title) {
-        this.removeTodo(todo);
-    }
-};
+    this.endEditTodo = function(todo) {
+        this.editTodo = null;
+        todo.title = todo.title.trim();
+        if (!todo.title) {
+            this.removeTodo(todo);
+        } else {
+            this.onTodoChanges(true);
+        }
+    };
 
-TodoController.prototype.toggleCompleted = function(todoItem) {
-    todoItem.isComplete = !todoItem.isComplete;
-};
+    this.toggleCompleted = function(todoItem) {
+        todoItem.isComplete = !todoItem.isComplete;
+        this.onTodoChanges(true);
+    };
 
-TodoController.prototype.markAllCompleted = function(completed) {
-    if (completed === undefined) {
-        completed = true;
-    }
-    this.todos.forEach(function(todoItem) {
-        todoItem.isComplete = completed;
-    });
-};
+    this.markAllCompleted = function(completed) {
+        if (completed === undefined) {
+            completed = true;
+        }
+        this.todos.forEach(function(todoItem) {
+            todoItem.isComplete = completed;
+        });
+        this.onTodoChanges(true);
+    };
 
-TodoController.prototype.clearCompleted = function() {
-    this.$scope.todos = this.todos =
-        this.todos.filter(function(todoItem) {
+    this.clearCompleted = function() {
+        this.todos = this.todos.filter(function(todoItem) {
             return !todoItem.isComplete;
         });
-};
+        this.onTodoChanges(true);
+    };
+}

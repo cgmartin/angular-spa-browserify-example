@@ -12,15 +12,15 @@
             <form role="form" ng-submit="vm.addNewTodo()">
                 <input type="text" id="newTodoTitle"
                        placeholder="What needs to be done?"
-                       ng-model="newTodoTitle" class="form-control" autofocus/>
+                       ng-model="vm.newTodoTitle" class="form-control" autofocus/>
             </form>
 
             <ul class="list-group">
-                <li ng-repeat="todo in todos track by $index"
+                <li ng-repeat="todo in vm.todos track by $index"
                     ng-class="{
                         'list-group-item': true,
                         completed: todo.isComplete,
-                        editing: todo == editTodo
+                        editing: todo == vm.editTodo
                         }">
                     <div class="view">
                         <a ng-click="vm.removeTodo(todo)" class="pull-right">
@@ -39,7 +39,7 @@
                         <input type="text" id="editTodoTitle"
                                ng-model="todo.title" class="form-control"
                                todo-blur="vm.endEditTodo(todo)"
-                               todo-focus="todo == editTodo" />
+                               todo-focus="todo == vm.editTodo" />
                     </form>
 
                 </li>
@@ -47,17 +47,17 @@
 
             <div class="panel-footer clearfix">
                 <span class="pull-left">
-                    <strong>{{remainingCount}} </strong>
-                    <ng-pluralize count="remainingCount" when="{
+                    <strong>{{vm.remainingCount}} </strong>
+                    <ng-pluralize count="vm.remainingCount" when="{
                             one: 'item left', other: 'items left'
                         }"></ng-pluralize>
                 </span>
 
-                <button ng-click="vm.clearCompleted()" ng-show="remainingCount < todos.length"
+                <button ng-click="vm.clearCompleted()" ng-show="vm.remainingCount < vm.todos.length"
                         class="btn btn-default btn-xs pull-right"
-                        >Clear completed ({{todos.length - remainingCount}})</button>
+                        >Clear completed ({{vm.todos.length - vm.remainingCount}})</button>
 
-                <button ng-click="vm.markAllCompleted()" ng-show="remainingCount > 0"
+                <button ng-click="vm.markAllCompleted()" ng-show="vm.remainingCount > 0"
                         class="btn btn-default btn-xs pull-right"
                         >Mark all completed</button>
             </div>
