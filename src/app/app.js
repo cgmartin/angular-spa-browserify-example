@@ -30,6 +30,7 @@ function App(depModules, options) {
         _.noop;
 
     this.dependencies = [
+        'bootConfig',
         uiRouter,
         ngTranslate,
         ngPartials.nav.name,
@@ -37,24 +38,11 @@ function App(depModules, options) {
         ngPartials.login.name,
         ngPartials.chat.name
     ].concat(_.pluck(depModules, 'name'));
-
-    this.runs = [];
-
     this.module = null;
 }
 
 App.prototype.getName = function() {
     return this.name;
-};
-
-App.prototype.addDependency = function(dep) {
-    this.dependencies.push(dep);
-    return this;
-};
-
-App.prototype.addRun = function(runFn) {
-    this.runs.push(runFn);
-    return this;
 };
 
 /**
@@ -97,6 +85,9 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
     // 3. OK, now finally bootstrap the angular app
     function finallyBootstrap(bootConfig) {
         _this.bootLog('[Boot] Bootstrap angular app...');
+
+        angular.module('bootConfig', []).constant('config', bootConfig);
+
         _this.module = angular.module(_this.name, _this.dependencies);
 
         // Bind all configs, services, directives
@@ -109,10 +100,6 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
         _.forEach(ngDirectives, function(d, key) {
             _this.module.directive(key, d);
         });
-
-        _this.module.constant('config', bootConfig);
-
-        _this.runs.forEach(function(runFn) {_this.module.run(runFn);});
 
         angular.bootstrap(domElement, [_this.name], {strictDi: strictDi});
     }

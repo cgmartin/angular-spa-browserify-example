@@ -1,8 +1,9 @@
 {
   "isDebugInfoEnabled": true,
   "isLogDebugEnabled": true,
+  "serverLoggingLevel": 0,
   "preferredLanguage": "en",
-  "apiBaseUrl": "/api/",
+  "apiBaseUrl": "",
   "isStubsEnabled": true,
   "supportedLanguages": [
     { "locale": "en", "nameKey": "LANGUAGE_ENGLISH" },

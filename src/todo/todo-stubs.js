@@ -14,10 +14,10 @@ function todoStubs($httpBackend, $log) {
     ];
 
     // GET: /todos
-    $httpBackend.whenGET('/todos').respond(todos);
+    $httpBackend.whenGET('/api/todos').respond(todos);
 
     // POST: /todos
-    $httpBackend.whenPOST('/todos').respond(function(method, url, data) {
+    $httpBackend.whenPOST('/api/todos').respond(function(method, url, data) {
         var newTodos = JSON.parse(data);
         todos.splice(0, Number.MAX_VALUE); // remove elements
         todos.push.apply(todos, newTodos);

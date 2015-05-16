@@ -1,11 +1,13 @@
 /*jshint -W098 */
+var angular = require('angular');
 require('angular-mocks');
 var todoStubs = require('./todo/todo-stubs');
 
 // Communicate with globally exposed app
 var app = window.SPA.app;
-app.addDependency('ngMockE2E');
-app.addRun(defineFakeBackend);
+app.dependencies.unshift('appStubs'); // Run first
+
+angular.module('appStubs', ['ngMockE2E']).run(defineFakeBackend);
 
 // @ngInject
 function defineFakeBackend($httpBackend, $log) {

@@ -86,6 +86,8 @@
   "globals"       : {  // additional predefined global variables
     "angular" : true,
     "inject": true,
-    "expect": true
+    "expect": true,
+    "printStackTrace": true,
+    "performance": true
   }
 }
