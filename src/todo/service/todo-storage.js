@@ -3,19 +3,15 @@
 module.exports = TodoStorage;
 
 // @ngInject
-function TodoStorage($http, $log) {
-    this.STORAGE_ID = 'ngSPA-todos';
-
+function TodoStorage($http) {
     this.get = function() {
         return $http.get('/api/todos').then(function(result) {
-            $log.debug('GET', result);
             return result.data;
         });
     };
 
     this.put = function(todos) {
         return $http.post('/api/todos', todos).then(function(result) {
-            $log.debug('POST', result);
             return result.data;
         });
     };

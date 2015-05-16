@@ -4,13 +4,13 @@ module.exports = BaseUrlInterceptor;
 
 // @ngInject
 function BaseUrlInterceptor(config) {
-    this.request = function(req) {
+    this.request = function(reqCfg) {
         // Skip full urls
-        if (req.url.indexOf('http') !== 0) {
+        if (reqCfg.url.indexOf('http') !== 0) {
             var baseUrl = config.apiBaseUrl || '';
-            req.url = baseUrl + req.url;
+            reqCfg.url = baseUrl + reqCfg.url;
         }
-        return req;
+        return reqCfg;
     };
 }
 

@@ -8,7 +8,7 @@
 
 Demonstrates using Browserify require('modules') in a client-side Angular single page application with Mocha unit tests and Gulp tasks.
 
-**Caution:** This is an experimental playground that I'm using to learn Gulp and Browserify. Use at your own risk.
+**Caution:** This is an experimental playground that I'm using to learn Browserify. Use at your own risk.
 If you run across anything here that could be done better, I'd love the feedback.
 
 This client project is meant to accompany a set of Node.js microservices (REST webservice, Chat Server, Static Server, Reverse Proxy),
@@ -20,7 +20,9 @@ deployed as a file or routed to a backing service (depending on environment).
 ## Features
 
 * Bootstrap angular with dynamic configuration.
-* Fake HTTP backend stubs for standalone testing (conditionally loaded via separate JS bundle).
+* Fake HTTP backend stubs for standalone testing, which are conditionally loaded via separate JS bundle.
+* Todo MVC module to demonstrate backend requests
+* Server-side logging module, with exception handler using stacktrace.js.
 * Unit testing examples with karma/mocha/chai/sinon/proxyquireify.
 * Custom LESS bootstrap & font-awesome builds.
 * Angular ui-router, I18n, TodoMVC examples.
@@ -55,6 +57,12 @@ After installation, the following actions are available:
     │   └── service
     ├── images
     ├── lib                  # Global utilities
+    ├── logging              # Server logging module
+    │   ├── config
+    │   ├── factory
+    │   ├── provider
+    │   ├── run
+    │   └── service
     ├── styles               # Global styles
     ├── todo                 # Todo MVC Module
     │   ├── config
@@ -80,6 +88,7 @@ The functionality has been implemented by integrating the following 3rd-party to
  - [AngularJS v1](http://angularjs.org/): Superheroic JavaScript MVW Framework
  - [Twitter Bootstrap v3](http://getbootstrap.com/): HTML, CSS, and JS framework for developing responsive, mobile first projects on the web
  - [Font Awesome](http://fontawesome.io/): The iconic font and CSS toolkit
+ - [Stacktrace.js](http://www.stacktracejs.com/): Cross-browser stack traces
  - [Gulp](http://gulpjs.com/): Streaming build system and task runner
  - [Node.js](http://nodejs.org/api/): JavaScript runtime environment for server-side development
  - [Karma](http://karma-runner.github.io/): Spectacular Test Runner for Javascript
