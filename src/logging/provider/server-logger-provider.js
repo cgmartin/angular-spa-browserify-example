@@ -4,6 +4,9 @@ var ServerLogger = require('../service/server-logger');
 
 module.exports = ServerLoggerProvider;
 
+/**
+ * Configures the serverLogger service
+ */
 // @ngInject
 function ServerLoggerProvider() {
     var LOG_LEVEL = this.LOG_LEVEL = {

@@ -21,8 +21,9 @@ deployed as a file or routed to a backing service (depending on environment).
 
 * Bootstrap angular with dynamic configuration.
 * Fake HTTP backend stubs for standalone testing, which are conditionally loaded via separate JS bundle.
-* Todo MVC module to demonstrate backend requests
-* Server-side logging module, with exception handler using stacktrace.js.
+* Todo MVC module to demonstrate backend requests.
+* Server-side logging module, with custom logging exception handler and http interceptor.
+* Error module to route exceptions, 404, 500 errors to error states.  
 * Unit testing examples with karma/mocha/chai/sinon/proxyquireify.
 * Custom LESS bootstrap & font-awesome builds.
 * Angular ui-router, I18n, TodoMVC examples.
@@ -50,28 +51,14 @@ After installation, the following actions are available:
 ├── coverage                 # Coverage reports
 ├── dist                     # Build destination
 └── src
-    ├── app                  # Application Module
-    │   ├── config
-    │   ├── directive
-    │   ├── partials
-    │   └── service
+    ├── app                  # Application module    
+    ├── error                # Error handling module    
     ├── images
     ├── lib                  # Global utilities
-    ├── logging              # Server logging module
-    │   ├── config
-    │   ├── factory
-    │   ├── provider
-    │   ├── run
-    │   └── service
+    ├── logging              # Server logging module    
+    ├── session              # Session module (browser session ID)
     ├── styles               # Global styles
-    ├── todo                 # Todo MVC Module
-    │   ├── config
-    │   ├── controller
-    │   ├── directive
-    │   ├── model
-    │   ├── partials
-    │   ├── service
-    │   └── styles
+    ├── todo                 # Todo MVC Module    
     ├── www-root             # Static files under web root
     │   ├── lang             # Language bundles
     │   └── spa-boot.json    # Boot configuration file

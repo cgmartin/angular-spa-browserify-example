@@ -16,7 +16,19 @@
             <ul class="nav navbar-nav">
                 <li ui-sref-active="active"><a ui-sref="todos">Todo List</a></li>
                 <li ui-sref-active="active"><a ui-sref="chat">Chat Room</a></li>
-                <li ui-sref-active="active"><a ui-sref="error">Error Page</a></li>
+            </ul>
+
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
+                            >Error <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#/missing-url">URL Not Found Error</a></li>
+                        <li><a ui-sref="throw-error">Throw Error</a></li>
+                        <li><a ui-sref="throw-resolve-error">Throw Resolve Error</a></li>
+                        <li><a ui-sref="state-not-found-error">State Not Found Error</a></li>
+                    </ul>
+                </li>
             </ul>
 
             <!-- Right side -->

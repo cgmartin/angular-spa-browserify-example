@@ -2,6 +2,9 @@
 
 module.exports = spaNavDirective;
 
+/**
+ * Global Navigation Bar
+ */
 function spaNavDirective() {
     return {
         restrict: 'EA',

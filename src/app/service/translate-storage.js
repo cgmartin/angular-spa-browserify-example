@@ -2,6 +2,12 @@
 
 module.exports = TranslateStorage;
 
+/**
+ * Replaces the builtin angular-translate translate storage with a
+ * local storage only implementation.
+ *
+ * If browser does not have localstorage, do not cache.
+ */
 // @ngInject
 function TranslateStorage($window) {
     var langKey = null;

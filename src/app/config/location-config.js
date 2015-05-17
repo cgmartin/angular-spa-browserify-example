@@ -2,6 +2,9 @@
 
 module.exports = locationConfig;
 
+/**
+ * Configures the $locationProvider with html5Mode setting
+ */
 // @ngInject
 function locationConfig($locationProvider, config) {
     $locationProvider.html5Mode(

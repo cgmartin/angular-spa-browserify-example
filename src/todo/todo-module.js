@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var angular = require('angular');
 var uiRouter = require('angular-ui-router');
 var ngTranslate = require('angular-translate');
@@ -12,14 +13,15 @@ var TodoStorage = require('./service/todo-storage');
 
 module.exports = TodoModule;
 
-function TodoModule() {
+function TodoModule(depModules) {
+    depModules = depModules || [];
     this.name = 'todo';
 
     var dependencies = [
         uiRouter,
         ngTranslate,
         todoPartial.name
-    ];
+    ].concat(_.pluck(depModules, 'name'));
 
     this.module = angular
         .module(this.name, dependencies)
@@ -30,6 +32,3 @@ function TodoModule() {
         .service('todoStorage', TodoStorage);
 }
 
-TodoModule.prototype.getName = function() {
-    return this.name;
-};

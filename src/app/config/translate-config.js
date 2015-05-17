@@ -5,6 +5,9 @@ require('angular-translate/dist/angular-translate-loader-static-files/angular-tr
 
 module.exports = translateConfig;
 
+/**
+ * Configures the $translateProvider with language settings
+ */
 // @ngInject
 function translateConfig($translateProvider, config) {
     $translateProvider.preferredLanguage(config.preferredLanguage || 'en');

@@ -9,6 +9,7 @@ var main = function() {
     var App = require('./app/app.js');
     var SessionModule = require('./session/session-module');
     var LoggingModule = require('./logging/logging-module');
+    var ErrorModule = require('./error/error-module');
     var TodoModule = require('./todo/todo-module');
 
     // Load jQuery and Bootstrap for Nav
@@ -22,11 +23,12 @@ var main = function() {
     // Feature modules
     var sessionModule = new SessionModule();
     var loggingModule = new LoggingModule();
+    var errorModule = new ErrorModule();
     var todoModule = new TodoModule();
 
     // Manually bootstrap the angular SPA
     SPA.app = new App(
-        [sessionModule, loggingModule, todoModule],
+        [sessionModule, loggingModule, errorModule, todoModule],
         {enableBootLogging: (document.location.hostname === 'localhost')}
     );
     SPA.app.bootstrap(true);

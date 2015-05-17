@@ -5,6 +5,9 @@ var $ = require('jquery');
 
 module.exports = ServerLogger;
 
+/**
+ * Server-side logging service, sends logs to server in bulk at configured interval
+ */
 function ServerLogger(loggingLevel, logLevels, session, $log, $window, config) {
     var logQueue = [];
 
@@ -63,7 +66,7 @@ function ServerLogger(loggingLevel, logLevels, session, $log, $window, config) {
         var data = logQueue.splice(0, Number.MAX_VALUE);
 
         if (config.isStubsEnabled) {
-            $log.debug('POST', url, 'headers:', headers, 'data:', data);
+            $log.debug('AJAX success POST', url, 'headers:', headers, 'reqData:', data);
         } else {
             $.ajax({
                 type:        'POST',

@@ -10,6 +10,7 @@ var ngConfigs = require('./config');
 var ngPartials = require('./partials');
 var ngServices = require('./service');
 var ngDirectives = require('./directive');
+var exceptionHandlerOverride = require('./factory/exception-handler-override');
 
 module.exports = App;
 
@@ -23,7 +24,7 @@ module.exports = App;
 function App(depModules, options) {
     depModules = depModules || [];
     options = options || {};
-    this.name = options.name || 'app';
+    this.name = 'app';
 
     this.bootLog = (options.enableBootLogging === true) ?
         function() { console.debug.apply(console, arguments); } :
@@ -41,11 +42,9 @@ function App(depModules, options) {
     this.module = null;
 }
 
-App.prototype.getName = function() {
-    return this.name;
-};
-
 /**
+ * Manually bootstrap the angular application after first loading a config file
+ * and optional stubs bundle.
  *
  * @param strictDi Strict DI mode?
  * @param domElement (optional) DOM element to attach to (default: document)
@@ -101,6 +100,9 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
             _this.module.directive(key, d);
         });
 
+        _this.module.factory('$exceptionHandler', exceptionHandlerOverride);
+
         angular.bootstrap(domElement, [_this.name], {strictDi: strictDi});
     }
 };
+

@@ -2,6 +2,9 @@
 
 module.exports = exceptionOverride;
 
+/**
+ * Log exceptions to the server
+ */
 // @ngInject
 function exceptionOverride($log, traceService, serverLogger) {
     return error;

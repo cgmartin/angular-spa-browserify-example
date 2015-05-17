@@ -2,6 +2,9 @@
 
 module.exports = BaseUrlInterceptor;
 
+/**
+ * Adds a configurable base url to http requests
+ */
 // @ngInject
 function BaseUrlInterceptor(config) {
     this.request = function(reqCfg) {

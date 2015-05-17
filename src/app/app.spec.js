@@ -80,10 +80,6 @@ describe('app', function() {
         scriptjsStub.reset();
     });
 
-    it('should create default name', function() {
-        expect(app.getName()).to.eql('app');
-    });
-
     it('should bootstrap', function() {
         var documentClone = document.cloneNode(true);
         app.bootstrap(false, documentClone, injectorStub);
