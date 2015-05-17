@@ -14,11 +14,14 @@ describe('app', function() {
                 state: sinon.stub()
             };
             stateProvider.state.returns(stateProvider); // For chaining
+
             var urlRouterProvider = {
+                when: sinon.stub(),
                 otherwise: sinon.spy()
             };
             routerConfig(stateProvider, urlRouterProvider);
             expect(stateProvider.state.called).to.be.true;
+            expect(urlRouterProvider.when.called).to.be.true;
             //expect(urlRouterProvider.otherwise.called).to.be.true;
         });
     });

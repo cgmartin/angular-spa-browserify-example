@@ -9,10 +9,10 @@ module.exports = routerConfig;
  * Set up the default app routes
  */
 // @ngInject
-function routerConfig($stateProvider) {
+function routerConfig($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('home', {
-            url: '',
+            url: '/',
             templateUrl: partials.home.name
         })
         .state('login', {
@@ -23,5 +23,7 @@ function routerConfig($stateProvider) {
             url: '/chat',
             templateUrl: partials.chat.name
         });
+
+    $urlRouterProvider.when('', '/');
 }
 
