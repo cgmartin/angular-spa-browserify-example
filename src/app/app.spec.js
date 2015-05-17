@@ -11,6 +11,7 @@ var angularStub = {
     module: sinon.stub(),
     config: sinon.stub(),
     service: sinon.stub(),
+    factory: sinon.stub(),
     directive: sinon.stub(),
     constant: sinon.stub(),
     run: sinon.stub(),
@@ -19,6 +20,7 @@ var angularStub = {
 angularStub.module.returns(angularStub);
 angularStub.config.returns(angularStub);
 angularStub.service.returns(angularStub);
+angularStub.factory.returns(angularStub);
 angularStub.directive.returns(angularStub);
 angularStub.constant.returns(angularStub);
 angularStub.run.returns(angularStub);
