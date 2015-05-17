@@ -53,6 +53,8 @@ function ServerLogger(loggingLevel, logLevels, session, $log, $window, config) {
     setInterval(sendLogs, config.serverLoggingInterval);
 
     function sendLogs() {
+        // TODO: consider sending logs when reaching queue size threshold
+        // or if queue contains an error
         if (logQueue.length === 0) { return; }
 
         // use AJAX (in this example jQuery) and NOT
@@ -68,6 +70,7 @@ function ServerLogger(loggingLevel, logLevels, session, $log, $window, config) {
         if (config.isStubsEnabled) {
             $log.debug('AJAX success POST', url, 'headers:', headers, 'reqData:', data);
         } else {
+            // TODO: Implement exponential back off with failures
             $.ajax({
                 type:        'POST',
                 url:         url,
