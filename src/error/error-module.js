@@ -18,7 +18,6 @@ function ErrorModule(depModules) {
     var dependencies = [
         'bootConfig',
         partials.error.name,
-        partials.errorException.name,
         partials.error404.name
     ].concat(_.pluck(depModules, 'name'));
 

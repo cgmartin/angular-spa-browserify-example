@@ -12,23 +12,23 @@ module.exports = routerConfig;
 function routerConfig($stateProvider, $urlRouterProvider) {
 
     $stateProvider
+        // unhandled errors and exceptions
         .state('error', {
             templateUrl: partials.error.name,
             controller: 'errorController'
         })
-        .state('error-exception', {
-            templateUrl: partials.error.name,
-            controller: 'errorController'
-        })
+        // page not found
         .state('error-404', {
             templateUrl: partials.error404.name
         })
+        // Example: Thrown error within a controller
         .state('throw-error', {
             url: '/throw-error',
             controller: function ThrowErrorController() {
                 throw new Error('Error controller failure');
             }
         })
+        // Example: Thrown error during route resolve
         .state('throw-resolve-error', {
             url: '/throw-resolve-error',
             resolve: {

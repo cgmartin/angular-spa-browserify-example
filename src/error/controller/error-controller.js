@@ -3,7 +3,9 @@
 module.exports = ErrorController;
 
 // @ngInject
-function ErrorController($scope, errorToDisplay, $log) {
-    $log.debug('errorToDisplay', errorToDisplay);
-    $scope.vm = { error: errorToDisplay.error };
+function ErrorController($scope, errorToDisplay, traceService) {
+    $scope.vm = {
+        error: errorToDisplay.error,
+        stacktrace: traceService.print({e: errorToDisplay.error}).join('\n')
+    };
 }

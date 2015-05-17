@@ -13,6 +13,6 @@ function exceptionErrorRouteHandler($injector, errorToDisplay) {
     function error(exception, cause) {
         var $state = $injector.get('$state');
         errorToDisplay.error = exception;
-        $state.go('error-exception', {}, {location: false, reload: true});
+        $state.go('error', {}, {location: false, reload: true});
     }
 }
