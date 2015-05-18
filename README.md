@@ -20,15 +20,16 @@ deployed as a file or routed to a backing service (depending on environment).
 ## Features
 
 * Bootstrap angular with dynamic configuration.
-* Fake HTTP backend stubs for standalone testing, which are conditionally loaded via separate JS bundle.
+* Fake HTTP backend stubs for standalone testing (conditionally loaded via separate JS bundle during bootstrap).
+* Routing using [AngularUI Router](https://github.com/angular-ui/ui-router).
+* Internationalization and language selection using [angular-translate](https://github.com/angular-translate/angular-translate). 
 * Todo MVC module to demonstrate backend requests.
 * Server-side logging module, with custom logging exception handler and http interceptor.
-* Error module to route exceptions, 404, 500 errors to error states.
-* Notification module for "toast"-like messaging.  
+* Error module to route exceptions and 404 not found errors to different states.
+* Notification module for "toast"-like messaging. 
 * Unit testing examples with karma/mocha/chai/sinon/proxyquireify.
 * Custom LESS bootstrap & font-awesome builds.
-* Angular ui-router, I18n, TodoMVC examples.
-* No Bower!
+* No Bower dependencies! All dependencies are bundled from npm using browserify.
 
 ## Installation
 
@@ -54,7 +55,7 @@ After installation, the following actions are available:
 └── src
     ├── app                  # Application module    
     ├── error                # Error handling module    
-    ├── images
+    ├── images               # Image assets to optimize
     ├── lib                  # Global utilities
     ├── logging              # Server logging module
     ├── notifications        # Notifications module
