@@ -14,6 +14,7 @@ var browserSync = require('browser-sync');
 var watchify    = require('watchify');
 var browserify  = require('browserify');
 var ngHtml2Js   = require('browserify-ng-html2js');
+var karma       = require('karma').server;
 
 process.setMaxListeners(0);    // Disable max listeners for gulp
 
@@ -269,6 +270,18 @@ gulp.task('index-html', false, function() {
 //        .pipe(gulp.dest(destDir))
 //        .pipe(browserSync.reload({stream:true}));
 //});
+
+/************************************************************************
+ * Unit testing tasks
+ */
+
+gulp.task('test', ['lint'], function(done) {
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true,
+        browsers: ['PhantomJS']
+    }, done);
+});
 
 /************************************************************************
  * Build / Watch / Reload tasks

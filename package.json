@@ -8,7 +8,7 @@
     "postinstall": "npm dedupe",
     "build": "gulp build --prod",
     "start": "gulp watch",
-    "test": "gulp lint && node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
+    "test": "gulp test"
   },
   "author": "Christopher Martin <cgmartin@gmail.com>",
   "license": "MIT",
