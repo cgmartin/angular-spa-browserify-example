@@ -5,7 +5,7 @@ var TodoItem = require('../model/todo-item');
 module.exports = TodoController;
 
 // @ngInject
-function TodoController($scope, todoStorage, filterFilter) {
+function TodoController($scope, todoStorage, filterFilter, notifications) {
     var _this = this;
     this.todos = [];
     this.newTodoTitle = '';
@@ -37,11 +37,13 @@ function TodoController($scope, todoStorage, filterFilter) {
         this.todos.push(new TodoItem(newTodoTitle, false));
         this.newTodoTitle = '';
         this.onTodoChanges(true);
+        notifications.notify({message: 'New todo added'});
     };
 
     this.removeTodo = function(todo) {
         this.todos.splice(this.todos.indexOf(todo), 1);
         this.onTodoChanges(true);
+        notifications.notify({message: 'Todo removed'});
     };
 
     this.addTodo = function(todo) {

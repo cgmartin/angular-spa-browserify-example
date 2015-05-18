@@ -8,8 +8,8 @@
 
 Demonstrates using Browserify require('modules') in a client-side Angular single page application with Mocha unit tests and Gulp tasks.
 
-**Caution:** This is an experimental playground that I'm using to learn Browserify. Use at your own risk.
-If you run across anything here that could be done better, I'd love the feedback.
+**Caution:** This is an experimental playground that I'm using to learn Browserify and to test out Angular features. 
+Use at your own risk. If you run across anything here that could be done better, I'd love the feedback.
 
 This client project is meant to accompany a set of Node.js microservices (REST webservice, Chat Server, Static Server, Reverse Proxy),
 and is designed with portability in mind (see [Twelve Factors](http://12factor.net/)).
@@ -23,7 +23,8 @@ deployed as a file or routed to a backing service (depending on environment).
 * Fake HTTP backend stubs for standalone testing, which are conditionally loaded via separate JS bundle.
 * Todo MVC module to demonstrate backend requests.
 * Server-side logging module, with custom logging exception handler and http interceptor.
-* Error module to route exceptions, 404, 500 errors to error states.  
+* Error module to route exceptions, 404, 500 errors to error states.
+* Notification module for "toast"-like messaging.  
 * Unit testing examples with karma/mocha/chai/sinon/proxyquireify.
 * Custom LESS bootstrap & font-awesome builds.
 * Angular ui-router, I18n, TodoMVC examples.
@@ -55,7 +56,8 @@ After installation, the following actions are available:
     ├── error                # Error handling module    
     ├── images
     ├── lib                  # Global utilities
-    ├── logging              # Server logging module    
+    ├── logging              # Server logging module
+    ├── notifications        # Notifications module
     ├── session              # Session module (browser session ID)
     ├── styles               # Global styles
     ├── todo                 # Todo MVC Module    

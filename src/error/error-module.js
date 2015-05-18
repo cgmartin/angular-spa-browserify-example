@@ -1,6 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
 var angular = require('angular');
 var partials = require('./partials');
 var routerConfig = require('./config/router-config');
@@ -9,23 +8,17 @@ var exceptionErrorRouteHandler = require('./factory/exception-error-route-handle
 var ErrorToDisplay = require('./service/error-to-display');
 var routeErrorsSetup = require('./run/route-errors-setup');
 
-module.exports = ErrorModule;
+var moduleName = module.exports = 'error';
 
-function ErrorModule(depModules) {
-    depModules = depModules || [];
-    this.name = 'error';
+var dependencies = [
+    partials.error.name,
+    partials.error404.name
+];
 
-    var dependencies = [
-        'bootConfig',
-        partials.error.name,
-        partials.error404.name
-    ].concat(_.pluck(depModules, 'name'));
-
-    this.module = angular
-        .module(this.name, dependencies)
-        .config(routerConfig)
-        .factory('exceptionErrorRouteHandler', exceptionErrorRouteHandler)
-        .service('errorToDisplay', ErrorToDisplay)
-        .controller('errorController', ErrorController)
-        .run(routeErrorsSetup);
-}
+angular
+    .module(moduleName, dependencies)
+    .config(routerConfig)
+    .factory('exceptionErrorRouteHandler', exceptionErrorRouteHandler)
+    .service('errorToDisplay', ErrorToDisplay)
+    .controller('errorController', ErrorController)
+    .run(routeErrorsSetup);

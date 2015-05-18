@@ -38,7 +38,7 @@ function App(depModules, options) {
         ngPartials.home.name,
         ngPartials.login.name,
         ngPartials.chat.name
-    ].concat(_.pluck(depModules, 'name'));
+    ].concat(depModules);
     this.module = null;
 }
 

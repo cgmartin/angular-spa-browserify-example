@@ -6,6 +6,7 @@
   "preferredLanguage": "en",
   "apiBaseUrl": "",
   "isStubsEnabled": true,
+  "notificationsMaximumOpen": 2,
   "supportedLanguages": [
     { "locale": "en", "nameKey": "LANGUAGE_ENGLISH" },
     { "locale": "fr", "nameKey": "LANGUAGE_FRENCH" }

@@ -6,5 +6,7 @@ module.exports = {
     router:       require('./router-config'),
     log:          require('./log-config'),
     translate:    require('./translate-config'),
-    httpProvider: require('./http-provider')
+    httpProvider: require('./http-provider'),
+    serverLoggerConfig: require('./server-logger-config'),
+    notificationsConfig: require('./notifications-config')
 };
