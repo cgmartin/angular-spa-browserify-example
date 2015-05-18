@@ -12,6 +12,13 @@ var ngServices = require('./service');
 var ngDirectives = require('./directive');
 var exceptionHandlerOverride = require('./factory/exception-handler-override');
 
+// App Modules
+var sessionModule = require('../session/session-module');
+var loggingModule = require('../logging/logging-module');
+var errorModule = require('../error/error-module');
+var notificationsModule = require('../notifications/notifications-module');
+var todoModule = require('../todo/todo-module');
+
 module.exports = App;
 
 /**
@@ -21,8 +28,7 @@ module.exports = App;
  * @param options (optional)
  * @constructor
  */
-function App(depModules, options) {
-    depModules = depModules || [];
+function App(options) {
     options = options || {};
     this.name = 'app';
 
@@ -31,14 +37,17 @@ function App(depModules, options) {
         _.noop;
 
     this.dependencies = [
-        'bootConfig',
-        uiRouter,
-        ngTranslate,
-        ngPartials.nav.name,
-        ngPartials.home.name,
-        ngPartials.login.name,
-        ngPartials.chat.name
-    ].concat(depModules);
+            'bootConfig',
+            uiRouter,
+            ngTranslate,
+            sessionModule,
+            loggingModule,
+            errorModule,
+            notificationsModule,
+            todoModule
+        ]
+        .concat(_.pluck(ngPartials, 'name'));
+
     this.module = null;
 }
 

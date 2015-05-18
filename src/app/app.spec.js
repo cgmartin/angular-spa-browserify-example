@@ -1,4 +1,5 @@
 /*jshint -W030, -W098 */
+var _ = require('lodash');
 var expect = require('chai').expect;
 var sinon = require('sinon');
 
@@ -17,13 +18,8 @@ var angularStub = {
     run: sinon.stub(),
     bootstrap: sinon.stub()
 };
-angularStub.module.returns(angularStub);
-angularStub.config.returns(angularStub);
-angularStub.service.returns(angularStub);
-angularStub.factory.returns(angularStub);
-angularStub.directive.returns(angularStub);
-angularStub.constant.returns(angularStub);
-angularStub.run.returns(angularStub);
+// Support chaining
+_.forEach(angularStub, function(v) { v.returns(angularStub); });
 
 var configStub = {
     log: 'logConfig',
@@ -45,6 +41,7 @@ var directiveStub = {
     spaNav: 'spaNav'
 };
 
+// Mock App's require statements
 var App = proxyquire('./app', {
     scriptjs: scriptjsStub,
     'angular': angularStub,
@@ -54,6 +51,11 @@ var App = proxyquire('./app', {
     './partials': partialsStub,
     './service': serviceStub,
     './directive': directiveStub,
+    '../session/session-module': 'session',
+    '../logging/logging-module': 'logging',
+    '../error/error-module': 'error',
+    '../notifications/notifications-module': 'notifications',
+    '../todo/todo-module': 'todo',
     // By default proxyquireify calls the function defined on the
     // original dependency whenever it is not found on the stub.
     '@noCallThru': true  // Prevent call thru for all contained stubs.
