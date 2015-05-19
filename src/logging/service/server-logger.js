@@ -8,64 +8,52 @@ module.exports = ServerLogger;
 /**
  * Server-side logging service, sends logs to server in bulk at configured interval
  */
-function ServerLogger(loggingLevel, logLevels, session, $log, $window, config) {
+function ServerLogger(loggerConfig, logLevels, session, $log, $window, config) {
     var logQueue = [];
 
-    function normalizeMessage(message, type) {
-        var data = message;
-        if (angular.isString(message)) {
-            data = { message: message };
-        }
-        data.type = type;
-        return data;
-    }
-
-    this.error = function(message) {
-        var data = normalizeMessage(message, 'error');
-        var args = Array.prototype.slice.call(arguments);
-        args.unshift('ServerLog: ' + data.message);
-        $log.error.apply($log, args);
-        if (loggingLevel <= logLevels.ERROR) {
-            this.logToServer(data);
+    this.log = function(message, meta, level) {
+        level = level || 'debug';
+        var logItem = {
+            times: [(new Date()).getTime()],
+            loc:   $window.location.href,
+            msg:   message,
+            meta:  meta,
+            level: level
+        };
+        $log[level].call($log, 'ServerLog: ' + message, meta);
+        if (loggerConfig.loggingLevel <= logLevels[level.toUpperCase()]) {
+            // TODO: consider other filters (regex, ip, user agents, etc.)
+            addLogToQueue(logItem);
         }
     };
 
-    this.info = function(message) {
-        var data = normalizeMessage(message, 'info');
-        var args = Array.prototype.slice.call(arguments);
-        args.unshift('ServerLog: ' + data.message);
-        $log.info.apply($log, args);
-        if (loggingLevel <= logLevels.INFO) {
-            this.logToServer(data);
-        }
+    this.error = function(message, meta) {
+        this.log(message, meta, 'error');
     };
 
-    this.debug = function(message) {
-        var data = normalizeMessage(message, 'debug');
-        var args = Array.prototype.slice.call(arguments);
-        args.unshift('ServerLog: ' + data.message);
-        $log.debug.apply($log, args);
-        if (loggingLevel <= logLevels.DEBUG) {
-            this.logToServer(data);
-        }
+    this.info = function(message, meta) {
+        this.log(message, meta, 'info');
     };
 
-    this.logToServer = function(data) {
-        var now = new Date();
-        data.times = [now.getTime()];
-        data.url = $window.location.href;
+    this.debug = function(message, meta) {
+        this.log(message, meta, 'debug');
+    };
 
+    function addLogToQueue(logItem) {
         // Check for adjacent dupes
         var prev = (logQueue.length > 0) ? logQueue[logQueue.length - 1] : {};
-        if (angular.equals(prev.message, data.message) &&
-            prev.type === data.type &&
-            prev.url === data.url
+        if (angular.equals(prev.message, logItem.message) &&
+            angular.equals(prev.level, logItem.level) &&
+            angular.equals(prev.loc, logItem.loc) &&
+            angular.equals(prev.meta, logItem.meta)
         ) {
-            prev.times.push(data.times[0]);
+            prev.times.push(logItem.times[0]);
         } else {
-            logQueue.push(data);
+            logQueue.push(logItem);
         }
-    };
+
+        // TODO: consider dropping items off bottom of stack per max buffer size
+    }
 
     // Bulk send logs on interval
     setInterval(sendLogs, config.serverLoggingInterval);

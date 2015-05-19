@@ -15,15 +15,15 @@ function loggerExceptionHandler($log, traceService, serverLogger) {
         // to the console, and allow the application to continue running.
         $log.error.apply($log, arguments);
 
-        // use our traceService to generate a stack trace
-        var stackTrace = traceService.print({e: exception});
-
         // use AJAX (in this example jQuery) and NOT
         // an angular service such as $http
-        serverLogger.error({
-            message:    exception.message,
-            stackTrace: stackTrace
-            //cause:      (cause || '')
+        serverLogger.error(exception.message, {
+            type:    'exception',
+            message: exception.message,
+            stack:   traceService.print({e: exception}),
+            name:    exception.name,
+            data:    exception.data
+            //cause:   (cause || '')
         });
     }
 }

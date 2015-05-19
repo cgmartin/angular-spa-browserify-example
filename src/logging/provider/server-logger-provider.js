@@ -1,5 +1,6 @@
 'use strict';
 
+var angular = require('angular');
 var ServerLogger = require('../service/server-logger');
 
 module.exports = ServerLoggerProvider;
@@ -15,16 +16,20 @@ function ServerLoggerProvider() {
         DEBUG: 1
     };
 
-    var serverLoggingLevel = LOG_LEVEL.ERROR;
+    var loggerConfig = {
+        loggingLevel: LOG_LEVEL.ERROR,
+        maxBufferSize: 100,
+        batchSize: 0
+    };
 
-    this.loggingLevel = function(value) {
-        serverLoggingLevel = value;
+    this.configure = function(value) {
+        angular.extend(loggerConfig, value);
     };
 
     this.$get = serverLoggerFactory;
 
     // @ngInject
     function serverLoggerFactory(session, $log, $window, config) {
-        return new ServerLogger(serverLoggingLevel, LOG_LEVEL, session, $log, $window, config);
+        return new ServerLogger(loggerConfig, LOG_LEVEL, session, $log, $window, config);
     }
 }

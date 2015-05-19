@@ -31,29 +31,27 @@ function HttpLoggerInterceptor($q, serverLogger) {
     // Upon successful response
     // Can return response or promise containing response
     this.response = function(res) {
-        var timeDiff = timer() - res.config.startTime;
-        serverLogger.info({
-            message:  'ajax',
-            status:   res.status,
-            method:   res.config.method,
-            url:      res.config.url,
-            timeDiff: timeDiff
-        });
+        logServerInfo(res);
         return res;
     };
 
     // Upon unsuccessful response
     this.responseError = function(rejection) {
-        var timeDiff = timer() - rejection.config.startTime;
-        serverLogger.info({
-            message:  'ajax',
-            status:   rejection.status,
-            method:   rejection.config.method,
-            url:      rejection.config.url,
-            timeDiff: timeDiff
-        });
+        logServerInfo(rejection);
         // Do nothing, no-op
         return $q.reject(rejection);
     };
+
+    function logServerInfo(obj) {
+        var timeDiff = timer() - obj.config.startTime;
+        serverLogger.info(
+            'ajax ' + obj.status + ' ' + obj.config.method + ' ' + obj.config.url, {
+                type:     'ajax',
+                status:   obj.status,
+                method:   obj.config.method,
+                reqUrl:   obj.config.url,
+                timeDiff: timeDiff
+            });
+    }
 }
 

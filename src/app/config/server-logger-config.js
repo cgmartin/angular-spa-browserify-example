@@ -9,6 +9,6 @@ module.exports = serverLoggerConfig;
 function serverLoggerConfig(serverLoggerProvider, config) {
     // Enable/disable log debug flag
     if (typeof config.serverLoggingLevel !== 'undefined') {
-        serverLoggerProvider.loggingLevel(config.serverLoggingLevel);
+        serverLoggerProvider.configure({loggingLevel: config.serverLoggingLevel});
     }
 }
