@@ -74,7 +74,7 @@ gulp.task('lint-js', false, function() {
         .pipe($.jscs())
         .pipe($.jshint())
         .pipe($.jshint.reporter('jshint-stylish', {verbose: true}))
-        .pipe($.jshint.reporter('fail'));
+        .pipe($.if(!isWatching, $.jshint.reporter('fail')));
 });
 
 // Browserify Bundles
@@ -310,8 +310,6 @@ gulp.task('build-iterate', false, function(cb) {
 });
 
 gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['build-watch'], function() {
-    isWatching = true;
-
     var port = 8000;
     $.util.log('Starting browser-sync on port ' + port);
 
@@ -351,8 +349,8 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
 
 // Don't run jsBundles during watch, handled by watchify
 gulp.task('build-watch', false, ['clean-build'], function(cb) {
+    isWatching = true;
     runSequence(
-        'lint',
         ['index-html', 'fonts', 'images', 'www-root', 'less'],
         cb
     );

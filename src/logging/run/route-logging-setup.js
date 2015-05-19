@@ -9,44 +9,20 @@ module.exports = routeLoggingSetup;
 function routeLoggingSetup(serverLogger, traceService, $rootScope) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-        serverLogger.debug('route:start -> ' + toState.url + ' (' + toState.name + ')', {
-            type:    'route',
-            event:   'start',
-            from:    {url: fromState.url, name: fromState.name, params: fromParams},
-            to:      {url: toState.url, name: toState.name, params: toParams}
-        });
+        serverLogger.trackStateChange('debug', 'start', toState, toParams, fromState, fromParams);
     });
 
     $rootScope.$on('$stateNotFound', function(event, unfoundState, fromState, fromParams) {
-        serverLogger.error('route:notFound -> ' + unfoundState.to, {
-            type:    'route',
-            event:   'notfound',
-            from:    {url: fromState.url, name: fromState.name, params: fromParams},
-            to:      {name: unfoundState.to, params: unfoundState.toParams}
-        });
+        serverLogger.trackStateChange('error', 'notFound',
+            {name: unfoundState.to}, unfoundState.toParams, fromState, fromParams);
     });
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-        serverLogger.info('route:success -> ' + toState.url + ' (' + toState.name + ')', {
-            type:    'route',
-            event:   'success',
-            from:    {url: fromState.url, name: fromState.name, params: fromParams},
-            to:      {url: toState.url, name: toState.name, params: toParams}
-        });
+        serverLogger.trackStateChange('info', 'success', toState, toParams, fromState, fromParams);
     });
 
     $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-        serverLogger.error('route:error -> ' + toState.url + ' (' + toState.name + ')', {
-            type:  'route',
-            event: 'error',
-            error: {
-                message: error.message,
-                stack:   traceService.print({e: error}),
-                name:    error.name,
-                data:    error.data
-            },
-            from:  {url: fromState.url, name: fromState.name, params: fromParams},
-            to:    {url: toState.url, name: toState.name, params: toParams}
-        });
+        serverLogger.trackStateChange('error', 'error', toState, toParams, fromState, fromParams);
+        serverLogger.trackError(error);
     });
 }

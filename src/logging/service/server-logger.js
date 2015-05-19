@@ -8,7 +8,7 @@ module.exports = ServerLogger;
 /**
  * Server-side logging service, sends logs to server in bulk at configured interval
  */
-function ServerLogger(loggerConfig, logLevels, session, $log, $window, config) {
+function ServerLogger(loggerConfig, logLevels, session, traceService, $log, $window, config) {
     var logQueue = [];
 
     this.log = function(message, meta, level) {
@@ -20,7 +20,7 @@ function ServerLogger(loggerConfig, logLevels, session, $log, $window, config) {
             meta:  meta,
             level: level
         };
-        $log[level].call($log, 'ServerLog: ' + message, meta);
+        $log[level].call($log, 'ServerLogger: ' + message, meta);
         if (loggerConfig.loggingLevel <= logLevels[level.toUpperCase()]) {
             // TODO: consider other filters (regex, ip, user agents, etc.)
             addLogToQueue(logItem);
@@ -37,6 +37,35 @@ function ServerLogger(loggerConfig, logLevels, session, $log, $window, config) {
 
     this.debug = function(message, meta) {
         this.log(message, meta, 'debug');
+    };
+
+    this.trackError = function(error) {
+        this.error(error.message, {
+            type:    'exception',
+            message: error.message,
+            stack:   traceService.print({e: error}),
+            name:    error.name,
+            data:    error.data
+        });
+    };
+
+    this.trackStateChange = function(level, event, toState, toParams, fromState, fromParams) {
+        var toUrl = toState.url || '-none-';
+        var toName = toState.name || toState.to || '';
+        var message = 'route:' + event + ' -> ' + toUrl + ' (' + toName + ')';
+        var nowTime = (new Date()).getTime();
+        var meta = {
+            type: 'route',
+            event: event,
+            from:  {url: fromState.url, name: fromState.name, params: fromParams},
+            to:    {url: fromState.url, name: fromState.name, params: fromParams}
+        };
+        if (fromState.startTime) {
+            meta.timing = nowTime - fromState.startTime;
+        } else {
+            fromState.startTime = nowTime;
+        }
+        this[level](message, meta);
     };
 
     function addLogToQueue(logItem) {
@@ -56,9 +85,9 @@ function ServerLogger(loggerConfig, logLevels, session, $log, $window, config) {
     }
 
     // Bulk send logs on interval
-    setInterval(sendLogs, config.serverLoggingInterval);
+    setInterval(sendData, config.serverLoggingInterval);
 
-    function sendLogs() {
+    function sendData() {
         // TODO: consider sending logs when reaching queue size threshold
         // or if queue contains an error
         if (logQueue.length === 0) { return; }
@@ -74,7 +103,7 @@ function ServerLogger(loggerConfig, logLevels, session, $log, $window, config) {
         var data = logQueue.splice(0, Number.MAX_VALUE);
 
         if (config.isStubsEnabled) {
-            $log.debug('AJAX success POST', url, 'headers:', headers, 'reqData:', data);
+            $log.debug('ServerLogger [sendData]: ajax 200 POST', url, 'headers:', headers, 'reqData:', data);
         } else {
             // TODO: Implement exponential back off with failures
             $.ajax({

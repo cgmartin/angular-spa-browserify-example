@@ -29,7 +29,7 @@ function ServerLoggerProvider() {
     this.$get = serverLoggerFactory;
 
     // @ngInject
-    function serverLoggerFactory(session, $log, $window, config) {
-        return new ServerLogger(loggerConfig, LOG_LEVEL, session, $log, $window, config);
+    function serverLoggerFactory(session, traceService, $log, $window, config) {
+        return new ServerLogger(loggerConfig, LOG_LEVEL, session, traceService, $log, $window, config);
     }
 }

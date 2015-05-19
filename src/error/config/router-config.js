@@ -37,9 +37,18 @@ function routerConfig($stateProvider, $urlRouterProvider) {
         });
 
     $urlRouterProvider.otherwise(function($injector, $location) {
+        var serverLogger = $injector.get('serverLogger');
         var $state = $injector.get('$state');
+
+        var locationPath = $location.path();
+        serverLogger.error('route:404 -> ' + locationPath, {
+            type:    'route',
+            event:   '404',
+            from:    {url: $state.current.url, name: $state.current.name, params: $state.current.params},
+            to:      {url: locationPath}
+        });
         $state.go('error-404');
-        return $location.path();
+        return locationPath;
     });
 }
 

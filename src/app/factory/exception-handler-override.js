@@ -10,6 +10,7 @@ module.exports = exceptionHandlerOverride;
 function exceptionHandlerOverride(exceptionErrorRouteHandler, loggerExceptionHandler, $log) {
     return error;
 
+    // TODO: Use decorator for $exceptionHandler, instead of replacement
     function error(exception, cause) {
         // Catch any errors here so as not to cause infinite exception loops
         try {

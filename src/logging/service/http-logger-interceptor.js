@@ -46,11 +46,11 @@ function HttpLoggerInterceptor($q, serverLogger) {
         var timeDiff = timer() - obj.config.startTime;
         serverLogger.info(
             'ajax ' + obj.status + ' ' + obj.config.method + ' ' + obj.config.url, {
-                type:     'ajax',
-                status:   obj.status,
-                method:   obj.config.method,
-                reqUrl:   obj.config.url,
-                timeDiff: timeDiff
+                type:  'ajax',
+                status: obj.status,
+                method: obj.config.method,
+                reqUrl: obj.config.url,
+                timing: timeDiff
             });
     }
 }

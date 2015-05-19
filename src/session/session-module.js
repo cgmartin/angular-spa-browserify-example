@@ -14,3 +14,5 @@ angular
         conversationId: uuid.v1()
     })
     .run(httpHeadersSetup);
+
+// TODO: Consider a "sessionId" based on inactivity timeout
