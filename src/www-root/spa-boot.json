@@ -2,7 +2,7 @@
   "isDebugInfoEnabled": true,
   "isLogDebugEnabled": true,
   "serverLoggingLevel": 0,
-  "serverLoggingInterval": 5000,
+  "serverLoggingInterval": 30000,
   "preferredLanguage": "en",
   "apiBaseUrl": "",
   "isStubsEnabled": true,

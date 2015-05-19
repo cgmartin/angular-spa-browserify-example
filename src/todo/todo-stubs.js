@@ -1,27 +1,35 @@
 'use strict';
 
+var taffy = require('taffydb').taffy;
+
 module.exports = todoStubs;
 
 function todoStubs($httpBackend, $log) {
     $log.debug('[Run] Adding todo stubs...');
 
-    // Example using localStorage as proxy data store
-    var STORAGE_ID = 'ngSPA-todos';
-    var todos = JSON.parse(localStorage.getItem(STORAGE_ID) || 'false');
-    todos = todos || [
-        {title: 'Do something', isComplete: true},
-        {title: 'Do something else', isComplete: false}
-    ];
+    // Simulate CRUD in client with TaffyDB
+    // http://www.taffydb.com/writingqueries
+    var todoDb = taffy();
+    todoDb.store('todos');
+
+    // Seed empty data
+    if (todoDb().count() === 0) {
+        todoDb.insert([
+            {title: 'Do something', isComplete: true},
+            {title: 'Do something else', isComplete: false}
+        ]);
+    }
 
     // GET: /todos
-    $httpBackend.whenGET('/api/todos').respond(todos);
+    $httpBackend.whenGET('/api/todos').respond(function() {
+        return [200, todoDb().get(), {}];
+    });
 
     // POST: /todos
     $httpBackend.whenPOST('/api/todos').respond(function(method, url, data) {
-        var newTodos = JSON.parse(data);
-        todos.splice(0, Number.MAX_VALUE); // remove elements
-        todos.push.apply(todos, newTodos);
-        localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
-        return [200, todos, {}];
+        var todos = JSON.parse(data);
+        todoDb().remove();
+        todoDb.insert(todos);
+        return [200, { status: true }, {}];
     });
 }

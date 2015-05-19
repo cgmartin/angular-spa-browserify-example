@@ -20,7 +20,8 @@ deployed as a file or routed to a backing service (depending on environment).
 ## Features
 
 * Bootstrap angular with dynamic configuration.
-* Fake HTTP backend stubs for standalone testing (conditionally loaded via separate JS bundle during bootstrap).
+* Fake HTTP backend stubs for standalone testing using [ngMockE2E](https://code.angularjs.org/1.3.7/docs/api/ngMockE2E/service/$httpBackend)
+  and [TaffyDB](http://www.taffydb.com/). Stub functionality is conditionally loaded via separate JS bundle during bootstrap.
 * Routing using [AngularUI Router](https://github.com/angular-ui/ui-router).
 * Internationalization and language selection using [angular-translate](https://github.com/angular-translate/angular-translate). 
 * Todo MVC module to demonstrate backend requests.
@@ -79,6 +80,7 @@ The functionality has been implemented by integrating the following 3rd-party to
  - [Twitter Bootstrap v3](http://getbootstrap.com/): HTML, CSS, and JS framework for developing responsive, mobile first projects on the web
  - [Font Awesome](http://fontawesome.io/): The iconic font and CSS toolkit
  - [Stacktrace.js](http://www.stacktracejs.com/): Cross-browser stack traces
+ - [TaffyDB](http://www.taffydb.com): JavaScript Database for your browser
  - [Gulp](http://gulpjs.com/): Streaming build system and task runner
  - [Node.js](http://nodejs.org/api/): JavaScript runtime environment for server-side development
  - [Karma](http://karma-runner.github.io/): Spectacular Test Runner for Javascript
