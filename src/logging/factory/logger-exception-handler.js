@@ -1,3 +1,4 @@
+/*jshint -W098 */
 'use strict';
 
 module.exports = loggerExceptionHandler;
@@ -14,18 +15,15 @@ function loggerExceptionHandler($log, traceService, serverLogger) {
         // to the console, and allow the application to continue running.
         $log.error.apply($log, arguments);
 
-        var errorMessage = exception.toString();
-
         // use our traceService to generate a stack trace
         var stackTrace = traceService.print({e: exception});
 
         // use AJAX (in this example jQuery) and NOT
         // an angular service such as $http
-        serverLogger.logToServer({
-            message:    errorMessage,
-            type:       'exception',
-            stackTrace: stackTrace,
-            cause:      (cause || '')
+        serverLogger.error({
+            message:    exception.message,
+            stackTrace: stackTrace
+            //cause:      (cause || '')
         });
     }
 }

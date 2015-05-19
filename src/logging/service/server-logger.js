@@ -11,39 +11,57 @@ module.exports = ServerLogger;
 function ServerLogger(loggingLevel, logLevels, session, $log, $window, config) {
     var logQueue = [];
 
+    function normalizeMessage(message, type) {
+        var data = message;
+        if (angular.isString(message)) {
+            data = { message: message };
+        }
+        data.type = type;
+        return data;
+    }
+
     this.error = function(message) {
-        $log.error.apply($log, arguments);
+        var data = normalizeMessage(message, 'error');
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift('ServerLog: ' + data.message);
+        $log.error.apply($log, args);
         if (loggingLevel <= logLevels.ERROR) {
-            this.logToServer({message: message, type: 'error'});
+            this.logToServer(data);
         }
     };
 
     this.info = function(message) {
-        $log.info.apply($log, arguments);
+        var data = normalizeMessage(message, 'info');
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift('ServerLog: ' + data.message);
+        $log.info.apply($log, args);
         if (loggingLevel <= logLevels.INFO) {
-            this.logToServer({message: message, type: 'info'});
+            this.logToServer(data);
         }
     };
 
     this.debug = function(message) {
-        $log.debug.apply($log, arguments);
+        var data = normalizeMessage(message, 'debug');
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift('ServerLog: ' + data.message);
+        $log.debug.apply($log, args);
         if (loggingLevel <= logLevels.DEBUG) {
-            this.logToServer({message: message, type: 'debug'});
+            this.logToServer(data);
         }
     };
 
     this.logToServer = function(data) {
         var now = new Date();
-        data.time = now.toUTCString();
+        data.times = [now.getTime()];
         data.url = $window.location.href;
 
         // Check for adjacent dupes
         var prev = (logQueue.length > 0) ? logQueue[logQueue.length - 1] : {};
-        if (prev.message === data.message &&
+        if (angular.equals(prev.message, data.message) &&
             prev.type === data.type &&
             prev.url === data.url
         ) {
-            prev.count = (prev.count) ? prev.count + 1 : 2;
+            prev.times.push(data.times[0]);
         } else {
             logQueue.push(data);
         }

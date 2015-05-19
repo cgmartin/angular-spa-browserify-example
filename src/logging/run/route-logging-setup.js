@@ -6,37 +6,42 @@ module.exports = routeLoggingSetup;
  * Sets up event listeners on ui-router to log state changes and failures
  */
 // @ngInject
-function routeLoggingSetup(serverLogger, $rootScope) {
+function routeLoggingSetup(serverLogger, traceService, $rootScope) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
-        serverLogger.debug(
-            'Route state change start,' +
-            ' from: ' + fromState.url + ' [' + fromState.name + '] ' + JSON.stringify(fromParams) +
-            ' to: ' + toState.url + ' [' + toState.name + '] ' + JSON.stringify(toParams)
-        );
+        serverLogger.debug({
+            message: 'route:start',
+            from:    {url: fromState.url, name: fromState.name, params: fromParams},
+            to:      {url: toState.url, name: toState.name, params: toParams}
+        });
     });
 
     $rootScope.$on('$stateNotFound', function(event, unfoundState, fromState, fromParams) {
-        serverLogger.error(
-            'Route state change not found,' +
-            ' from: ' + fromState.url + ' [' + fromState.name + '] ' + JSON.stringify(fromParams) +
-            ' to: [' + unfoundState.to + '] ' + JSON.stringify(unfoundState.toParams)
-        );
+        serverLogger.error({
+            message: 'route:notfound',
+            from:    {url: fromState.url, name: fromState.name, params: fromParams},
+            to:      {name: unfoundState.to, params: unfoundState.toParams}
+        });
     });
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-        serverLogger.info(
-            'Route state change success,' +
-            ' from: ' + fromState.url + ' [' + fromState.name + '] ' + JSON.stringify(fromParams) +
-            ' to: ' + toState.url + ' [' + toState.name + '] ' + JSON.stringify(toParams)
-        );
+        serverLogger.info({
+            message: 'route:success',
+            from:    {url: fromState.url, name: fromState.name, params: fromParams},
+            to:      {url: toState.url, name: toState.name, params: toParams}
+        });
     });
 
     $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-        serverLogger.error(
-            'Route state change error "' + error + '"' +
-            ' from: ' + fromState.url + ' [' + fromState.name + '] ' + JSON.stringify(fromParams) +
-            ' to: ' + toState.url + ' [' + toState.name + '] ' + JSON.stringify(toParams)
-        );
+        // use our traceService to generate a stack trace
+        var stackTrace = traceService.print({e: error});
+
+        serverLogger.error({
+            message:    'route:error',
+            error:      error.message,
+            stackTrace: stackTrace,
+            from:       {url: fromState.url, name: fromState.name, params: fromParams},
+            to:         {url: toState.url, name: toState.name, params: toParams}
+        });
     });
 }

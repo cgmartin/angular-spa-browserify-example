@@ -1,7 +1,5 @@
 'use strict';
 
-var angular = require('angular');
-
 module.exports = HttpLoggerInterceptor;
 
 /**
@@ -34,29 +32,26 @@ function HttpLoggerInterceptor($q, serverLogger) {
     // Can return response or promise containing response
     this.response = function(res) {
         var timeDiff = timer() - res.config.startTime;
-        serverLogger.info(
-            'AJAX success ' + res.config.method + ' ' +
-            res.config.url + ' ' + timeDiff + 'ms',
-            'headers:', res.config.headers,
-            'reqData:', (angular.isString(res.config.data)) ?
-                '"' + res.config.data.substr(0, 50) + '..."' : res.config.data,
-            'resData:', (angular.isString(res.data)) ?
-                '"' + res.data.substr(0, 50) + '..."' : res.data
-        );
+        serverLogger.info({
+            message:  'ajax',
+            status:   res.status,
+            method:   res.config.method,
+            url:      res.config.url,
+            timeDiff: timeDiff
+        });
         return res;
     };
 
     // Upon unsuccessful response
     this.responseError = function(rejection) {
         var timeDiff = timer() - rejection.config.startTime;
-        serverLogger.info(
-            'AJAX failure ' + rejection.config.method + ' ' +
-            rejection.config.url + ' ' + rejection.status + ' ' + timeDiff + 'ms',
-            'headers:', rejection.config.headers,
-            'reqData:', (angular.isString(rejection.config.data)) ?
-                '"' + rejection.config.data.substr(0, 50) + '..."' : rejection.config.data
-        );
-
+        serverLogger.info({
+            message:  'ajax',
+            status:   rejection.status,
+            method:   rejection.config.method,
+            url:      rejection.config.url,
+            timeDiff: timeDiff
+        });
         // Do nothing, no-op
         return $q.reject(rejection);
     };
