@@ -103,7 +103,8 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $log, $win
         var data = logQueue.splice(0, Number.MAX_VALUE);
 
         if (config.isStubsEnabled) {
-            $log.debug('ServerLogger [sendData]: ajax 200 POST', url, 'headers:', headers, 'reqData:', data);
+            $log.debug('%cServerLogger (send): ajax 200 POST' + url,
+                'background:yellow; color:blue', 'reqData:', data);
         } else {
             // TODO: Implement exponential back off with failures
             $.ajax({

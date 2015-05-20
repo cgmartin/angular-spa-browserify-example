@@ -5,7 +5,7 @@ var loggingModule = require('../logging/logging-module');
 var partials = require('./partials');
 var routerConfig = require('./config/router-config');
 var ErrorController = require('./controller/error-controller');
-var exceptionErrorRouteHandler = require('./factory/exception-error-route-handler');
+var exceptionHandlerRouterDecorator = require('./config/exception-handler-router-decorator');
 var ErrorToDisplay = require('./service/error-to-display');
 var routeErrorsSetup = require('./run/route-errors-setup');
 
@@ -20,7 +20,7 @@ var dependencies = [
 angular
     .module(moduleName, dependencies)
     .config(routerConfig)
-    .factory('exceptionErrorRouteHandler', exceptionErrorRouteHandler)
+    .config(exceptionHandlerRouterDecorator)
     .service('errorToDisplay', ErrorToDisplay)
     .controller('errorController', ErrorController)
     .run(routeErrorsSetup);

@@ -10,7 +10,6 @@ var ngConfigs = require('./config');
 var ngPartials = require('./partials');
 var ngServices = require('./service');
 var ngDirectives = require('./directive');
-var exceptionHandlerOverride = require('./factory/exception-handler-override');
 
 // App Modules
 var sessionModule = require('../session/session-module');
@@ -108,8 +107,6 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
         _.forEach(ngDirectives, function(d, key) {
             _this.module.directive(key, d);
         });
-
-        _this.module.factory('$exceptionHandler', exceptionHandlerOverride);
 
         angular.bootstrap(domElement, [_this.name], {strictDi: strictDi});
     }
