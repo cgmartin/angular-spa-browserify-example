@@ -8,6 +8,7 @@ var ErrorController = require('./controller/error-controller');
 var exceptionHandlerRouterDecorator = require('./config/exception-handler-router-decorator');
 var ErrorToDisplay = require('./service/error-to-display');
 var routeErrorsSetup = require('./run/route-errors-setup');
+var globalOnerrorHandler = require('./run/global-onerror-handler');
 
 var moduleName = module.exports = 'error';
 
@@ -23,4 +24,5 @@ angular
     .config(exceptionHandlerRouterDecorator)
     .service('errorToDisplay', ErrorToDisplay)
     .controller('errorController', ErrorController)
-    .run(routeErrorsSetup);
+    .run(routeErrorsSetup)
+    .run(globalOnerrorHandler);

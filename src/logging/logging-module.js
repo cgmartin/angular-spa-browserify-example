@@ -7,6 +7,7 @@ var serverLoggerProvider = require('./provider/server-logger-provider');
 var HttpLoggerInterceptor = require('./service/http-logger-interceptor');
 var TraceService = require('./service/trace-service');
 var exceptionHandlerLoggerDecorator = require('./config/exception-handler-logger-decorator');
+var logPerformanceTiming = require('./run/log-performance-timing');
 var routeLoggingSetup = require('./run/route-logging-setup');
 
 var moduleName = module.exports = 'logging';
@@ -20,5 +21,6 @@ angular
     .provider('serverLogger', serverLoggerProvider)
     .service('loggerInterceptor', HttpLoggerInterceptor)
     .service('traceService', TraceService)
+    .run(logPerformanceTiming)
     .run(routeLoggingSetup);
 

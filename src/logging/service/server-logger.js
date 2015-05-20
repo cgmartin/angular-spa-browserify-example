@@ -8,7 +8,7 @@ module.exports = ServerLogger;
 /**
  * Server-side logging service, sends logs to server in bulk at configured interval
  */
-function ServerLogger(loggerConfig, logLevels, session, traceService, $log, $window, config) {
+function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $translate, $log, $window, config) {
     var logQueue = [];
 
     this.log = function(message, meta, level) {
@@ -49,6 +49,22 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $log, $win
         });
     };
 
+    this.trackMetric = function(name, metric) {
+        this.info('metric:' + name, {
+            type: 'metric',
+            name: name,
+            metric: metric
+        });
+    };
+
+    this.trackEvent = function(name, data) {
+        this.info('event:' + name, {
+            type: 'event',
+            name: name,
+            data: data
+        });
+    };
+
     this.trackStateChange = function(level, event, toState, toParams, fromState, fromParams) {
         var toUrl = toState.url || '-none-';
         var toName = toState.name || toState.to || '';
@@ -58,7 +74,7 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $log, $win
             type: 'route',
             event: event,
             from:  {url: fromState.url, name: fromState.name, params: fromParams},
-            to:    {url: fromState.url, name: fromState.name, params: fromParams}
+            to:    {url: toState.url,   name: toState.name,   params: toParams}
         };
         if (fromState.startTime) {
             meta.timing = nowTime - fromState.startTime;
@@ -100,10 +116,16 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $log, $win
             ConversationId: session.conversationId
         };
 
-        var data = logQueue.splice(0, Number.MAX_VALUE);
+        var data = {
+            device: 'browser',
+            locale: $locale.id,
+            lang: $translate.use(),
+            resolution: $window.screen.availWidth + 'x' + $window.screen.availHeight,
+            logs: logQueue.splice(0, Number.MAX_VALUE)
+        };
 
         if (config.isStubsEnabled) {
-            $log.debug('%cServerLogger (send): ajax 200 POST' + url,
+            $log.debug('%cServerLogger => ajax 200 POST ' + url,
                 'background:yellow; color:blue', 'reqData:', data);
         } else {
             // TODO: Implement exponential back off with failures
