@@ -14,6 +14,8 @@ var moduleName = module.exports = 'logging';
 
 var dependencies = [sessionModule];
 
+// TODO: Add directive to track user input (button clicks, form inputs)
+
 angular
     .module(moduleName, dependencies)
     .config(httpProvider)

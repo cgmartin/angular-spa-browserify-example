@@ -1,8 +1,12 @@
 {
   "isDebugInfoEnabled": true,
   "isLogDebugEnabled": true,
-  "serverLoggingLevel": 0,
-  "serverLoggingInterval": 10000,
+  "serverLogging": {
+    "loggingLevel": 2,
+    "loggingInterval": 10000,
+    "maxBufferSize": 1000,
+    "excludeTypes": []
+  },
   "preferredLanguage": "en",
   "apiBaseUrl": "",
   "isStubsEnabled": true,

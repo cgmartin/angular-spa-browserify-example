@@ -43,15 +43,11 @@ function HttpLoggerInterceptor($q, serverLogger) {
     };
 
     function logServerInfo(obj) {
+        // Don't log requests that were retrieved from cache
+        if (obj.config.cache) { return; }
+
         var timeDiff = timer() - obj.config.startTime;
-        serverLogger.info(
-            'ajax ' + obj.status + ' ' + obj.config.method + ' ' + obj.config.url, {
-                type:  'ajax',
-                status: obj.status,
-                method: obj.config.method,
-                reqUrl: obj.config.url,
-                timing: timeDiff
-            });
+        serverLogger.trackAjax(obj, timeDiff);
     }
 }
 

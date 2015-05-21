@@ -9,7 +9,9 @@ module.exports = globalOnerrorHandler;
 // @ngInject
 function globalOnerrorHandler($window, $exceptionHandler) {
     $window.onerror = function(errorMsg, url, lineNumber) {
-        $exceptionHandler(new Error(errorMsg + ' (' + url + ':' + lineNumber + ')'));
+        var error = new Error(errorMsg + ' (' + url + ':' + lineNumber + ')');
+        error.type = 'globalError';
+        $exceptionHandler(error);
         return false;
     };
 }

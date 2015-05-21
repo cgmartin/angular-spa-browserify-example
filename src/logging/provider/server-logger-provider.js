@@ -17,9 +17,22 @@ function ServerLoggerProvider() {
     };
 
     var loggerConfig = {
-        loggingLevel: LOG_LEVEL.ERROR,
-        maxBufferSize: 100,
-        batchSize: 0
+        loggingLevel: LOG_LEVEL.INFO,
+        loggingInterval: 120000,
+        maxBufferSize: 1000,
+        apiBaseUrl: '',
+        isStubsEnabled: false,
+
+        // Log types that can be filtered/excluded...
+        //   ''           : no-type
+        //   'exception'  : app errors
+        //   'globalError': global errors
+        //   'ajax'       : http requests
+        //   'route'      : route changes
+        //   'event'      : tracking events
+        //   'metric'     : tracking metrics
+        //   'input'      : clicks and field inputs
+        excludeTypes: []
     };
 
     this.configure = function(value) {
@@ -29,9 +42,9 @@ function ServerLoggerProvider() {
     this.$get = serverLoggerFactory;
 
     // @ngInject
-    function serverLoggerFactory(session, traceService, $locale, $translate, $log, $window, config) {
+    function serverLoggerFactory(session, traceService, $locale, $translate, $log, $window) {
         return new ServerLogger(
-            loggerConfig, LOG_LEVEL, session, traceService, $locale, $translate, $log, $window, config
+            loggerConfig, LOG_LEVEL, session, traceService, $locale, $translate, $log, $window
         );
     }
 }

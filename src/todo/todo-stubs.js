@@ -1,5 +1,6 @@
 'use strict';
 
+var angular = require('angular');
 var taffy = require('taffydb').taffy;
 
 module.exports = todoStubs;
@@ -27,7 +28,7 @@ function todoStubs($httpBackend, $log) {
 
     // POST: /todos
     $httpBackend.whenPOST('/api/todos').respond(function(method, url, data) {
-        var todos = JSON.parse(data);
+        var todos = angular.fromJson(data);
         todoDb().remove();
         todoDb.insert(todos);
         return [200, { status: true }, {}];
