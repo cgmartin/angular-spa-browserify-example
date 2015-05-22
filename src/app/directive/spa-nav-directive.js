@@ -14,8 +14,8 @@ function spaNavDirective() {
     };
 
     // @ngInject
-    function spaNavController($scope, $translate, config) {
-        $scope.languages = config.supportedLanguages || [];
+    function spaNavController($scope, $translate, bootConfig) {
+        $scope.languages = bootConfig.supportedLanguages || [];
 
         $scope.selectLanguage = function(lang) {
             $translate.use(lang);

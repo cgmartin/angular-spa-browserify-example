@@ -9,8 +9,8 @@ module.exports = translateConfig;
  * Configures the $translateProvider with language settings
  */
 // @ngInject
-function translateConfig($translateProvider, config) {
-    $translateProvider.preferredLanguage(config.preferredLanguage || 'en');
+function translateConfig($translateProvider, bootConfig) {
+    $translateProvider.preferredLanguage(bootConfig.preferredLanguage || 'en');
     $translateProvider.useSanitizeValueStrategy('escaped');
     $translateProvider.useStaticFilesLoader({
         prefix: '/lang/',

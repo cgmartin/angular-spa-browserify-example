@@ -7,9 +7,9 @@ module.exports = compileConfig;
  * https://docs.angularjs.org/guide/production
  */
 // @ngInject
-function compileConfig($compileProvider, config) {
+function compileConfig($compileProvider, bootConfig) {
     $compileProvider.debugInfoEnabled(
-        (config.isCompileDebugInfoEnabled !== undefined) ?
-            config.isCompileDebugInfoEnabled : true
+        (bootConfig.isCompileDebugInfoEnabled !== undefined) ?
+            bootConfig.isCompileDebugInfoEnabled : true
     );
 }

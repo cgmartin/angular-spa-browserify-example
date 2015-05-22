@@ -6,9 +6,9 @@ module.exports = logConfig;
  * Configures the $logProvider with log level
  */
 // @ngInject
-function logConfig($logProvider, config) {
+function logConfig($logProvider, bootConfig) {
     $logProvider.debugEnabled(
-        (config.isLogDebugEnabled !== undefined) ?
-            config.isLogDebugEnabled : true
+        (bootConfig.isLogDebugEnabled !== undefined) ?
+            bootConfig.isLogDebugEnabled : true
     );
 }

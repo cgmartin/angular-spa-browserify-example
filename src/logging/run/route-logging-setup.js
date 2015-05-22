@@ -6,7 +6,7 @@ module.exports = routeLoggingSetup;
  * Sets up event listeners on ui-router to log state changes and failures
  */
 // @ngInject
-function routeLoggingSetup(serverLogger, traceService, $rootScope) {
+function routeLoggingSetup(serverLogger, $rootScope, $timeout) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
         serverLogger.trackStateChange('debug', 'start', toState, toParams, fromState, fromParams);
@@ -18,7 +18,9 @@ function routeLoggingSetup(serverLogger, traceService, $rootScope) {
     });
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-        serverLogger.trackStateChange('info', 'success', toState, toParams, fromState, fromParams);
+        $timeout(function() {
+            serverLogger.trackStateChange('info', 'success', toState, toParams, fromState, fromParams);
+        });
     });
 
     $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {

@@ -1,3 +1,4 @@
+/*jshint -W098 */
 'use strict';
 
 var angular = require('angular');
@@ -9,6 +10,7 @@ module.exports = ServerLogger;
  * Server-side logging service, sends logs to server in bulk at configured interval
  */
 function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $translate, $log, $window) {
+    var _this = this;
     var sessionStorageKey = 'ngSpa_serverLogger_log';
     var logQueue = [];
     var sendDataIntervalId = null;
@@ -28,7 +30,7 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
     // Bulk send logs on interval
     this.startInterval = startInterval;
     function startInterval() {
-        if (sendDataIntervalId) { return; }
+        if (sendDataIntervalId || !loggerConfig.isLoggingEnabled) { return; }
         sendDataIntervalId = $window.setInterval(sendData, loggerConfig.loggingInterval);
     }
 
@@ -37,26 +39,24 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
         sendDataIntervalId = null;
     };
 
-    this.error = function(message, meta) {
-        this.log(message, meta, 'error');
-    };
-
-    this.info = function(message, meta) {
-        this.log(message, meta, 'info');
-    };
-
-    this.debug = function(message, meta) {
-        this.log(message, meta, 'debug');
-    };
+    // Exposes this.error(), this.info(), and this.debug() functions
+    angular.forEach(['error', 'info', 'debug'], function(fnName) {
+        _this[fnName] = function(message, meta) {
+            _this.log(message, meta, fnName);
+        };
+    });
 
     this.trackError = function(error) {
-        this.error(error.message, {
+        var meta = {
             type:    error.type || 'exception',
             message: error.message,
             stack:   traceService.print({e: error}),
-            name:    error.name,
-            data:    error.data
-        });
+            name:    error.name
+        };
+        if (error.data) {
+            meta.data = error.data;
+        }
+        this.error(error.message, meta);
     };
 
     this.trackMetric = function(name, metric) {
@@ -94,8 +94,8 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
         var meta = {
             type: 'route',
             event: event,
-            from:  {url: fromState.url, name: fromState.name, params: fromParams},
-            to:    {url: toState.url,   name: toState.name,   params: toParams}
+            from:  fromState.name,
+            to:    toState.name
         };
         if (event === 'start') {
             fromState.startTime = nowTime;
@@ -106,16 +106,22 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
     };
 
     this.log = function(message, meta, level) {
-        meta = meta || {};
+        if (!loggerConfig.isLoggingEnabled) { return; }
+
+        meta = angular.extend({}, meta);
         level = validateLogLevel(level);
         var logItem = {
             time:  (new Date()).getTime(),
             loc:   $window.location.href,
             msg:   message,
             meta:  meta,
-            level: level
+            level: level,
+            user:  session.userId
         };
-        $log[level].call($log, 'ServerLogger: ' + message, meta);
+
+        if (loggerConfig.isConsoleLogEnabled) {
+            $log[level].call($log, 'ServerLogger: ' + message, meta);
+        }
 
         if ((loggerConfig.loggingLevel <= logLevels[level.toUpperCase()]) &&
             (loggerConfig.excludeTypes.indexOf(meta.type || '') === -1)
@@ -146,7 +152,7 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
             try {
                 $window.sessionStorage.setItem(sessionStorageKey, angular.toJson(logQueue));
             } catch (ex) {
-                $log.warn(ex);
+                if (loggerConfig.isConsoleLogEnabled) { $log.warn(ex); }
             }
         }
     }
@@ -167,9 +173,10 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
 
         var data = {
             device: 'browser',
+            appver: loggerConfig.appVersion,
             locale: $locale.id,
             lang: $translate.use(),
-            resolution: $window.screen.availWidth + 'x' + $window.screen.availHeight,
+            screen: $window.screen.availWidth + 'x' + $window.screen.availHeight,
             logs: logQueue.splice(0, Number.MAX_VALUE) // Send all logs in queue
         };
 

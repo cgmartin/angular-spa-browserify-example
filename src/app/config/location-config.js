@@ -6,8 +6,8 @@ module.exports = locationConfig;
  * Configures the $locationProvider with html5Mode setting
  */
 // @ngInject
-function locationConfig($locationProvider, config) {
+function locationConfig($locationProvider, bootConfig) {
     $locationProvider.html5Mode(
-        (config.isHtml5ModeEnabled !== undefined) ? config.isHtml5ModeEnabled : false
+        (bootConfig.isHtml5ModeEnabled !== undefined) ? bootConfig.isHtml5ModeEnabled : false
     );
 }

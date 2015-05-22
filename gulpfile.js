@@ -15,6 +15,7 @@ var watchify    = require('watchify');
 var browserify  = require('browserify');
 var ngHtml2Js   = require('browserify-ng-html2js');
 var karma       = require('karma').server;
+var pkg         = require('./package.json');
 
 process.setMaxListeners(0);    // Disable max listeners for gulp
 
@@ -156,6 +157,20 @@ function createBrowserifyBundle(bundle) {
     bundle.runWatchBundle = runWatchBundle;
     return bundle;
 }
+
+gulp.task('ng-constant', function () {
+    var destDir = '.tmp/ng-constant';
+    gulp.src('src/config.json')
+        .pipe($.ngConstant({
+            name: 'app.config',
+            constants: {
+                packageInfo: { version: pkg.version }
+            },
+            wrap: 'commonjs'
+        }))
+        // Writes config.js to dist/ folder
+        .pipe(gulp.dest(destDir));
+});
 
 /************************************************************************
  * LESS (and other assets) tasks
@@ -303,7 +318,7 @@ gulp.task('build', 'Builds the source files into a distributable package', funct
 gulp.task('build-iterate', false, function(cb) {
     runSequence(
         'lint',
-        ['index-html', 'fonts', 'images', 'www-root', 'less']
+        ['index-html', 'fonts', 'images', 'www-root', 'less', 'ng-constant']
             .concat(_.pluck(jsBundles, 'task')),
         cb
     );
@@ -351,7 +366,7 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
 gulp.task('build-watch', false, ['clean-build'], function(cb) {
     isWatching = true;
     runSequence(
-        ['index-html', 'fonts', 'images', 'www-root', 'less'],
+        ['index-html', 'fonts', 'images', 'www-root', 'less', 'ng-constant'],
         cb
     );
 });

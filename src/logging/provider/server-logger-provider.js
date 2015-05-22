@@ -17,11 +17,14 @@ function ServerLoggerProvider() {
     };
 
     var loggerConfig = {
+        appVersion: null,
+        isLoggingEnabled: true,
         loggingLevel: LOG_LEVEL.INFO,
         loggingInterval: 120000,
         maxBufferSize: 1000,
         apiBaseUrl: '',
         isStubsEnabled: false,
+        isConsoleLogEnabled: false,
 
         // Log types that can be filtered/excluded...
         //   ''           : no-type
