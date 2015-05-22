@@ -290,12 +290,16 @@ gulp.task('index-html', false, function() {
  * Unit testing tasks
  */
 
-gulp.task('test', ['lint'], function(done) {
+gulp.task('karma', false, function(done) {
     karma.start({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true,
         browsers: ['PhantomJS']
     }, done);
+});
+
+gulp.task('test', 'Run unit tests', function(cb) {
+    runSequence('clean', ['ng-constant', 'lint'], 'karma', cb);
 });
 
 /************************************************************************
