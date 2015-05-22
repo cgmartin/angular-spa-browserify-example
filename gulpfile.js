@@ -160,7 +160,8 @@ function createBrowserifyBundle(bundle) {
     return bundle;
 }
 
-gulp.task('build-config', function(cb) {
+// Generate a build-time config file with app version
+gulp.task('build-config', false, function(cb) {
     var destDir = '.tmp';
     var destFile = 'build-config.js';
     var buildConfig = {
