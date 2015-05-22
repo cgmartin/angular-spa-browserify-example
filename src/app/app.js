@@ -17,7 +17,7 @@ var loggingModule = require('../logging/logging-module');
 var errorModule = require('../error/error-module');
 var notificationsModule = require('../notifications/notifications-module');
 var todoModule = require('../todo/todo-module');
-var appConfig = require('../../.tmp/ng-constant/config.js');
+var buildConfig = require('../../.tmp/build-config'); // Generated at build time
 
 module.exports = App;
 
@@ -37,8 +37,7 @@ function App(options) {
         _.noop;
 
     this.dependencies = [
-            appConfig.name,
-            'app.bootConfig',
+            'app.config',
             uiRouter,
             ngTranslate,
             sessionModule,
@@ -95,7 +94,9 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
     function finallyBootstrap(bootConfig) {
         _this.bootLog('[Boot] Bootstrap angular app...');
 
-        angular.module('app.bootConfig', []).constant('bootConfig', bootConfig);
+        angular.module('app.config', [])
+            .constant('buildConfig', buildConfig) // build-time config
+            .constant('bootConfig', bootConfig);  // run-time config
 
         _this.module = angular.module(_this.name, _this.dependencies);
 

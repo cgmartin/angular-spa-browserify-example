@@ -8,9 +8,9 @@ module.exports = serverLoggerConfig;
  * Configures the server logger from boot config values
  */
 // @ngInject
-function serverLoggerConfig(serverLoggerProvider, bootConfig, packageInfo) {
+function serverLoggerConfig(serverLoggerProvider, buildConfig, bootConfig) {
     var loggingConfig = {
-        appVersion: packageInfo.version
+        appVersion: buildConfig.version
     };
     if (angular.isDefined(bootConfig.apiBaseUrl)) {
         loggingConfig.apiBaseUrl = bootConfig.apiBaseUrl;
