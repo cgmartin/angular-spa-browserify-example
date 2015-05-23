@@ -1,6 +1,6 @@
 {
-  "LANGUAGE_ENGLISH": "Anglais",
-  "LANGUAGE_FRENCH": "français",
+  "LANGUAGE_EN": "Anglais",
+  "LANGUAGE_FR": "français",
   "HOME_TITLE": "La page d'accueil",
   "TODO_TITLE": "liste de choses à faire",
   "CHAT_TITLE": "tchat"
