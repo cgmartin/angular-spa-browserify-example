@@ -1,6 +1,7 @@
 {
   "isDebugInfoEnabled": true,
   "isLogDebugEnabled": true,
+  "isHtml5ModeEnabled": false,
   "serverLogging": {
     "isLoggingEnabled": true,
     "loggingLevel": 2,

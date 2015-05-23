@@ -7,5 +7,6 @@ module.exports = httpProvider;
  */
 // @ngInject
 function httpProvider($httpProvider) {
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     $httpProvider.interceptors.push('baseUrlInterceptor');
 }

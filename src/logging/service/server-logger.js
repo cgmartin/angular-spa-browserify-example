@@ -168,6 +168,7 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
         var baseUrl = loggerConfig.apiBaseUrl || '';
         var url = baseUrl + '/api/logs';
         var headers = {
+            'X-Requested-With': 'XMLHttpRequest',
             ConversationId: session.conversationId
         };
 
