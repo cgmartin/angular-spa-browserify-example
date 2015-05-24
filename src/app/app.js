@@ -29,10 +29,12 @@ module.exports = App;
  * @constructor
  */
 function App(options) {
-    options = options || {};
+    this.options = _.extend({
+        isLogDebugEnabled: false
+    }, options);
     this.name = 'app';
 
-    this.bootLog = (options.enableBootLogging === true) ?
+    this.bootLog = (this.options.isLogDebugEnabled === true) ?
         function() { console.debug.apply(console, arguments); } :
         _.noop;
 
@@ -64,19 +66,21 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
     injector = injector || angular.injector(['ng']);
     var _this = this;
 
+    // Example of calling a service endpoint prior to app bootstrap...
     // 1. Load boot config file first before angular bootstrapping
-    _this.bootLog('[Boot] Loading config...');
-    var $http = injector.get('$http');
-    return $http.get('/spa-boot.json')
-        .then(function bootConfigSuccess(response) {
-            _this.bootLog('[Boot] Config success:', response.data);
-            continueBootstrap(response.data);
-        }, function bootConfigError() {
-            _this.bootLog('[Boot] Config failed');
-            // Bootstrap the app regardless of failure...
-            // Error handling for missing config will be within app
-            continueBootstrap({});
-        });
+    //_this.bootLog('[Boot] Calling service...');
+    //var $http = injector.get('$http');
+    //return $http.get('/api/boot-service')
+    //    .then(function bootServiceSuccess(response) {
+    //        _this.bootLog('[Boot] Service success:', response.data);
+    //        continueBootstrap(response.data);
+    //    }, function bootServiceError() {
+    //        _this.bootLog('[Boot] Service failed');
+    //        // Bootstrap the app regardless of failure...
+    //        // Error handling for missing config will be within app
+    //        continueBootstrap({});
+    //    });
+    continueBootstrap(this.options);
 
     // 2. Continue bootstrapping and load fake backend stubs bundle, if enabled
     function continueBootstrap(bootConfig) {
@@ -114,4 +118,3 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
         angular.bootstrap(domElement, [_this.name], {strictDi: strictDi});
     }
 };
-

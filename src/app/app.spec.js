@@ -65,16 +65,15 @@ describe('app', function() {
     var app;
     var injectorStub;
     var httpStub;
-    var spaBootJsonPromise;
+    var spaBootServicePromise;
 
     beforeEach(function() {
-        app = new App();
-
-        spaBootJsonPromise = { then: sinon.stub() };
-        spaBootJsonPromise.then.yields({ data: { isStubsEnabled: false } });
+        // Example setup for service call at boot time...
+        spaBootServicePromise = { then: sinon.stub() };
+        spaBootServicePromise.then.yields({ data: { foo: 'bar' } });
 
         httpStub = { get: sinon.stub() };
-        httpStub.get.withArgs('/spa-boot.json').returns(spaBootJsonPromise);
+        httpStub.get.withArgs('/api/boot-service').returns(spaBootServicePromise);
 
         injectorStub = { get: sinon.stub() };
         injectorStub.get.withArgs('$http').returns(httpStub);
@@ -86,12 +85,14 @@ describe('app', function() {
 
     it('should bootstrap', function() {
         var documentClone = document.cloneNode(true);
+        app = new App();
         app.bootstrap(false, documentClone, injectorStub);
         expect(app.module).to.be.a('object');
     });
 
     it('should bootstrap with stubs', function() {
-        spaBootJsonPromise.then.yields({ data: { isStubsEnabled: true } });
+        app = new App({ isStubsEnabled: true });
+        //spaBootServicePromise.then.yields({ data: { foo: 'something-else' } });
         scriptjsStub.yields();
 
         var documentClone = document.cloneNode(true);
