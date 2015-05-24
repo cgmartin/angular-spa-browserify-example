@@ -51,24 +51,24 @@ After installation, the following actions are available:
 ## Folder Structure
 
 ```
-├── coverage                 # Coverage reports
-├── dist                     # Build destination
+├── coverage             # Coverage reports
+├── dist                 # Build destination
 └── src
-    ├── app                  # Application module
-    ├── error                # Error handling module
-    ├── images               # Image assets to optimize
-    ├── lib                  # Global utilities
-    ├── logging              # Server logging module
-    ├── notifications        # Notifications module
-    ├── session              # Session module (browser session ID)
-    ├── styles               # Global styles
-    ├── todo                 # Todo MVC Module
-    ├── www-root             # Static files under web root
-    │   ├── lang             # Language bundles
-    │   └── spa-boot.json    # Boot configuration file
-    ├── main.js              # Main JS bundle entrypoint
-    ├── stubs.js             # Fake HTTP stub bundle entrypoint
-    └── index.html           # SPA index
+    ├── app              # Application module
+    ├── error            # Error handling module
+    ├── images           # Image assets to optimize
+    ├── lib              # Global utilities
+    ├── logging          # Server logging module
+    ├── notifications    # Notifications module
+    ├── session          # Session module (browser session ID)
+    ├── styles           # Global styles
+    ├── todo             # Todo MVC Module
+    ├── www-root         # Static files under web root
+    │   ├── lang         # Language bundles
+    │   └── spa-boot.js  # Boot configuration launcher (sample)
+    ├── main.js          # Main JS bundle entrypoint
+    ├── stubs.js         # Fake HTTP stub bundle entrypoint
+    └── index.html       # SPA index
 ```
 
 ## Libraries & Tools
