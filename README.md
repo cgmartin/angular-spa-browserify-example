@@ -1,4 +1,4 @@
-# angular-spa-typescript-example
+# angular-spa-browserify-example
 
 [![Build Status](https://travis-ci.org/cgmartin/angular-spa-browserify-example.svg?branch=master)](https://travis-ci.org/cgmartin/angular-spa-browserify-example)
 [![Dependency Status](https://david-dm.org/cgmartin/angular-spa-browserify-example.svg)](https://david-dm.org/cgmartin/angular-spa-browserify-example)
@@ -8,7 +8,7 @@
 
 Demonstrates using Browserify require('modules') in a client-side Angular single page application with Mocha unit tests and Gulp tasks.
 
-**Caution:** This is an experimental playground that I'm using to learn Browserify and to test out Angular features. 
+**Caution:** This is an experimental playground that I'm using to learn Browserify and to test out Angular features.
 Use at your own risk. If you run across anything here that could be done better, I'd love the feedback.
 
 This client project is meant to accompany a set of Node.js microservices (REST webservice, Chat Server, Static Server, Reverse Proxy),
@@ -23,11 +23,11 @@ deployed as a file or routed to a backing service (depending on environment).
 * Fake HTTP backend stubs for standalone testing using [ngMockE2E](https://code.angularjs.org/1.3.7/docs/api/ngMockE2E/service/$httpBackend)
   and [TaffyDB](http://www.taffydb.com/). Stub functionality is conditionally loaded via separate JS bundle during bootstrap.
 * Routing using [AngularUI Router](https://github.com/angular-ui/ui-router).
-* Internationalization and language selection using [angular-translate](https://github.com/angular-translate/angular-translate). 
+* Internationalization and language selection using [angular-translate](https://github.com/angular-translate/angular-translate).
 * Todo MVC module to demonstrate backend requests.
 * Server-side logging module, with custom logging exception handler and http interceptor.
 * Error module to route exceptions and 404 not found errors to different states.
-* Notification module for "toast"-like messaging. 
+* Notification module for "toast"-like messaging.
 * Unit testing examples with karma/mocha/chai/sinon/proxyquireify.
 * Custom LESS bootstrap & font-awesome builds.
 * No Bower dependencies! All dependencies are bundled from npm using browserify.
@@ -54,15 +54,15 @@ After installation, the following actions are available:
 ├── coverage                 # Coverage reports
 ├── dist                     # Build destination
 └── src
-    ├── app                  # Application module    
-    ├── error                # Error handling module    
+    ├── app                  # Application module
+    ├── error                # Error handling module
     ├── images               # Image assets to optimize
     ├── lib                  # Global utilities
     ├── logging              # Server logging module
     ├── notifications        # Notifications module
     ├── session              # Session module (browser session ID)
     ├── styles               # Global styles
-    ├── todo                 # Todo MVC Module    
+    ├── todo                 # Todo MVC Module
     ├── www-root             # Static files under web root
     │   ├── lang             # Language bundles
     │   └── spa-boot.json    # Boot configuration file
