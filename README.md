@@ -65,7 +65,7 @@ After installation, the following actions are available:
     ├── todo                 # Todo MVC Module
     ├── www-root             # Static files under web root
     │   ├── lang             # Language bundles
-    │   └── spa-boot.json    # Boot configuration file
+    │   └── spa-boot.js      # Boot configuration launcher (sample)
     ├── main.js              # Main JS bundle entrypoint
     ├── stubs.js             # Fake HTTP stub bundle entrypoint
     └── index.html           # SPA index

@@ -89,17 +89,17 @@ function JsBundle(task, src, exposed, externals) {
 }
 
 jsBundles = [
-    new JsBundle('main-js', './src/main.js', ['angular', 'lodash']),
-    new JsBundle('stubs-js', './src/stubs.js', null, ['angular', 'lodash'])
+    new JsBundle('main-js', './src/client/main.js', ['angular', 'lodash']),
+    new JsBundle('stubs-js', './src/client/stubs.js', null, ['angular', 'lodash'])
 ].map(createBrowserifyBundle);
 
 function createBrowserifyBundle(bundle) {
-    var destDir = 'dist/js';
+    var destDir = 'dist/client/js';
     var destFile = path.basename(bundle.src);
     var ngHtml2JsOptions = {
         //module: 'app.templates', // optional module name (default: each partial has own module name)
         extension: 'partial.html', // optionally specify what file types to look for
-        baseDir: 'src', // optionally specify base directory for filename
+        baseDir: 'src/client', // optionally specify base directory for filename
         prefix: '' // optionally specify a prefix to be added to the filename
     };
 
@@ -187,20 +187,20 @@ function CssBundle(main, searchPaths) {
 
 // Custom bootstrap/font-awesome builds
 var mainCssFiles = [
-    new CssBundle('src/styles/bootstrap.less',
-        ['src/styles', 'node_modules/bootstrap/less', 'node_modules/bootstrap-social']),
-    new CssBundle('src/styles/font-awesome.less',
-        ['src/styles', 'node_modules/font-awesome/less']),
+    new CssBundle('src/client/styles/bootstrap.less',
+        ['src/client/styles', 'node_modules/bootstrap/less', 'node_modules/bootstrap-social']),
+    new CssBundle('src/client/styles/font-awesome.less',
+        ['src/client/styles', 'node_modules/font-awesome/less']),
     new CssBundle('node_modules/angular/angular-csp.css')
 ];
 
 gulp.task('less', false, function() {
-    var destDir  = 'dist/css';
+    var destDir  = 'dist/client/css';
     var destFile = 'main.css';
 
     return gulp
         // Use all less files as newer source
-        .src(['src/**/*.less'].concat(_.pluck(mainCssFiles, 'main')), {base: '.'})
+        .src(['src/client/**/*.less'].concat(_.pluck(mainCssFiles, 'main')), {base: '.'})
         .pipe($.newer(destDir + '/' + destFile))
         // Only process the main less file(s), with their individual search paths
         .pipe($.filter(_.pluck(mainCssFiles, 'main')))
@@ -223,7 +223,7 @@ gulp.task('less', false, function() {
 });
 
 gulp.task('fonts', false, function() {
-    var destDir = 'dist/fonts';
+    var destDir = 'dist/client/fonts';
     return gulp
         .src(['node_modules/font-awesome/fonts/**'])
         .pipe($.newer(destDir))
@@ -232,9 +232,9 @@ gulp.task('fonts', false, function() {
 });
 
 gulp.task('images', function() {
-    var destDir = 'dist/img';
+    var destDir = 'dist/client/img';
     return gulp
-        .src(['src/images/**'])
+        .src(['src/client/images/**'])
         .pipe($.newer(destDir))
         .pipe($.if(args.verbose, $.print()))
         .pipe($.if(isProduction, $.imagemin({progressive: true})))
@@ -243,9 +243,9 @@ gulp.task('images', function() {
 
 
 gulp.task('www-root', false, function() {
-    var destDir = 'dist';
+    var destDir = 'dist/client';
     return gulp
-        .src(['src/www-root/**'])
+        .src(['src/client/www-root/**'])
         .pipe($.newer(destDir))
         .pipe(verbosePrintFiles('www-root'))
         .pipe(gulp.dest(destDir))
@@ -257,8 +257,8 @@ gulp.task('www-root', false, function() {
  */
 
 gulp.task('index-html', false, function() {
-    var destDir = 'dist';
-    return gulp.src(['src/index.html'])
+    var destDir = 'dist/client';
+    return gulp.src(['src/client/index.html'])
         .pipe($.newer(destDir))
         .pipe(verbosePrintFiles('index-html'))
         .pipe($.if(isProduction, $.htmlmin({
@@ -271,9 +271,9 @@ gulp.task('index-html', false, function() {
 
 // Replaced by browserify-ng-html2js
 //gulp.task('partials', false, function() {
-//    var destDir  = 'dist/js';
+//    var destDir  = 'dist/client/js';
 //    var destFile = 'partials.js';
-//    return gulp.src('src/**/*.partial.html')
+//    return gulp.src('src/client/**/*.partial.html')
 //        .pipe($.newer(destDir + '/' + destFile))
 //        .pipe(verbosePrintFiles('partials'))
 //        .pipe($.if(isProduction, $.htmlmin({
@@ -289,6 +289,39 @@ gulp.task('index-html', false, function() {
 //        .pipe(gulp.dest(destDir))
 //        .pipe(browserSync.reload({stream:true}));
 //});
+
+/************************************************************************
+ * Static Server
+ */
+
+gulp.task('copy-pkg', false, function() {
+    var destDir = 'dist';
+    return gulp
+        .src('package.json')
+        .pipe(verbosePrintFiles('copy-pkg'))
+        .pipe(gulp.dest(destDir));
+});
+
+gulp.task('copy-server', false, function() {
+    var destDir = 'dist/server';
+    return gulp
+        .src(['src/server/**'])
+        .pipe($.newer(destDir))
+        .pipe(verbosePrintFiles('copy-server'))
+        .pipe(gulp.dest(destDir));
+});
+
+gulp.task('copy-npm', false, function() {
+    var destDir = 'dist/node_modules';
+    var prodDeps = _.map(pkg.dependencies, function(v, m) { return 'node_modules/' + m + '/**'; });
+    return gulp
+        .src(prodDeps, {base: 'node_modules'})
+        .pipe($.newer(destDir))
+        .pipe(verbosePrintFiles('copy-npm'))
+        .pipe(gulp.dest(destDir));
+});
+
+gulp.task('build-server', false, ['copy-pkg', 'copy-server', 'copy-npm']);
 
 /************************************************************************
  * Unit testing tasks
@@ -315,7 +348,7 @@ gulp.task('lint', 'Lints all JavaScript files', function(cb) {
 });
 
 gulp.task('build', 'Builds the source files into a distributable package', function(cb) {
-    runSequence('clean-build', 'build-iterate', cb);
+    runSequence('clean-build', ['build-iterate', 'build-server'], cb);
 }, {
     options: {
         'prod':    'Enable production minification, sourcemaps, etc.',
@@ -339,7 +372,7 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
     browserSync({
         // Start server...
         server: {
-            baseDir: './dist'
+            baseDir: './dist/client'
         },
         // ...or proxy to separate static server
         //proxy: 'localhost:' + port,
@@ -361,10 +394,10 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
         open: false
     });
 
-    gulp.watch('src/**/*.js',     ['lint-js']);
-    gulp.watch('src/index.html',  ['index-html']);
-    gulp.watch('src/**/*.less',   ['less']);
-    gulp.watch('src/www-root/**', ['www-root']);
+    gulp.watch('src/client/**/*.js',     ['lint-js']);
+    gulp.watch('src/client/index.html',  ['index-html']);
+    gulp.watch('src/client/**/*.less',   ['less']);
+    gulp.watch('src/client/www-root/**', ['www-root']);
 
     // Run the browserify bundles and merge their streams
     return merge.apply(merge, _.pluck(jsBundles, 'runWatchBundle').map(function(b) {return b();}));
