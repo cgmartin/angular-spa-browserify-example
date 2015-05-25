@@ -82,6 +82,7 @@
   },
   "dependencies": {
     "spa-express-static-server": "0.0.2",
+    "throng": "^1.0.0",
     "uuid": "^2.0.1"
   }
 }
