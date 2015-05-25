@@ -79,10 +79,16 @@ After installation, the following actions are available:
 
 Running `npm run deploy` will prepare the files for deployment under the `./deploy` folder.
 
+While other projects may prefer the simplicity of deploying directly from the source code repository,
+having the extra gulp tasks here to generate a deploy artifact grants some extra separation and flexibility.
+
 The following steps illustrate deploying to Heroku, but it is not a requirement.
 A different PaaS provider could easily be substituted.
 
 ### Heroku first time setup
+
+Run the deploy task and set up a separate git repo within the deploy directory, which will be used for
+installation at your PaaS provider.
 
 1. Run `npm run deploy`
 1. Go under the deploy directory: `cd deploy`
@@ -98,12 +104,16 @@ A different PaaS provider could easily be substituted.
         STATIC_REV_PROXY: 1
         STATIC_SSL:       1
         STATIC_WEBROOT:   ./www-root
-       
+
 1. Visit the app: `heroku open`
 
 ### New releases to Heroku
 
-1. Run `npm run deploy`
+Re-running the deploy task will overlay the changed files in the deploy repo. Commit the updates and push
+to your PaaS provider.
+
+1. Bump the version: `npm version patch` (or minor, major, [etc.](https://docs.npmjs.com/cli/version))
+1. Generate the deployment artifacts: `npm run deploy`
 1. Go under the deploy directory: `cd deploy`
 1. Commit new updates: `git commit -am "new release"`
 1. Deploy the code: `git push heroku master`
