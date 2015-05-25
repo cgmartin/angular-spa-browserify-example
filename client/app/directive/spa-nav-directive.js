@@ -14,8 +14,10 @@ function spaNavDirective() {
     };
 
     // @ngInject
-    function spaNavController($scope, $translate, bootConfig) {
-        $scope.languages = bootConfig.supportedLanguages || [];
+    function spaNavController($scope, $translate, bootConfig, $location) {
+        var vm = $scope.vm = {};
+        vm.languages = bootConfig.supportedLanguages || [];
+        vm.missingUrl = ($location.$$html5) ? '/missing-url' : '#/missing-url';
 
         $scope.selectLanguage = function(lang) {
             $translate.use(lang);
