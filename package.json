@@ -2,12 +2,13 @@
   "name": "spa-client",
   "version": "0.0.1",
   "description": "Angular SPA Client",
-  "main": "src/main.js",
+  "main": "client/main.js",
   "private": true,
   "scripts": {
     "postinstall": "npm dedupe",
     "build": "gulp build --prod",
-    "start": "gulp watch",
+    "start": "node server/static-server.js",
+    "dev": "gulp watch",
     "test": "gulp test"
   },
   "author": "Christopher Martin <cgmartin@gmail.com>",

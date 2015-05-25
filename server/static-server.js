@@ -2,6 +2,6 @@
 // Starts a static server for the client app
 var staticServer = require('spa-express-static-server');
 staticServer.start({
-    webRootPath: './client',
+    webRootPath: process.env.STATIC_WEBROOT || './dist',
     spaBoot:     require('./spa-boot')
 });

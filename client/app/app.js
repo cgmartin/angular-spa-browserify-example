@@ -17,7 +17,7 @@ var loggingModule = require('../logging/logging-module');
 var errorModule = require('../error/error-module');
 var notificationsModule = require('../notifications/notifications-module');
 var todoModule = require('../todo/todo-module');
-var buildConfig = require('../../../.tmp/build-config'); // Generated at build time
+var buildConfig = require('../../.tmp/build-config'); // Generated at build time
 
 module.exports = App;
 

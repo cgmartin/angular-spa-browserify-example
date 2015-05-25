@@ -49,7 +49,7 @@ function onError(err) {
 function verbosePrintFiles(taskName) {
     return $.if(isVerbose, $.print(function(filepath) {
         return taskName + ': ' + filepath;
-    }))
+    }));
 }
 
 /************************************************************************
@@ -71,7 +71,7 @@ gulp.task('clean', 'Remove all temporary files', ['clean-build', 'clean-coverage
  */
 
 gulp.task('lint-js', false, function() {
-    return gulp.src('src/**/*.js')
+    return gulp.src(['client/**/*.js', 'server/**/*.js', 'gulpfile.js'])
         .pipe($.plumber({errorHandler: onError}))
         .pipe(verbosePrintFiles('lint-js'))
         .pipe($.jscs())
@@ -89,17 +89,17 @@ function JsBundle(task, src, exposed, externals) {
 }
 
 jsBundles = [
-    new JsBundle('main-js', './src/client/main.js', ['angular', 'lodash']),
-    new JsBundle('stubs-js', './src/client/stubs.js', null, ['angular', 'lodash'])
+    new JsBundle('main-js', './client/main.js', ['angular', 'lodash']),
+    new JsBundle('stubs-js', './client/stubs.js', null, ['angular', 'lodash'])
 ].map(createBrowserifyBundle);
 
 function createBrowserifyBundle(bundle) {
-    var destDir = 'dist/client/js';
+    var destDir = 'dist/js';
     var destFile = path.basename(bundle.src);
     var ngHtml2JsOptions = {
         //module: 'app.templates', // optional module name (default: each partial has own module name)
         extension: 'partial.html', // optionally specify what file types to look for
-        baseDir: 'src/client', // optionally specify base directory for filename
+        baseDir: 'client', // optionally specify base directory for filename
         prefix: '' // optionally specify a prefix to be added to the filename
     };
 
@@ -168,7 +168,7 @@ gulp.task('build-config', false, function(cb) {
         version: pkg.version
     };
     mkdirp(destDir, function(err) {
-        if (err) return cb(err);
+        if (err) { return cb(err); }
         fs.writeFile(
             destDir + '/' + destFile,
             'module.exports = ' + JSON.stringify(buildConfig, null, 4),
@@ -187,20 +187,20 @@ function CssBundle(main, searchPaths) {
 
 // Custom bootstrap/font-awesome builds
 var mainCssFiles = [
-    new CssBundle('src/client/styles/bootstrap.less',
-        ['src/client/styles', 'node_modules/bootstrap/less', 'node_modules/bootstrap-social']),
-    new CssBundle('src/client/styles/font-awesome.less',
-        ['src/client/styles', 'node_modules/font-awesome/less']),
+    new CssBundle('client/styles/bootstrap.less',
+        ['client/styles', 'node_modules/bootstrap/less', 'node_modules/bootstrap-social']),
+    new CssBundle('client/styles/font-awesome.less',
+        ['client/styles', 'node_modules/font-awesome/less']),
     new CssBundle('node_modules/angular/angular-csp.css')
 ];
 
 gulp.task('less', false, function() {
-    var destDir  = 'dist/client/css';
+    var destDir  = 'dist/css';
     var destFile = 'main.css';
 
     return gulp
         // Use all less files as newer source
-        .src(['src/client/**/*.less'].concat(_.pluck(mainCssFiles, 'main')), {base: '.'})
+        .src(['client/**/*.less'].concat(_.pluck(mainCssFiles, 'main')), {base: '.'})
         .pipe($.newer(destDir + '/' + destFile))
         // Only process the main less file(s), with their individual search paths
         .pipe($.filter(_.pluck(mainCssFiles, 'main')))
@@ -223,7 +223,7 @@ gulp.task('less', false, function() {
 });
 
 gulp.task('fonts', false, function() {
-    var destDir = 'dist/client/fonts';
+    var destDir = 'dist/fonts';
     return gulp
         .src(['node_modules/font-awesome/fonts/**'])
         .pipe($.newer(destDir))
@@ -232,20 +232,19 @@ gulp.task('fonts', false, function() {
 });
 
 gulp.task('images', function() {
-    var destDir = 'dist/client/img';
+    var destDir = 'dist/img';
     return gulp
-        .src(['src/client/images/**'])
+        .src(['client/images/**'])
         .pipe($.newer(destDir))
         .pipe($.if(args.verbose, $.print()))
         .pipe($.if(isProduction, $.imagemin({progressive: true})))
         .pipe(gulp.dest(destDir));
 });
 
-
 gulp.task('www-root', false, function() {
-    var destDir = 'dist/client';
+    var destDir = 'dist';
     return gulp
-        .src(['src/client/www-root/**'])
+        .src(['client/www-root/**'])
         .pipe($.newer(destDir))
         .pipe(verbosePrintFiles('www-root'))
         .pipe(gulp.dest(destDir))
@@ -257,8 +256,8 @@ gulp.task('www-root', false, function() {
  */
 
 gulp.task('index-html', false, function() {
-    var destDir = 'dist/client';
-    return gulp.src(['src/client/index.html'])
+    var destDir = 'dist';
+    return gulp.src(['client/index.html'])
         .pipe($.newer(destDir))
         .pipe(verbosePrintFiles('index-html'))
         .pipe($.if(isProduction, $.htmlmin({
@@ -271,9 +270,9 @@ gulp.task('index-html', false, function() {
 
 // Replaced by browserify-ng-html2js
 //gulp.task('partials', false, function() {
-//    var destDir  = 'dist/client/js';
+//    var destDir  = 'dist/js';
 //    var destFile = 'partials.js';
-//    return gulp.src('src/client/**/*.partial.html')
+//    return gulp.src('client/**/*.partial.html')
 //        .pipe($.newer(destDir + '/' + destFile))
 //        .pipe(verbosePrintFiles('partials'))
 //        .pipe($.if(isProduction, $.htmlmin({
@@ -289,39 +288,6 @@ gulp.task('index-html', false, function() {
 //        .pipe(gulp.dest(destDir))
 //        .pipe(browserSync.reload({stream:true}));
 //});
-
-/************************************************************************
- * Static Server
- */
-
-gulp.task('copy-pkg', false, function() {
-    var destDir = 'dist';
-    return gulp
-        .src('package.json')
-        .pipe(verbosePrintFiles('copy-pkg'))
-        .pipe(gulp.dest(destDir));
-});
-
-gulp.task('copy-server', false, function() {
-    var destDir = 'dist/server';
-    return gulp
-        .src(['src/server/**'])
-        .pipe($.newer(destDir))
-        .pipe(verbosePrintFiles('copy-server'))
-        .pipe(gulp.dest(destDir));
-});
-
-gulp.task('copy-npm', false, function() {
-    var destDir = 'dist/node_modules';
-    var prodDeps = _.map(pkg.dependencies, function(v, m) { return 'node_modules/' + m + '/**'; });
-    return gulp
-        .src(prodDeps, {base: 'node_modules'})
-        .pipe($.newer(destDir))
-        .pipe(verbosePrintFiles('copy-npm'))
-        .pipe(gulp.dest(destDir));
-});
-
-gulp.task('build-server', false, ['copy-pkg', 'copy-server', 'copy-npm']);
 
 /************************************************************************
  * Unit testing tasks
@@ -348,7 +314,7 @@ gulp.task('lint', 'Lints all JavaScript files', function(cb) {
 });
 
 gulp.task('build', 'Builds the source files into a distributable package', function(cb) {
-    runSequence('clean-build', ['build-iterate', 'build-server'], cb);
+    runSequence('clean-build', 'build-iterate', cb);
 }, {
     options: {
         'prod':    'Enable production minification, sourcemaps, etc.',
@@ -358,7 +324,6 @@ gulp.task('build', 'Builds the source files into a distributable package', funct
 
 gulp.task('build-iterate', false, function(cb) {
     runSequence(
-        'lint',
         ['index-html', 'fonts', 'images', 'www-root', 'less', 'build-config']
             .concat(_.pluck(jsBundles, 'task')),
         cb
@@ -372,7 +337,7 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
     browserSync({
         // Start server...
         server: {
-            baseDir: './dist/client'
+            baseDir: './dist'
         },
         // ...or proxy to separate static server
         //proxy: 'localhost:' + port,
@@ -394,10 +359,10 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
         open: false
     });
 
-    gulp.watch('src/client/**/*.js',     ['lint-js']);
-    gulp.watch('src/client/index.html',  ['index-html']);
-    gulp.watch('src/client/**/*.less',   ['less']);
-    gulp.watch('src/client/www-root/**', ['www-root']);
+    gulp.watch('client/**/*.js',     ['lint-js']);
+    gulp.watch('client/index.html',  ['index-html']);
+    gulp.watch('client/**/*.less',   ['less']);
+    gulp.watch('client/www-root/**', ['www-root']);
 
     // Run the browserify bundles and merge their streams
     return merge.apply(merge, _.pluck(jsBundles, 'runWatchBundle').map(function(b) {return b();}));
@@ -408,6 +373,45 @@ gulp.task('build-watch', false, ['clean-build'], function(cb) {
     isWatching = true;
     runSequence(
         ['index-html', 'fonts', 'images', 'www-root', 'less', 'build-config'],
+        cb
+    );
+});
+
+/************************************************************************
+ * Deployment
+ */
+
+gulp.task('deploy-root', false, function() {
+    var destDir = 'deploy';
+    return gulp
+        .src(['package.json'], {base: '.'})
+        .pipe(verbosePrintFiles('deploy-copy-pkg'))
+        .pipe(gulp.dest(destDir));
+});
+
+gulp.task('deploy-server', false, function() {
+    var destDir = 'deploy/server';
+    return gulp
+        .src(['server/**'])
+        //.pipe($.newer(destDir))
+        .pipe(verbosePrintFiles('deploy-copy-server'))
+        .pipe(gulp.dest(destDir));
+});
+
+gulp.task('deploy-client', false, function() {
+    var destDir = 'deploy/www-root';
+    return gulp
+        .src(['dist/**'])
+        //.pipe($.newer(destDir))
+        .pipe(verbosePrintFiles('deploy-copy-wwwroot'))
+        .pipe(gulp.dest(destDir));
+});
+
+gulp.task('deploy', false, function(cb) {
+    isProduction = true;
+    runSequence(
+        'clean-build', 'lint', 'test', 'build-iterate',
+        ['deploy-root', 'deploy-server', 'deploy-client'],
         cb
     );
 });
