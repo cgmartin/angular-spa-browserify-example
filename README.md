@@ -91,14 +91,14 @@ A different PaaS provider could easily be substituted.
 1. Commit everything: `git commit -am "initial commit"`
 1. Create an app on Heroku: `heroku create`
 1. Deploy the code: `git push heroku master`
-1. Set Environment vars: `heroku config:set NODE_ENV=production`...
+1. Set Environment vars: `heroku config:set NODE_ENV=production`
 
-       NODE_ENV:         production
-       STATIC_INSTANCE:  1
-       STATIC_REV_PROXY: 1
-       STATIC_SSL:       1
-       STATIC_WEBROOT:   ./www-root
-
+        NODE_ENV:         production
+        STATIC_INSTANCE:  1
+        STATIC_REV_PROXY: 1
+        STATIC_SSL:       1
+        STATIC_WEBROOT:   ./www-root
+       
 1. Visit the app: `heroku open`
 
 ### New releases to Heroku
