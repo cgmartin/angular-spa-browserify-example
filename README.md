@@ -18,19 +18,20 @@ deployed as a static file or routed to a dynamic backing service.
 
 ## Features
 
-* Bootstrap angular with dynamic configuration (spa-boot.js).
-* Fake HTTP backend stubs for standalone testing using [ngMockE2E](https://code.angularjs.org/1.3.7/docs/api/ngMockE2E/service/$httpBackend)
+* **Manual Bootstrapping**: Bootstrap angular with dynamic configuration (spa-boot.js).
+* **Mocked Backend Stubs**: Fake HTTP backend for standalone testing using [ngMockE2E](https://code.angularjs.org/1.3.7/docs/api/ngMockE2E/service/$httpBackend)
   and [TaffyDB](http://www.taffydb.com/). Stub functionality is conditionally loaded via separate JS bundle during bootstrap.
-* Routing using [AngularUI Router](https://github.com/angular-ui/ui-router).
-* Internationalization and language selection using [angular-translate](https://github.com/angular-translate/angular-translate).
-* Todo MVC module to demonstrate backend requests.
-* Server-side logging module, with custom logging exception handler and http interceptor.
-* Error module to route exceptions and 404 not found errors to different states.
-* Notification module for "toast"-like messaging.
-* Unit testing examples with karma/mocha/chai/sinon/proxyquireify.
-* Custom LESS bootstrap & font-awesome builds.
-* [Static server](https://github.com/cgmartin/spa-express-static-server) with error handling, security, and HTML5 mode routing.
-* No Bower! All dependencies are bundled from npm using browserify.
+* **Client-side Routing**: via [AngularUI Router](https://github.com/angular-ui/ui-router).
+* **Internationalization**: I18n and language selection using [angular-translate](https://github.com/angular-translate/angular-translate).
+* **Todo MVC module**: Demonstrates backend requests.
+* **Server-side Logging module**: Send client-side log messages, metrics, and event tracking to backend logger.
+  Includes a custom exception handler logger and http interceptor request logging.
+* **Error module**: Global exception handler and Error router.
+* **Notification module**: Provides "toast"-like messaging for errors or events.
+* **Unit testing examples**: Using karma, mocha, chai, sinon, and proxyquireify.
+* **Custom LESS builds**: Override variables for bootstrap & font-awesome.
+* **[Static server](https://github.com/cgmartin/spa-express-static-server)**: Includes error handling, security, and HTML5 mode routing.
+* **No Bower!** All dependencies are bundled from npm using browserify.
 
 ### Roadmap
 
