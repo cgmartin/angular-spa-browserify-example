@@ -384,7 +384,7 @@ gulp.task('build-watch', false, ['clean-build'], function(cb) {
 gulp.task('deploy-root', false, function() {
     var destDir = 'deploy';
     return gulp
-        .src(['package.json'], {base: '.'})
+        .src(['package.json', 'npm-shrinkwrap.json'], {base: '.'})
         .pipe(verbosePrintFiles('deploy-copy-pkg'))
         .pipe(gulp.dest(destDir));
 });
