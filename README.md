@@ -29,7 +29,16 @@ deployed as a static file or routed to a dynamic backing service.
 * Notification module for "toast"-like messaging.
 * Unit testing examples with karma/mocha/chai/sinon/proxyquireify.
 * Custom LESS bootstrap & font-awesome builds.
+* [Static server](https://github.com/cgmartin/spa-express-static-server) with error handling, security, and HTML5 mode routing.
 * No Bower! All dependencies are bundled from npm using browserify.
+
+### Roadmap
+
+* JWT authentication example.
+* Route authorization with bearer tokens.
+* Social login to Facebook, Google, Twitter, etc.
+* Chat module, with disconnected mock websocket server.
+* Real backend web service API and chat server (separate repos).
 
 ## Installation
 
