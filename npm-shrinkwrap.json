@@ -1,6 +1,6 @@
 {
   "name": "spa-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "spa-express-static-server": {
       "version": "0.0.3",
@@ -330,15 +330,15 @@
           "from": "mime-types@2.0.12",
           "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.0.12.tgz"
         },
-        "parseurl": {
-          "version": "1.3.0",
-          "from": "parseurl@1.3.0",
-          "resolved": "https://registry.npmjs.org/parseurl/-/parseurl-1.3.0.tgz"
-        },
         "range-parser": {
           "version": "1.0.2",
           "from": "range-parser@1.0.2",
           "resolved": "https://registry.npmjs.org/range-parser/-/range-parser-1.0.2.tgz"
+        },
+        "parseurl": {
+          "version": "1.3.0",
+          "from": "parseurl@1.3.0",
+          "resolved": "https://registry.npmjs.org/parseurl/-/parseurl-1.3.0.tgz"
         },
         "utils-merge": {
           "version": "1.0.0",
