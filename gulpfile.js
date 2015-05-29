@@ -98,9 +98,10 @@ function createBrowserifyBundle(bundle) {
     var destFile = path.basename(bundle.src);
     var ngHtml2JsOptions = {
         //module: 'app.templates', // optional module name (default: each partial has own module name)
-        extension: 'partial.html', // optionally specify what file types to look for
-        baseDir: 'client', // optionally specify base directory for filename
-        prefix: '' // optionally specify a prefix to be added to the filename
+        extension: 'partial.html', // specify what file types to look for
+        baseDir: 'client', // specify base directory for filename
+        prefix: '', // optionally specify a prefix to be added to the filename
+        requireAngular: true // include `var angular = require('angular');`
     };
 
     function initBrowserify() {

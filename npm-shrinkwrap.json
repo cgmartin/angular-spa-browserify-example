@@ -3,9 +3,9 @@
   "version": "0.0.2",
   "dependencies": {
     "lodash": {
-      "version": "3.9.2",
-      "from": "lodash@>=3.9.2 <4.0.0",
-      "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.9.2.tgz"
+      "version": "3.9.3",
+      "from": "lodash@3.9.3",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.9.3.tgz"
     },
     "spa-express-static-server": {
       "version": "0.0.3",
