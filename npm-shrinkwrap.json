@@ -1,5 +1,5 @@
 {
-  "name": "spa-client",
+  "name": "angular-spa-browserify-example",
   "version": "0.0.3",
   "dependencies": {
     "lodash": {
