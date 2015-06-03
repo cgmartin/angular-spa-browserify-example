@@ -17,6 +17,12 @@ function routeErrorsSetup($rootScope, $state, errorToDisplay) {
 
     $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
         event.preventDefault();
+
+        // if there is an error trying to get to the error page,
+        // we may likely be in an infinite loop - bail out
+        // i.e. cannot load partial file
+        if (toState.name === 'error') { return; }
+
         errorToDisplay.error = error;
         $state.go('error', {}, {location: false, reload: true});
     });

@@ -189,6 +189,7 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
         } else {
             var request = createXhr();
             request.open('POST', url, true);
+            //request.timeout = 1000;
             request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
             angular.forEach(headers, function(val, key) {
                 request.setRequestHeader(key, val);
@@ -196,8 +197,11 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
             request.onreadystatechange = function xhrReadyStateChange() {
                 if (this.readyState === 4) {
                     var success = (this.status >= 200 && this.status < 400);
-                    if (!success) {
-                        // Put logs back on the front of the queue
+                    if (!success && this.status !== 413) {
+                        // Put logs back on the front of the queue...
+                        // But not if the server is complaining the request size is too large
+                        // via 413 (Request Entity Too Large) error
+                        $log.debug('sendlog unsuccessful');
                         logQueue.unshift.apply(logQueue, data.logs);
                     }
                     saveLogQueue();

@@ -17,5 +17,13 @@ function logPerformanceTiming(serverLogger, $window) {
         timing.chromeFirstPaintTime = Math.round(firstPaintTimeSecs * 1000);
     }
 
-    serverLogger.trackMetric('performanceTiming', timing);
+    // Deep copy all of the timing data
+    // jshint -W089
+    var timingData = {};
+    for (var key in timing) {
+        timingData[key] = timing[key];
+    }
+    // jshint +W089
+
+    serverLogger.trackMetric('performanceTiming', timingData);
 }

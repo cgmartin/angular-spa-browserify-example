@@ -8,8 +8,8 @@ module.exports = BaseUrlInterceptor;
 // @ngInject
 function BaseUrlInterceptor(bootConfig) {
     this.request = function(reqCfg) {
-        // Skip full urls
-        if (reqCfg.url.indexOf('http') !== 0) {
+        // Only process api prefixed urls
+        if (reqCfg.url.match(/^\/api\//)) {
             var baseUrl = bootConfig.apiBaseUrl || '';
             reqCfg.url = baseUrl + reqCfg.url;
         }
