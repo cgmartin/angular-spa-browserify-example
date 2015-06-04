@@ -23,7 +23,6 @@ function logPerformanceTiming(serverLogger, $window) {
     for (var key in timing) {
         timingData[key] = timing[key];
     }
-    // jshint +W089
 
     serverLogger.trackMetric('performanceTiming', timingData);
 }
