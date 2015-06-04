@@ -1,6 +1,6 @@
 {
   "name": "angular-spa-browserify-example",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "dependencies": {
     "lodash": {
       "version": "3.9.3",
