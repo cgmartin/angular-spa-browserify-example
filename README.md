@@ -56,16 +56,14 @@ After installation, the following actions are available:
 * `npm test` : Runs TypeScript file linting and unit tests once.
 * `karma start` : Runs unit tests continuously, watching for changes.
 * `npm run build` : Creates production client assets under the `dist/` folder, for deployment to a static webserver or CDN.
-* `npm run deploy` : Builds and prepares all files (client and server) for deployment (i.e. Heroku).
 
 ## Folder Structure
 
 ```
 ├── coverage                 # Coverage reports
 ├── dist                     # Client build destination folder
-├── deploy                   # Heroku deployment artifact
 ├── server                   # Static server source files
-│   ├── spa-boot.js          # Boot configuration launcher (actual)
+│   ├── spa-boot-config.js   # Boot configuration for client (actual)
 │   └── static-server.js     # Static server
 └── client                   # Angular SPA client source files
     ├── app                  # Application module
@@ -87,27 +85,18 @@ After installation, the following actions are available:
 
 ## Deployment
 
-Running `npm run deploy` will prepare the files for deployment under the `./deploy` folder.
-
-While other projects may prefer the simplicity of deploying directly from the source code repository,
-having the extra gulp tasks here to generate a deploy artifact grants some extra separation and flexibility.
-
 The following steps illustrate deploying to Heroku, but it is not a requirement.
-A different PaaS provider could easily be substituted.
+A different PaaS provider could be easily substituted.
 
 ### Heroku first time setup
 
-Run the deploy task and set up a separate git repo within the deploy directory, which will be used for
-installation at your PaaS provider.
+Run the production build task and set up a git remote for your heroku deployment:
 
-1. Run `npm run deploy`
-1. Go under the deploy directory: `cd deploy`
-1. Initialize a new git repository: `git init`
-1. Create a Procfile: `echo "web: npm start" > Procfile`
-1. Commit everything: `git commit -am "initial commit"`
+1. Run `npm run build`
+1. Commit everything: `git commit -am "new release"`
 1. Create an app on Heroku: `heroku create`
-1. Deploy the code: `git push heroku master`
-1. Set Environment vars: `heroku config:set NODE_ENV=production`
+1. Add the remote heroku branch: i.e. `git remote add production https://git.heroku.com/your-heroku-appname.git`
+1. Set Environment vars: i.e. `heroku config:set NODE_ENV=production`
 
         NODE_ENV:         production
         STATIC_INSTANCE:  1
@@ -115,18 +104,18 @@ installation at your PaaS provider.
         STATIC_SSL:       1
         STATIC_WEBROOT:   ./www-root
 
+1. Deploy the code: `git push production master`
 1. Visit the app: `heroku open`
 
 ### New releases to Heroku
 
-Re-running the deploy task will overlay the changed files in the deploy repo. Commit the updates and push
+Re-running the build task will overlay the changed files in the dist folder. Commit the updates and push
 to your PaaS provider.
 
 1. Bump the version: `npm version patch` (or minor, major, [etc.](https://docs.npmjs.com/cli/version))
-1. Generate the deployment artifacts: `npm run deploy`
-1. Go under the deploy directory: `cd deploy`
+1. Generate the deployment artifacts: `npm run build`
 1. Commit new updates: `git commit -am "new release"`
-1. Deploy the code: `git push heroku master`
+1. Deploy the code: `git push production master`
 1. Visit the app: `heroku open`
 
 ## Libraries & Tools
