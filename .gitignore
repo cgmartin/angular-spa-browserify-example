@@ -13,8 +13,8 @@ coverage
 .tmp
 
 .lock-wscript
+.env
 
-dist
 deploy
 
 node_modules

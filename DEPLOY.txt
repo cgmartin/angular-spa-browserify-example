@@ -1,0 +1,24 @@
+# Deploying to Heroku #
+
+## One-time ##
+
+0.1 Install heroku-toolbox cli utility
+0.2 Create `.env` file with settings to test locally:
+
+    NODE_ENV=production
+    STATIC_WEBROOT=./dist
+    STATIC_REV_PROXY=1
+    STATIC_INSTANCE=1
+
+
+## Per release ##
+
+1. Ensure all changes are committed: `git commit -a`
+2. Run the distribution locally: `foreman start web`
+3. Check environment variables: `heroku config`
+   * To set var: `heroku config:set TIMES=2`
+   * To unset var: `heroku config:unset TIMES`
+4. Publish to heroku server: `git push production master`
+5. Check site is running: `heroku open`
+6. Check running logs: `heroku logs --tail`
+7. Check how many dynos are running: `heroku ps`
