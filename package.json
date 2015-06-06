@@ -13,7 +13,7 @@
     "dev": "gulp watch",
     "test": "gulp test",
     "deploy": "gulp deploy",
-    "version": "gulp test"
+    "preversion": "npm test"
   },
   "author": "Christopher Martin <cgmartin@gmail.com>",
   "license": "MIT",
