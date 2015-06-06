@@ -161,22 +161,6 @@ function createBrowserifyBundle(bundle) {
     return bundle;
 }
 
-// Generate a build-time config file with app version
-gulp.task('build-config', false, function(cb) {
-    var destDir = '.tmp';
-    var destFile = 'build-config.js';
-    var buildConfig = {
-        version: pkg.version
-    };
-    mkdirp(destDir, function(err) {
-        if (err) { return cb(err); }
-        fs.writeFile(
-            destDir + '/' + destFile,
-            'module.exports = ' + JSON.stringify(buildConfig, null, 4),
-            cb);
-    });
-});
-
 /************************************************************************
  * LESS (and other assets) tasks
  */
@@ -303,7 +287,7 @@ gulp.task('karma', false, function(done) {
 });
 
 gulp.task('test', 'Run unit tests', function(cb) {
-    runSequence('clean-coverage', ['build-config', 'lint'], 'karma', cb);
+    runSequence('clean-coverage', 'lint', 'karma', cb);
 });
 
 /************************************************************************
@@ -325,7 +309,7 @@ gulp.task('build', 'Builds the source files into a distributable package', funct
 
 gulp.task('build-iterate', false, function(cb) {
     runSequence(
-        ['index-html', 'fonts', 'images', 'www-root', 'less', 'build-config']
+        ['index-html', 'fonts', 'images', 'www-root', 'less']
             .concat(_.pluck(jsBundles, 'task')),
         cb
     );
@@ -373,7 +357,7 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
 gulp.task('build-watch', false, ['clean-build'], function(cb) {
     isWatching = true;
     runSequence(
-        ['index-html', 'fonts', 'images', 'www-root', 'less', 'build-config'],
+        ['index-html', 'fonts', 'images', 'www-root', 'less'],
         cb
     );
 });

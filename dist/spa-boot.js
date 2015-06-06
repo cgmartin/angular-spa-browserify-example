@@ -4,6 +4,7 @@
 // using runtime environment settings.
 // See: https://github.com/cgmartin/spa-express-static-server
 typeof main === 'function' && main({
+    'clientVersion':            '?.?.?',
     'isDebugInfoEnabled':       true,
     'isLogDebugEnabled':        true,
     'isHtml5ModeEnabled':       false,

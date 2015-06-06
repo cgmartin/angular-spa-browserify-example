@@ -17,7 +17,6 @@ var loggingModule = require('../logging/logging-module');
 var errorModule = require('../error/error-module');
 var notificationsModule = require('../notifications/notifications-module');
 var todoModule = require('../todo/todo-module');
-var buildConfig = require('../../../.tmp/build-config'); // Generated at build time
 
 module.exports = App;
 
@@ -99,7 +98,6 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
         _this.bootLog('[Boot] Bootstrap angular app...');
 
         angular.module('app.config', [])
-            .constant('buildConfig', buildConfig) // build-time config
             .constant('bootConfig', bootConfig);  // run-time config
 
         _this.module = angular.module(_this.name, _this.dependencies);

@@ -1,4 +1,8 @@
+var path = require('path');
+var pkg = require(path.resolve('package.json'));
+
 module.exports = {
+    clientVersion:            pkg.version,
     isDebugInfoEnabled:       (process.env.NODE_ENV !== 'production'),
     isLogDebugEnabled:        (process.env.NODE_ENV !== 'production'),
     isHtml5ModeEnabled:       true,
