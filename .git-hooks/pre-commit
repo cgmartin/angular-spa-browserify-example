@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+var npm = require('npm');
+
+npm.load(function (err) {
+    if (err) throw err;
+
+    npm.commands.test(function(err) {
+        if (err) failed('test', err);
+
+        //npm.commands['run-script'](['foo'], function(err) {
+        //    if (err) failed('foo', err);
+        //});
+    });
+});
+
+function failed(msg, err) {
+    console.error('\npre-commit failure:', msg, err);
+    process.exit(1);
+}

@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+var fs = require("fs");
+var path = require("path");
+var gitHookDir = path.resolve(__dirname, '..', '.git', 'hooks');
+
+["applypatch-msg", "commit-msg", "post-commit", "post-receive", "post-update", "pre-applypatch", "pre-commit",
+ "prepare-commit-msg", "pre-rebase", "update"].forEach(function (hook) {
+
+    var hookInSourceControl = path.resolve(__dirname, hook);
+    if (fs.existsSync(hookInSourceControl)) {
+        var hookInHiddenDirectory = path.resolve(gitHookDir, hook);
+
+        if (fs.existsSync(hookInHiddenDirectory)) {
+            fs.unlinkSync(hookInHiddenDirectory);
+        }
+
+        fs.symlinkSync(path.relative(gitHookDir, hookInSourceControl), hookInHiddenDirectory);
+    }
+});
