@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "test": "npm test"
+  },
+  "pre-commit": ["test"]
+}
