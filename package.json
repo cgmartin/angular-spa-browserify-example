@@ -1,6 +1,6 @@
 {
   "name": "angular-spa-browserify-example",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Example Angular SPA Client using Browserify",
   "main": "src/server/static-server.js",
   "repository": "cgmartin/angular-spa-browserify-example",
