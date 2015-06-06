@@ -2,14 +2,14 @@
   "name": "angular-spa-browserify-example",
   "version": "0.0.4",
   "description": "Example Angular SPA Client using Browserify",
-  "main": "client/main.js",
+  "main": "src/client/main.js",
   "repository": "cgmartin/angular-spa-browserify-example",
   "homepage": "https://github.com/cgmartin/angular-spa-browserify-example",
   "private": true,
   "scripts": {
     "postinstall": "npm dedupe",
     "build": "gulp build --prod",
-    "start": "node server/static-server.js",
+    "start": "node src/server/static-server.js",
     "dev": "gulp watch",
     "test": "gulp test",
     "deploy": "gulp deploy"

@@ -12,7 +12,7 @@ module.exports = function karmaConfig(config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'client/**/*.spec.js'
+            'src/client/**/*.spec.js'
         ],
 
         // list of files to exclude
@@ -22,8 +22,8 @@ module.exports = function karmaConfig(config) {
         // info: http://karma-runner.github.io/0.10/config/preprocessors.html
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'client/**/*.spec.js': ['browserify'],
-            //'client/**/!(*spec).js': ['coverage'] // coverage is handled by browserify-istanbul
+            'src/client/**/*.spec.js': ['browserify'],
+            //'src/client/**/!(*spec).js': ['coverage'] // coverage is handled by browserify-istanbul
         },
 
         browserify: {
@@ -33,7 +33,7 @@ module.exports = function karmaConfig(config) {
                 ['browserify-ng-html2js', {
                     //module: 'app.templates', // optional module name (default: each partial has own module name)
                     extension: 'partial.html', // optionally specify what file types to look for
-                    baseDir: 'client', // optionally specify base directory for filename
+                    baseDir: 'src/client', // optionally specify base directory for filename
                     prefix: '' // optionally specify a prefix to be added to the filename
                 }],
                 ['browserify-istanbul', {

@@ -60,27 +60,28 @@ After installation, the following actions are available:
 ## Folder Structure
 
 ```
-├── coverage                 # Coverage reports
-├── dist                     # Client build destination folder
-├── server                   # Static server source files
-│   ├── spa-boot-config.js   # Boot configuration for client (actual)
-│   └── static-server.js     # Static server
-└── client                   # Angular SPA client source files
-    ├── app                  # Application module
-    ├── error                # Error handling module
-    ├── images               # Image assets to optimize
-    ├── lib                  # Global utilities
-    ├── logging              # Server logging module
-    ├── notifications        # Notifications module
-    ├── session              # Session module (browser session ID)
-    ├── styles               # Global styles
-    ├── todo                 # Todo MVC Module
-    ├── www-root             # Static files under web root
-    │   ├── lang             # Language bundles
-    │   └── spa-boot.js      # Boot configuration launcher (sample)
-    ├── main.js              # Main JS bundle entrypoint
-    ├── stubs.js             # Fake HTTP stub bundle entrypoint
-    └── index.html           # SPA index
+├── coverage                     # Coverage reports
+├── dist                         # Client build destination folder
+└── src
+    ├── server                   # Static server source files
+    │   ├── spa-boot-config.js   # Boot configuration for client (actual)
+    │   └── static-server.js     # Static server
+    └── client                   # Angular SPA client source files
+        ├── app                  # Application module
+        ├── error                # Error handling module
+        ├── images               # Image assets to optimize
+        ├── lib                  # Global utilities
+        ├── logging              # Server logging module
+        ├── notifications        # Notifications module
+        ├── session              # Session module (browser session ID)
+        ├── styles               # Global styles
+        ├── todo                 # Todo MVC Module
+        ├── www-root             # Static files under web root
+        │   ├── lang             # Language bundles
+        │   └── spa-boot.js      # Boot configuration launcher (sample)
+        ├── main.js              # Main JS bundle entrypoint
+        ├── stubs.js             # Fake HTTP stub bundle entrypoint
+        └── index.html           # SPA index
 ```
 
 ## Deployment
