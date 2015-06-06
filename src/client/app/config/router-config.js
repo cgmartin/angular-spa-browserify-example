@@ -2,6 +2,7 @@
 
 require('angular-ui-router');
 var partials = require('../partials');
+var homeController = require('../controller/home-controller');
 
 module.exports = routerConfig;
 
@@ -13,7 +14,8 @@ function routerConfig($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('home', {
             url: '/',
-            templateUrl: partials.home.name
+            templateUrl: partials.home.name,
+            controller: homeController
         })
         .state('login', {
             url: '/login',

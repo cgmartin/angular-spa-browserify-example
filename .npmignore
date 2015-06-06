@@ -1,7 +1,7 @@
 .*
 gulpfile.js
 karma.conf.js
-client
+src/client
 coverage
 deploy
 node_modules

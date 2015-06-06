@@ -2,7 +2,7 @@
   "name": "angular-spa-browserify-example",
   "version": "0.0.4",
   "description": "Example Angular SPA Client using Browserify",
-  "main": "src/client/main.js",
+  "main": "src/server/static-server.js",
   "repository": "cgmartin/angular-spa-browserify-example",
   "homepage": "https://github.com/cgmartin/angular-spa-browserify-example",
   "private": true,
@@ -86,7 +86,7 @@
   "dependencies": {
     "heapdump": "^0.3.5",
     "lodash": "^3.9.3",
-    "spa-express-static-server": "^0.0.3",
+    "spa-express-static-server": "^0.0.4",
     "throng": "^1.0.0",
     "uuid": "^2.0.1"
   }
