@@ -1,0 +1,8 @@
+.*
+gulpfile.js
+karma.conf.js
+client
+coverage
+deploy
+node_modules
+
