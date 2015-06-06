@@ -1,3 +1,4 @@
+// jshint -W098
 'use strict';
 var path        = require('path');
 var _           = require('lodash');
@@ -15,6 +16,7 @@ var watchify    = require('watchify');
 var browserify  = require('browserify');
 var ngHtml2Js   = require('browserify-ng-html2js');
 var karma       = require('karma').server;
+var guppy       = require('git-guppy')(gulp);
 
 process.setMaxListeners(0);    // Disable max listeners for gulp
 
@@ -48,6 +50,12 @@ function verbosePrintFiles(taskName) {
         return taskName + ': ' + filepath;
     }));
 }
+
+/************************************************************************
+ * Git Hooks
+ */
+
+gulp.task('pre-commit', false, ['test']);
 
 /************************************************************************
  * Clean temporary folders and files
