@@ -22,4 +22,6 @@ function serverLoggerConfig(serverLoggerProvider, buildConfig, bootConfig) {
         angular.extend(loggingConfig, bootConfig.serverLogging);
     }
     serverLoggerProvider.configure(loggingConfig);
+
+    serverLoggerProvider.interceptors.push('serverLoggerInterceptor');
 }

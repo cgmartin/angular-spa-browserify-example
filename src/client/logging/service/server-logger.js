@@ -9,12 +9,27 @@ module.exports = ServerLogger;
 /**
  * Server-side logging service, sends logs to server in bulk at configured interval
  */
-function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $translate, $log, $window) {
+function ServerLogger(
+    loggerConfig, logLevels, interceptorFactories, traceService,
+    $locale, $translate, $log, $window, $injector
+) {
     var _this = this;
     var sessionStorageKey = 'ngSpa_serverLogger_log';
     var logQueue = [];
     var sendDataIntervalId = null;
 
+    /**
+     * Interceptors stored in reverse order. Inner interceptors before outer interceptors.
+     * The reversal is needed so that we can build up the interception chain around the
+     * log action.
+     */
+    var reversedInterceptors = [];
+    angular.forEach(interceptorFactories, function(interceptorFactory) {
+        reversedInterceptors.unshift(angular.isString(interceptorFactory) ?
+            $injector.get(interceptorFactory) : $injector.invoke(interceptorFactory));
+    });
+
+    // Start up the periodic flush of the log queue to server
     startInterval();
 
     // Load unsent logs from previous page load
@@ -109,23 +124,25 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
         if (!loggerConfig.isLoggingEnabled) { return; }
 
         meta = angular.extend({}, meta);
-        level = validateLogLevel(level);
-        var logItem = {
-            time:  (new Date()).getTime(),
-            loc:   $window.location.href,
-            msg:   message,
-            meta:  meta,
-            level: level,
-            user:  session.userId
-        };
 
+        // Proxy to console log
         if (loggerConfig.isConsoleLogEnabled) {
             $log[level].call($log, 'ServerLogger: ' + message, meta);
         }
 
+        // Filter logs based on log level or excluded types
         if ((loggerConfig.loggingLevel <= logLevels[level.toUpperCase()]) &&
             (loggerConfig.excludeTypes.indexOf(meta.type || '') === -1)
         ) {
+            level = validateLogLevel(level);
+            var logItem = {
+                time:  (new Date()).getTime(),
+                loc:   $window.location.href,
+                msg:   message,
+                meta:  meta,
+                level: level
+            };
+
             addLogToQueue(logItem);
         }
     };
@@ -138,6 +155,11 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
     }
 
     function addLogToQueue(logItem) {
+        // Apply log interceptors
+        angular.forEach(reversedInterceptors, function(interceptor) {
+            if (interceptor.log) { interceptor.log(logItem); }
+        });
+
         logQueue.push(logItem);
         saveLogQueue();
     }
@@ -166,13 +188,13 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
         if (logQueue.length === 0) { return; }
 
         var baseUrl = loggerConfig.apiBaseUrl || '';
-        var url = baseUrl + '/api/logs';
-        var headers = {
-            'X-Requested-With': 'XMLHttpRequest',
-            ConversationId: session.conversationId
-        };
 
-        var data = {
+        var logReqCfg = {};
+        logReqCfg.url = baseUrl + loggerConfig.apiUrl;
+        logReqCfg.headers = {
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+        logReqCfg.data = {
             device: 'browser',
             appver: loggerConfig.appVersion,
             locale: $locale.id,
@@ -181,17 +203,25 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
             logs: logQueue.splice(0, Number.MAX_VALUE) // Send all logs in queue
         };
 
+        // Apply sendData interceptors
+        // TODO: Consider promises.
+        // Current preference is to keep it simple and not introduce any async failures
+        // that could interrupt the log request
+        angular.forEach(reversedInterceptors, function(interceptor) {
+            if (interceptor.sendData) { interceptor.sendData(logReqCfg); }
+        });
+
         if (loggerConfig.isStubsEnabled) {
-            $log.debug('%cServerLogger => ajax 200 POST ' + url,
-                'background:yellow; color:blue', 'reqData:', data);
+            $log.debug('%cServerLogger => ajax 200 POST ' + logReqCfg.url,
+                'background:yellow; color:blue', 'reqData:', logReqCfg.data);
             saveLogQueue();
 
         } else {
             var request = createXhr();
-            request.open('POST', url, true);
-            //request.timeout = 1000;
+            request.open('POST', logReqCfg.url, true);
+            request.timeout = Math.min(loggerConfig.loggingInterval, 60000);
             request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-            angular.forEach(headers, function(val, key) {
+            angular.forEach(logReqCfg.headers, function(val, key) {
                 request.setRequestHeader(key, val);
             });
             request.onreadystatechange = function xhrReadyStateChange() {
@@ -202,12 +232,12 @@ function ServerLogger(loggerConfig, logLevels, session, traceService, $locale, $
                         // But not if the server is complaining the request size is too large
                         // via 413 (Request Entity Too Large) error
                         $log.debug('sendlog unsuccessful');
-                        logQueue.unshift.apply(logQueue, data.logs);
+                        logQueue.unshift.apply(logQueue, logReqCfg.data.logs);
                     }
                     saveLogQueue();
                 }
             };
-            request.send(angular.toJson(data));
+            request.send(angular.toJson(logReqCfg.data));
             request = null;
         }
     }

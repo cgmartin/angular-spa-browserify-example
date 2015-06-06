@@ -1,7 +1,6 @@
 'use strict';
 
 var angular = require('angular');
-var sessionModule = require('../session/session-module');
 var httpProvider = require('./config/http-provider');
 var exceptionHandlerLoggerDecorator = require('./config/exception-handler-logger-decorator');
 var serverLoggerProvider = require('./provider/server-logger-provider');
@@ -13,7 +12,7 @@ var routeLoggingSetup = require('./run/route-logging-setup');
 
 var moduleName = module.exports = 'logging';
 
-var dependencies = [sessionModule];
+var dependencies = [];
 
 angular
     .module(moduleName, dependencies)

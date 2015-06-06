@@ -303,7 +303,7 @@ gulp.task('karma', false, function(done) {
 });
 
 gulp.task('test', 'Run unit tests', function(cb) {
-    runSequence('clean', ['build-config', 'lint'], 'karma', cb);
+    runSequence('clean-coverage', ['build-config', 'lint'], 'karma', cb);
 });
 
 /************************************************************************

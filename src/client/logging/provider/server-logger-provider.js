@@ -23,6 +23,7 @@ function ServerLoggerProvider() {
         loggingInterval: 120000,
         maxBufferSize: 1000,
         apiBaseUrl: '',
+        apiUrl: '/api/logs',
         isStubsEnabled: false,
         isConsoleLogEnabled: false,
 
@@ -38,6 +39,8 @@ function ServerLoggerProvider() {
         excludeTypes: []
     };
 
+    var interceptorFactories = this.interceptors = [];
+
     this.configure = function(value) {
         angular.extend(loggerConfig, value);
     };
@@ -45,9 +48,10 @@ function ServerLoggerProvider() {
     this.$get = serverLoggerFactory;
 
     // @ngInject
-    function serverLoggerFactory(session, traceService, $locale, $translate, $log, $window) {
+    function serverLoggerFactory(traceService, $locale, $translate, $log, $window, $injector) {
         return new ServerLogger(
-            loggerConfig, LOG_LEVEL, session, traceService, $locale, $translate, $log, $window
+            loggerConfig, LOG_LEVEL, interceptorFactories, traceService,
+            $locale, $translate, $log, $window, $injector
         );
     }
 }
