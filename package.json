@@ -12,7 +12,8 @@
     "start": "node src/server/static-server.js",
     "dev": "gulp watch",
     "test": "gulp test",
-    "deploy": "gulp deploy"
+    "deploy": "gulp deploy",
+    "preversion": "npm test"
   },
   "author": "Christopher Martin <cgmartin@gmail.com>",
   "license": "MIT",

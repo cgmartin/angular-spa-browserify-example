@@ -1,6 +1,4 @@
 'use strict';
-var fs          = require('fs');
-var mkdirp      = require('mkdirp');
 var path        = require('path');
 var _           = require('lodash');
 var gulp        = require('gulp-help')(require('gulp'));
@@ -17,7 +15,6 @@ var watchify    = require('watchify');
 var browserify  = require('browserify');
 var ngHtml2Js   = require('browserify-ng-html2js');
 var karma       = require('karma').server;
-var pkg         = require('./package.json');
 
 process.setMaxListeners(0);    // Disable max listeners for gulp
 
