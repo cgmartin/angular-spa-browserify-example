@@ -12,7 +12,7 @@ module.exports = {
         loggingInterval:     120000,
         maxBufferSize:       1000,
         excludeTypes:        [],
-        isConsoleLogEnabled: (process.env.NODE_ENV !== 'production')
+        isConsoleLogEnabled: true //(process.env.NODE_ENV !== 'production')
     },
     preferredLanguage:        'en',
     apiBaseUrl:               '',
