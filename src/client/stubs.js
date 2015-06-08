@@ -1,7 +1,7 @@
 /*jshint -W098 */
 var angular = require('angular');
 require('angular-mocks');
-var todoStubs = require('./todo/todo-stubs');
+var todoStubs = require('./modules/todo/todo-stubs');
 
 // Communicate with globally exposed app
 var app = window.SPA.app;

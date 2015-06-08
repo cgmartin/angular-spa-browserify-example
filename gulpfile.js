@@ -169,10 +169,10 @@ function CssBundle(main, searchPaths) {
 
 // Custom bootstrap/font-awesome builds
 var mainCssFiles = [
-    new CssBundle('src/client/styles/bootstrap.less',
-        ['src/client/styles', 'node_modules/bootstrap/less', 'node_modules/bootstrap-social']),
-    new CssBundle('src/client/styles/font-awesome.less',
-        ['src/client/styles', 'node_modules/font-awesome/less']),
+    new CssBundle('src/client/app/styles/bootstrap.less',
+        ['src/client/app/styles', 'node_modules/bootstrap/less', 'node_modules/bootstrap-social']),
+    new CssBundle('src/client/app/styles/font-awesome.less',
+        ['src/client/app/styles', 'node_modules/font-awesome/less']),
     new CssBundle('node_modules/angular/angular-csp.css')
 ];
 
@@ -216,7 +216,7 @@ gulp.task('fonts', false, function() {
 gulp.task('images', function() {
     var destDir = 'dist/img';
     return gulp
-        .src(['src/client/images/**'])
+        .src(['src/client/assets/images/**'])
         .pipe($.newer(destDir))
         .pipe($.if(args.verbose, $.print()))
         .pipe($.if(isProduction, $.imagemin({progressive: true})))

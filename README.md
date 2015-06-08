@@ -35,6 +35,7 @@ deployed as a static file or routed to a dynamic backing service.
 
 ### Roadmap
 
+* Session module: User activity detection.
 * JWT authentication example.
 * Route authorization with bearer tokens.
 * Social login to Facebook, Google, Twitter, etc.
@@ -66,19 +67,25 @@ After installation, the following actions are available:
     ├── server                   # Static server source files
     │   ├── spa-boot-config.js   # Boot configuration for client (actual)
     │   └── static-server.js     # Static server
+    │
     └── client                   # Angular SPA client source files
         ├── app                  # Application module
-        ├── error                # Error handling module
-        ├── images               # Image assets to optimize
-        ├── lib                  # Global utilities
-        ├── logging              # Server logging module
-        ├── notifications        # Notifications module
-        ├── session              # Session module (browser session ID)
-        ├── styles               # Global styles
-        ├── todo                 # Todo MVC Module
+        │   └── styles           # Global styles
+        │
+        ├── modules              # Feature modules
+        │   ├── error            # Error handling module
+        │   ├── logging          # Server logging module
+        │   ├── notifications    # Notifications module
+        │   ├── session          # Session tracking module
+        │   └── todo             # Todo MVC Module
+        │
+        ├── assets               # Raw assets to optimize during build
+        │   └── images
+        │
         ├── www-root             # Static files under web root
         │   ├── lang             # Language bundles
         │   └── spa-boot.js      # Boot configuration launcher (sample)
+        │
         ├── main.js              # Main JS bundle entrypoint
         ├── stubs.js             # Fake HTTP stub bundle entrypoint
         └── index.html           # SPA index

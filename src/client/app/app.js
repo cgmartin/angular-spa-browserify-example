@@ -12,11 +12,11 @@ var ngServices = require('./service');
 var ngDirectives = require('./directive');
 
 // App Modules
-var sessionModule = require('../session/session-module');
-var loggingModule = require('../logging/logging-module');
-var errorModule = require('../error/error-module');
-var notificationsModule = require('../notifications/notifications-module');
-var todoModule = require('../todo/todo-module');
+var sessionModule = require('../modules/session/session-module');
+var loggingModule = require('../modules/logging/logging-module');
+var errorModule = require('../modules/error/error-module');
+var notificationsModule = require('../modules/notifications/notifications-module');
+var todoModule = require('../modules/todo/todo-module');
 
 module.exports = App;
 

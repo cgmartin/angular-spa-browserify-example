@@ -51,11 +51,11 @@ var App = proxyquire('./app', {
     './partials': partialsStub,
     './service': serviceStub,
     './directive': directiveStub,
-    '../session/session-module': 'session',
-    '../logging/logging-module': 'logging',
-    '../error/error-module': 'error',
-    '../notifications/notifications-module': 'notifications',
-    '../todo/todo-module': 'todo',
+    '../modules/session/session-module': 'session',
+    '../modules/logging/logging-module': 'logging',
+    '../modules/error/error-module': 'error',
+    '../modules/notifications/notifications-module': 'notifications',
+    '../modules/todo/todo-module': 'todo',
     // By default proxyquireify calls the function defined on the
     // original dependency whenever it is not found on the stub.
     '@noCallThru': true  // Prevent call thru for all contained stubs.
