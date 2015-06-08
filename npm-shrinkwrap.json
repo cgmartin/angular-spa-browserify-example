@@ -1,6 +1,6 @@
 {
   "name": "angular-spa-browserify-example",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "dependencies": {
     "heapdump": {
       "version": "0.3.5",
