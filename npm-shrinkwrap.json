@@ -13,9 +13,9 @@
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.9.3.tgz"
     },
     "spa-express-static-server": {
-      "version": "0.0.8",
-      "from": "spa-express-static-server@>=0.0.8 <0.0.9",
-      "resolved": "https://registry.npmjs.org/spa-express-static-server/-/spa-express-static-server-0.0.8.tgz",
+      "version": "0.0.9",
+      "from": "spa-express-static-server@>=0.0.9 <0.0.10",
+      "resolved": "https://registry.npmjs.org/spa-express-static-server/-/spa-express-static-server-0.0.9.tgz",
       "dependencies": {
         "bunyan": {
           "version": "1.4.0",
@@ -59,18 +59,18 @@
           }
         },
         "compression": {
-          "version": "1.4.4",
+          "version": "1.5.0",
           "from": "compression@>=1.4.4 <2.0.0",
-          "resolved": "https://registry.npmjs.org/compression/-/compression-1.4.4.tgz",
+          "resolved": "https://registry.npmjs.org/compression/-/compression-1.5.0.tgz",
           "dependencies": {
             "bytes": {
-              "version": "1.0.0",
-              "from": "bytes@1.0.0",
-              "resolved": "https://registry.npmjs.org/bytes/-/bytes-1.0.0.tgz"
+              "version": "2.1.0",
+              "from": "bytes@2.1.0",
+              "resolved": "https://registry.npmjs.org/bytes/-/bytes-2.1.0.tgz"
             },
             "compressible": {
               "version": "2.0.3",
-              "from": "compressible@>=2.0.2 <2.1.0",
+              "from": "compressible@>=2.0.3 <2.1.0",
               "resolved": "https://registry.npmjs.org/compressible/-/compressible-2.0.3.tgz"
             },
             "debug": {

@@ -10,13 +10,15 @@ var staticServer = require('spa-express-static-server');
 
 // Cluster worker manager
 throng(start, {
-    workers: process.env.WEB_CONCURRENCY || 1,
+    workers: process.env.WEB_CONCURRENCY,
     lifetime: Infinity
 });
 
 function start() {
     staticServer.start({
         webRootPath: process.env.STATIC_WEBROOT || './dist',
-        spaBoot:     require('./spa-boot-config')
+        spaBoot:     require('./spa-boot-config'),
+        isCompressionEnabled: process.env.NODE_ENV === 'production',
+        isGracefulShutdownEnabled: process.env.NODE_ENV === 'production'
     });
 }
