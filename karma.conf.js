@@ -66,7 +66,7 @@ module.exports = function karmaConfig(config) {
             dir: './coverage',
             reporters: [
                 // html reports issue: https://github.com/karma-runner/karma-coverage/issues/16
-                //{type: 'html', subdir: 'report-html'},
+                {type: 'html', subdir: 'report-html'},
                 {type: 'lcovonly', subdir: 'report-lcov'},
                 {type: 'text-summary'}
             ]
