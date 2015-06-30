@@ -18,10 +18,6 @@ function routerConfig($stateProvider, $urlRouterProvider) {
             templateUrl: partials.home.name,
             controller: homeController
         })
-        .state('login', {
-            url: '/login',
-            templateUrl: partials.login.name
-        })
         .state('chat', {
             url: '/chat',
             templateUrl: partials.chat.name

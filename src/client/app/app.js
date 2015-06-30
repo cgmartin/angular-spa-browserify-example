@@ -16,6 +16,7 @@ var sessionModule = require('../modules/session/session-module');
 var loggingModule = require('../modules/logging/logging-module');
 var errorModule = require('../modules/error/error-module');
 var notificationsModule = require('../modules/notifications/notifications-module');
+var authModule = require('../modules/auth/auth-module');
 var todoModule = require('../modules/todo/todo-module');
 
 module.exports = App;
@@ -45,6 +46,7 @@ function App(options) {
             loggingModule,
             errorModule,
             notificationsModule,
+            authModule,
             todoModule
         ]
         .concat(_.pluck(ngPartials, 'name'));

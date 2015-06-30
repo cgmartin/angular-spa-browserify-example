@@ -25,5 +25,5 @@ migrations/.migrate
 data
 
 *.tgz
-
+*.heapsnapshot
 

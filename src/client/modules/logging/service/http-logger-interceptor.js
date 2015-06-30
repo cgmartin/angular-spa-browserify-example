@@ -17,6 +17,7 @@ function HttpLoggerInterceptor($q, serverLogger) {
     // Before request is called
     // Can return config or promise containing config
     this.request = function(reqCfg) {
+        if (!reqCfg || reqCfg.skipLogging) { return reqCfg; }
         reqCfg.startTime = timer();
         return reqCfg;
     };
@@ -44,7 +45,7 @@ function HttpLoggerInterceptor($q, serverLogger) {
 
     function logServerInfo(obj) {
         // Don't log requests that were retrieved from cache
-        if (obj.config.cache) { return; }
+        if (!obj.config || obj.config.cache || obj.config.skipLogging) { return; }
 
         var timeDiff = timer() - obj.config.startTime;
         serverLogger.trackAjax(obj, timeDiff);

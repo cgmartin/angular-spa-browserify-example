@@ -34,8 +34,11 @@
 
             <!-- Right side -->
             <form class="navbar-form navbar-right">
-                <a ui-sref="login">
+                <a ui-sref="login" ng-if="!vm.isLoggedIn()">
                     <button type="button" class="btn btn-primary">Log In</button>
+                </a>
+                <a ng-click="vm.logout()" ng-if="vm.isLoggedIn()">
+                    <button type="button" class="btn btn-info">Log Out</button>
                 </a>
             </form>
 

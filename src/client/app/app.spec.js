@@ -55,6 +55,7 @@ var App = proxyquire('./app', {
     '../modules/logging/logging-module': 'logging',
     '../modules/error/error-module': 'error',
     '../modules/notifications/notifications-module': 'notifications',
+    '../modules/auth/auth-module': 'auth',
     '../modules/todo/todo-module': 'todo',
     // By default proxyquireify calls the function defined on the
     // original dependency whenever it is not found on the stub.

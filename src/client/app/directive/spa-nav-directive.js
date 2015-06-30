@@ -14,10 +14,12 @@ function spaNavDirective() {
     };
 
     // @ngInject
-    function spaNavController($scope, $translate, bootConfig, $location) {
+    function spaNavController($scope, $translate, bootConfig, authService, $location) {
         var vm = $scope.vm = {};
         vm.languages = bootConfig.supportedLanguages || [];
         vm.missingUrl = ($location.$$html5) ? '/missing-url' : '#/missing-url';
+        vm.isLoggedIn = authService.isLoggedIn;
+        vm.logout = authService.logout;
 
         $scope.selectLanguage = function(lang) {
             $translate.use(lang);

@@ -56,7 +56,7 @@ After installation, the following actions are available:
 * `npm run dev` : Builds for development, runs a local webserver, and watches for changes.
 * `npm test` : Runs TypeScript file linting and unit tests once.
 * `karma start` : Runs unit tests continuously, watching for changes.
-* `npm run build` : Creates production client assets under the `dist/` folder, for deployment to a static webserver or CDN.
+* `npm run build` : Creates production client assets under the `dist/` folder, for deployment with a static webserver or CDN.
 
 ## Folder Structure
 

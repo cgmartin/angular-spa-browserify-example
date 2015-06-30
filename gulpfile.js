@@ -18,10 +18,11 @@ var karma       = require('karma').server;
 
 process.setMaxListeners(0);    // Disable max listeners for gulp
 
-var isVerbose = args.verbose;  // Enable extra verbose logging
-var isProduction = args.prod;  // Run extra steps (minification) with production flag --prod
-var isWatching = false;        // Enable/disable tasks when running watch
-var jsBundles;                 // JS Browserify bundles
+var isVerbose = args.verbose;    // Enable extra verbose logging
+var isProduction = args.prod;    // Run extra steps (minification) with production flag --prod
+var noBrowserSync = args.nosync; // Disable BrowserSync
+var isWatching = false;          // Enable/disable tasks when running watch
+var jsBundles;                   // JS Browserify bundles
 
 /************************************************************************
  * Functions/Utilities
@@ -250,27 +251,6 @@ gulp.task('index-html', false, function() {
         .pipe(browserSync.reload({stream:true}));
 });
 
-// Replaced by browserify-ng-html2js
-//gulp.task('partials', false, function() {
-//    var destDir  = 'dist/js';
-//    var destFile = 'partials.js';
-//    return gulp.src('src/client/**/*.partial.html')
-//        .pipe($.newer(destDir + '/' + destFile))
-//        .pipe(verbosePrintFiles('partials'))
-//        .pipe($.if(isProduction, $.htmlmin({
-//            collapseWhitespace: true,
-//            removeComments: true
-//        })))
-//        .pipe($.ngHtml2js({
-//            moduleName: 'app.templates',
-//            prefix: ''
-//        }))
-//        .pipe($.concat(destFile))
-//        .pipe($.if(isProduction, $.uglify()))
-//        .pipe(gulp.dest(destDir))
-//        .pipe(browserSync.reload({stream:true}));
-//});
-
 /************************************************************************
  * Unit testing tasks
  */
@@ -312,18 +292,89 @@ gulp.task('build-iterate', false, function(cb) {
     );
 });
 
-gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['build-watch'], function() {
-    var port = 8000;
+gulp.task('nodemon', false, function(cb) {
+    var firstStart = true;
+    var serverPort = 8000;
+    $.nodemon({
+        script: 'src/server/static-server.js',
+        ext: 'js',
+        env: {
+            'NODE_ENV': 'development',
+            'PORT': serverPort
+        },
+        nodeArgs: ['--debug=5700'],
+        ignore: [
+            'coverage/**', 'node_modules/**',
+            'gulpfile.js', '.idea/**', '.git/**'
+        ],
+        stdout: false // important for 'readable' event
+    })
+    // The http server might not have started listening yet when
+    // the `restart` event has been triggered. It's best to check
+    // whether it is already listening for connections or not.
+    .on('readable', function() {
+        this.stdout.on('data', function(chunk) {
+            process.stdout.write(chunk);
+            if (/listening at http/.test(chunk)) {
+                if (firstStart) {
+                    firstStart = false;
+                    if (!noBrowserSync) {
+                        startBrowserSync(8000);
+                    }
+                    cb();
+                }
+            }
+        });
+        this.stderr.pipe(process.stdout);
+    });
+    //.on('change', ['test-server'])
+    //.on('start', function() {});
+});
+
+// Don't run jsBundles during watch, handled by watchify
+gulp.task('build-watch', false, ['clean-build'], function(cb) {
+    runSequence(
+        ['index-html', 'fonts', 'images', 'www-root', 'less'],
+        cb
+    );
+});
+
+gulp.task('watch', false, function() {
+    isWatching = true;
+    gulp.watch('src/client/**/*.js',     ['lint-js']);
+    gulp.watch('src/client/index.html',  ['index-html']);
+    gulp.watch('src/client/**/*.less',   ['less']);
+    gulp.watch('src/client/www-root/**', ['www-root']);
+
+    // Run the browserify bundles and merge their streams
+    return merge.apply(merge, _.pluck(jsBundles, 'runWatchBundle').map(function(b) {return b();}));
+});
+
+gulp.task('serve', 'Watch for file changes and re-run build and lint tasks', ['build-watch'], function(cb) {
+    // When watch and nodemon tasks run at same time
+    // the server seems to randomly blow up (??)
+    runSequence('watch', 'nodemon', cb);
+});
+
+function startBrowserSync(port) {
+    if (browserSync.active) {
+        browserSync.reload();
+        return;
+    }
+
+    port = port || 8000;
     $.util.log('Starting browser-sync on port ' + port);
 
-    browserSync({
-        // Start server...
-        server: {
-            baseDir: './dist'
-        },
+    var options = {
+        // Start standalone server...
+        //server: {
+        //    baseDir: './dist'
+        //},
         // ...or proxy to separate static server
-        //proxy: 'localhost:' + port,
-        //port: 3000,
+        proxy: 'localhost:' + port,
+        port: 3000,
+        files: ['./dist/**'],
+        //
         ghostMode: {
             clicks: true,
             location: false,
@@ -339,61 +390,7 @@ gulp.task('watch', 'Watch for file changes and re-run build and lint tasks', ['b
         reloadDelay: 1000,
         browser: ['google chrome'],
         open: false
-    });
+    };
 
-    gulp.watch('src/client/**/*.js',     ['lint-js']);
-    gulp.watch('src/client/index.html',  ['index-html']);
-    gulp.watch('src/client/**/*.less',   ['less']);
-    gulp.watch('src/client/www-root/**', ['www-root']);
-
-    // Run the browserify bundles and merge their streams
-    return merge.apply(merge, _.pluck(jsBundles, 'runWatchBundle').map(function(b) {return b();}));
-});
-
-// Don't run jsBundles during watch, handled by watchify
-gulp.task('build-watch', false, ['clean-build'], function(cb) {
-    isWatching = true;
-    runSequence(
-        ['index-html', 'fonts', 'images', 'www-root', 'less'],
-        cb
-    );
-});
-
-/************************************************************************
- * Deployment
- */
-
-gulp.task('deploy-root', false, function() {
-    var destDir = 'deploy';
-    return gulp
-        .src(['package.json', 'npm-shrinkwrap.json'], {base: '.'})
-        .pipe(verbosePrintFiles('deploy-copy-pkg'))
-        .pipe(gulp.dest(destDir));
-});
-
-gulp.task('deploy-server', false, function() {
-    var destDir = 'deploy/server';
-    return gulp
-        .src(['server/**'])
-        //.pipe($.newer(destDir))
-        .pipe(verbosePrintFiles('deploy-copy-server'))
-        .pipe(gulp.dest(destDir));
-});
-
-gulp.task('deploy-client', false, function() {
-    var destDir = 'deploy/www-root';
-    return gulp
-        .src(['dist/**'])
-        //.pipe($.newer(destDir))
-        .pipe(verbosePrintFiles('deploy-copy-wwwroot'))
-        .pipe(gulp.dest(destDir));
-});
-
-gulp.task('deploy', false, function(cb) {
-    isProduction = true;
-    runSequence(
-        'clean-build', 'lint', 'test', 'build-iterate',
-        ['deploy-root', 'deploy-server', 'deploy-client'],
-        cb
-    );
-});
+    browserSync(options);
+}

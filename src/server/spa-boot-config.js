@@ -15,8 +15,8 @@ module.exports = {
         isConsoleLogEnabled: true //(process.env.NODE_ENV !== 'production')
     },
     preferredLanguage:        'en',
-    apiBaseUrl:               '',
-    isStubsEnabled:           true,
+    apiBaseUrl:               'http://localhost:8001',
+    isStubsEnabled:           false,
     notificationsMaximumOpen: 2,
     supportedLanguages:       ['en', 'fr']
 };

@@ -10,15 +10,15 @@
     "postinstall": "npm dedupe",
     "build": "gulp build --prod",
     "start": "node src/server/static-server.js",
-    "dev": "gulp watch",
+    "dev": "gulp serve",
     "test": "gulp test",
-    "deploy": "gulp deploy",
     "preversion": "npm test"
   },
   "author": "Christopher Martin <cgmartin@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "angular": "^1.4.0",
+    "angular-jwt": "0.0.9",
     "angular-mocks": "^1.4.0",
     "angular-translate": "^2.7.2",
     "angular-ui-router": "^0.2.15",
@@ -48,6 +48,7 @@
     "gulp-newer": "^0.5.1",
     "gulp-ng-annotate": "^1.0.0",
     "gulp-ng-html2js": "^0.2.0",
+    "gulp-nodemon": "^2.0.3",
     "gulp-plumber": "^1.0.1",
     "gulp-print": "^1.1.0",
     "gulp-sourcemaps": "^1.5.2",
@@ -87,7 +88,7 @@
   "dependencies": {
     "heapdump": "^0.3.5",
     "lodash": "^3.9.3",
-    "spa-express-static-server": "^0.0.10",
+    "spa-express-static-server": "^0.0.11",
     "throng": "^1.0.0",
     "uuid": "^2.0.1"
   }
