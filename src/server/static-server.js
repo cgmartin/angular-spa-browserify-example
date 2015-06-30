@@ -3,7 +3,7 @@
  * Starts a static server for the client app
  */
 // To generate a heapdump on the running process, send: `kill -USR2 {pid}`
-require('heapdump');
+if (process.env.NODE_ENV === 'production') { require('heapdump'); }
 
 var throng = require('throng');
 var staticServer = require('spa-express-static-server');

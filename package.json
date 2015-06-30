@@ -18,7 +18,6 @@
   "license": "MIT",
   "devDependencies": {
     "angular": "^1.4.0",
-    "angular-jwt": "0.0.9",
     "angular-mocks": "^1.4.0",
     "angular-translate": "^2.7.2",
     "angular-ui-router": "^0.2.15",
