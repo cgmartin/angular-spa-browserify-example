@@ -322,6 +322,8 @@ gulp.task('nodemon', false, function(cb) {
                         startBrowserSync(8000);
                     }
                     cb();
+                } else {
+                    browserSync.reload();
                 }
             }
         });

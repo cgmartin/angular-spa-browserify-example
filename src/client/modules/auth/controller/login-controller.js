@@ -13,9 +13,7 @@ function LoginController($scope, authService, notifications, $state, $log) {
 
     this.login = function() {
         if (!$scope.loginForm.$valid) { return; }
-        console.log('login...');
-        authService.login(this.authData).then(function(result) {
-            $log.debug('login result', result);
+        authService.login(this.authData).then(function() {
             notifications.notify({message: 'Login successful', classes: ['success']});
             $state.go('home');
         }).catch(function(error) {

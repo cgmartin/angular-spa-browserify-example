@@ -7,21 +7,47 @@ function AuthService($http, tokenStorage, jwtHelper) {
     this.login = function(authData) {
         return $http({
             url: '/api/auth/access-tokens',
-            skipAuthorization: true,
             method: 'POST',
             data: authData
-        }).then(function(result) {
-            var tokenData = result.data;
-            // Store token data in session
-            tokenStorage.setAccessToken(tokenData.token);
-            tokenStorage.setRefreshToken(tokenData.refreshToken);
-            return tokenData;
-        });
+        }).then(processTokenResponse);
+    };
+
+    this.extendSession = function() {
+        var refreshToken = tokenStorage.getRefreshToken();
+        if (!refreshToken) { return null; }
+        return $http({
+            url: '/api/auth/refresh-tokens',
+            useAuthorization: true,
+            ignoreExpiredToken: true,
+            method: 'POST',
+            data: {
+                refreshToken: refreshToken
+            }
+        }).then(processTokenResponse);
+    };
+
+    function processTokenResponse(response) {
+        var tokenData = response.data;
+        // Store token data in session
+        tokenStorage.setAccessToken(tokenData.token);
+        tokenStorage.setRefreshToken(tokenData.refreshToken);
+        return tokenData.token;
+    }
+
+    this.getAccessToken = function() {
+        return tokenStorage.getAccessToken();
     };
 
     this.logout = function() {
-        // Delete token data from store
-        tokenStorage.deleteTokens();
+        return $http({
+            url: '/api/auth/refresh-tokens/' + tokenStorage.getRefreshToken(),
+            useAuthorization: true,
+            ignoreExpiredToken: true,
+            method: 'DELETE'
+        }).finally(function() {
+            // Delete token data from store regardless of backend error
+            tokenStorage.deleteTokens();
+        });
     };
 
     this.isLoggedIn = function() {

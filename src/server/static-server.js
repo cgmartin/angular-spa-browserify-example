@@ -10,7 +10,7 @@ var staticServer = require('spa-express-static-server');
 
 // Cluster worker manager
 throng(start, {
-    workers: process.env.WEB_CONCURRENCY,
+    workers: process.env.WEB_CONCURRENCY || 1,
     lifetime: Infinity
 });
 

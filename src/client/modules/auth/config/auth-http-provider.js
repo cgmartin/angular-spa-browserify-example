@@ -12,28 +12,13 @@ function authHttpProvider($httpProvider, jwtInterceptorProvider) {
 }
 
 // @ngInject
-function tokenGetter(config, tokenStorage, jwtHelper, $http) {
+function tokenGetter(config, authService, jwtHelper) {
     // Return access token if not expired
-    var accessToken = tokenStorage.getAccessToken();
-    if (config.isRefreshRequest || (accessToken && !jwtHelper.isTokenExpired(accessToken))) {
+    var accessToken = authService.getAccessToken();
+    if (config.ignoreExpiredToken || (accessToken && !jwtHelper.isTokenExpired(accessToken))) {
         return accessToken;
     }
 
     // Use refresh token to get new access token
-    var refreshToken = tokenStorage.getRefreshToken();
-    if (!refreshToken) { return null; }
-    return $http({
-        url: '/api/authz/refresh-tokens',
-        useAuthorization: true,
-        isRefreshRequest: true,
-        method: 'POST',
-        data: {
-            refreshToken: refreshToken
-        }
-    }).then(function(response) {
-        var accessToken = response.data.token;
-        tokenStorage.setAccessToken(accessToken);
-        tokenStorage.setRefreshToken(response.data.refreshToken);
-        return accessToken;
-    });
+    return authService.extendSession();
 }
