@@ -4,7 +4,6 @@ var angular = require('angular');
 var httpProvider = require('./config/http-provider');
 var exceptionHandlerLoggerDecorator = require('./config/exception-handler-logger-decorator');
 var serverLoggerProvider = require('./provider/server-logger-provider');
-var HttpLoggerInterceptor = require('./service/http-logger-interceptor');
 var TraceService = require('./service/trace-service');
 var trackOnDirective = require('./directive/track-on-directive');
 var logPerformanceTiming = require('./run/log-performance-timing');
@@ -19,7 +18,6 @@ angular
     .config(httpProvider)
     .config(exceptionHandlerLoggerDecorator)
     .provider('serverLogger', serverLoggerProvider)
-    .service('loggerInterceptor', HttpLoggerInterceptor)
     .service('traceService', TraceService)
     .directive('trackOn', trackOnDirective)
     .run(logPerformanceTiming)

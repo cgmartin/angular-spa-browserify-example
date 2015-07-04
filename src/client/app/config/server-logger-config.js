@@ -23,5 +23,21 @@ function serverLoggerConfig(serverLoggerProvider, bootConfig) {
     }
     serverLoggerProvider.configure(loggingConfig);
 
-    serverLoggerProvider.interceptors.push('serverLoggerInterceptor');
+    serverLoggerProvider.interceptors.push(serverLoggerInterceptor);
+}
+
+/**
+ * Add extra information to server logs
+ */
+// @ngInject
+function serverLoggerInterceptor(session) {
+    return {
+        log: function(logItem) {
+            logItem.user = session.userId;
+        },
+
+        sendData: function(reqCfg) {
+            reqCfg.headers.ConversationId = session.conversationId;
+        }
+    };
 }
