@@ -53,7 +53,9 @@ function JwtInterceptorProvider() {
             responseError: function(response) {
                 // handle the case where the user is not authenticated
                 if (response.status === 401) {
-                    $rootScope.$broadcast('unauthenticated', response);
+                    $rootScope.$broadcast('unauthenticated');
+                } else if (response.status === 403) {
+                    $rootScope.$broadcast('unauthorized');
                 }
                 return $q.reject(response);
             }

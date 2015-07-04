@@ -10,6 +10,11 @@ var LoginController = require('./controller/login-controller');
 var AuthService = require('./service/auth-service');
 var JwtHelper = require('./service/jwt-helper');
 var TokenStorage = require('./service/token-storage');
+var ifAuthenticatedDirective = require('./directive/if-authenticated-directive');
+var ifNotAuthenticatedDirective = require('./directive/if-not-authenticated-directive');
+var ifAuthorizedDirective = require('./directive/if-authorized-directive');
+var ifNotAuthorizedDirective = require('./directive/if-not-authorized-directive');
+var routeAuthSetup = require('./run/route-auth-setup');
 
 var moduleName = module.exports = 'auth';
 
@@ -26,4 +31,9 @@ angular
     .service('jwtHelper', JwtHelper)
     .service('authService', AuthService)
     .service('tokenStorage', TokenStorage)
-    .controller('loginController', LoginController);
+    .directive('ifAuthenticated', ifAuthenticatedDirective)
+    .directive('ifNotAuthenticated', ifNotAuthenticatedDirective)
+    .directive('ifAuthorized', ifAuthorizedDirective)
+    .directive('ifNotAuthorized', ifNotAuthorizedDirective)
+    .controller('loginController', LoginController)
+    .run(routeAuthSetup);

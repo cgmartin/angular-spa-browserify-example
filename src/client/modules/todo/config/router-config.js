@@ -10,6 +10,10 @@ function routerConfig($stateProvider) {
         .state('todos', {
             url: '/todos',
             templateUrl: todoPartial.name,
-            controller: 'todoController'
+            controller: 'todoController',
+            auth: {
+                authenticate: true,
+                //authorize: 'admin'
+            }
         });
 }

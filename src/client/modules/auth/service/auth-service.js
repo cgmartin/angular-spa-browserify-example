@@ -1,9 +1,12 @@
+// jshint -W098
 'use strict';
 
 module.exports = AuthService;
 
 // @ngInject
-function AuthService($http, tokenStorage, jwtHelper) {
+function AuthService($http, tokenStorage, jwtHelper, $rootScope) {
+    var _this = this;
+
     this.login = function(authData) {
         return $http({
             url: '/api/auth/access-tokens',
@@ -31,6 +34,7 @@ function AuthService($http, tokenStorage, jwtHelper) {
         // Store token data in session
         tokenStorage.setAccessToken(tokenData.token);
         tokenStorage.setRefreshToken(tokenData.refreshToken);
+        $rootScope.$broadcast('authenticated', {user: _this.getLoggedInUser()});
         return tokenData.token;
     }
 
@@ -47,6 +51,7 @@ function AuthService($http, tokenStorage, jwtHelper) {
         }).finally(function() {
             // Delete token data from store regardless of backend error
             tokenStorage.deleteTokens();
+            $rootScope.$broadcast('deauthenticated'); // This is a different event than 'unauthenticated'
         });
     };
 
@@ -61,6 +66,10 @@ function AuthService($http, tokenStorage, jwtHelper) {
 
         var jwtData = jwtHelper.decodeToken(token);
         return jwtData.user;
+    };
+
+    this.isAuthorized = function(authScope) {
+        throw new Error('Not implemented');
     };
 }
 

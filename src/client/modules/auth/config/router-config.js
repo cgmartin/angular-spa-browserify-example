@@ -15,7 +15,11 @@ function routerConfig($stateProvider) {
         .state('login', {
             url: '/login',
             templateUrl: partials.login.name,
-            controller: 'loginController'
+            controller: 'loginController',
+            params: {
+                toState: undefined,
+                toStateParams: undefined
+            }
         });
 }
 
