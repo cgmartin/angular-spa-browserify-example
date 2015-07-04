@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = authHttpProvider;
+module.exports = configHttpAuth;
 
 /**
  * Configures the $httpProvider with a jwt interceptor
  */
 // @ngInject
-function authHttpProvider($httpProvider, jwtInterceptorProvider) {
+function configHttpAuth($httpProvider, jwtInterceptorProvider) {
     jwtInterceptorProvider.tokenGetter = tokenGetter;
     $httpProvider.interceptors.push('jwtInterceptor');
 }

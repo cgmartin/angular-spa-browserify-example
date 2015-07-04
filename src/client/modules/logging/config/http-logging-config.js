@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = httpProvider;
+module.exports = configHttpLogging;
 
 /**
  * Configures the $httpProvider with logging interceptor
  */
 // @ngInject
-function httpProvider($httpProvider) {
+function configHttpLogging($httpProvider) {
     $httpProvider.interceptors.push(httpLoggerInterceptor);
 }
 

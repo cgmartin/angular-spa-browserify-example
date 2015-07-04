@@ -4,7 +4,7 @@ var angular = require('angular');
 var loggingModule = require('../logging/logging-module');
 var partials = require('./partials');
 var routerConfig = require('./config/router-config');
-var authHttpProvider = require('./config/auth-http-provider');
+var httpAuthConfig = require('./config/http-auth-config');
 var jwtInterceptor = require('./provider/jwt-interceptor');
 var LoginController = require('./controller/login-controller');
 var AuthService = require('./service/auth-service');
@@ -26,7 +26,7 @@ var dependencies = [
 angular
     .module(moduleName, dependencies)
     .config(routerConfig)
-    .config(authHttpProvider)
+    .config(httpAuthConfig)
     .provider('jwtInterceptor', jwtInterceptor)
     .service('jwtHelper', JwtHelper)
     .service('authService', AuthService)
