@@ -69,6 +69,7 @@ function AuthService($http, tokenStorage, jwtHelper, $rootScope) {
     };
 
     this.isAuthorized = function(authScope) {
+        //var user = _this.getLoggedInUser();
         throw new Error('Not implemented');
     };
 }

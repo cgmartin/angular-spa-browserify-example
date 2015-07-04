@@ -1,9 +1,5 @@
 'use strict';
 
-require('angular-ui-router');
-var partials = require('../partials');
-var homeController = require('../controller/home-controller');
-
 module.exports = routerConfig;
 
 /**
@@ -12,17 +8,6 @@ module.exports = routerConfig;
 // @ngInject
 function routerConfig($stateProvider, $urlRouterProvider) {
     $stateProvider
-        // Example views
-        .state('home', {
-            url: '/',
-            templateUrl: partials.home.name,
-            controller: homeController
-        })
-        .state('chat', {
-            url: '/chat',
-            templateUrl: partials.chat.name
-        })
-
         // Example: Thrown error within a controller
         .state('throw-error', {
             url: '/throw-error',

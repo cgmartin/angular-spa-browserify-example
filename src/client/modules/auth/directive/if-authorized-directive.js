@@ -3,34 +3,42 @@
 module.exports = ifAuthorizedDirective;
 
 /**
- * Conditionally show an element if current session is authenticated
+ * Conditionally show an element if current session is authorized for a certain scope
+ *
+ * Works in conjuction with the ngIf directive:
+ *  http://stackoverflow.com/questions/20325480
  *
  * @ngInject
  */
-function ifAuthorizedDirective(authService, $rootScope, $parse) {
+function ifAuthorizedDirective(authService, ngIfDirective) {
+    var ngIf = ngIfDirective[0];
+
     return {
-        link: function($scope, element, attrs) {
-            var attrExpr = attrs.ifAuthorized;
+        transclude: ngIf.transclude,
+        priority: ngIf.priority - 1,
+        terminal: ngIf.terminal,
+        restrict: ngIf.restrict,
+        link: function($scope, $element, $attr) {
             var authScope;
+            $attr.$observe('ifAuthorized', function(value) {
+                authScope = $scope.$eval(value);
+            });
 
-            function hideShowElement(user) {
-                if (user && authService.isAuthorized(authScope)) {
-                    element.show();
-                } else {
-                    element.hide();
-                }
+            var isAuthorized = function() {
+                return authService.isAuthorized(authScope);
+            };
+
+            var existingNgIf = $attr.ngIf;
+            var ifEval;
+            if (existingNgIf) {
+                ifEval = function() {
+                    return $scope.$eval(existingNgIf) && isAuthorized();
+                };
+            } else {
+                ifEval = isAuthorized;
             }
-
-            if (attrExpr) {
-                $scope.$watch($parse(attrExpr), function(value) {
-                    authScope = value;
-                    hideShowElement(authService.getLoggedInUser());
-                });
-
-                $rootScope.$watch(authService.getLoggedInUser, function(user) {
-                    hideShowElement(user);
-                });
-            }
+            $attr.ngIf = ifEval;
+            ngIf.link.apply(ngIf, arguments);
         }
     };
 }

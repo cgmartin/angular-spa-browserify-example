@@ -13,7 +13,6 @@ var angularStub = {
     config: sinon.stub(),
     service: sinon.stub(),
     factory: sinon.stub(),
-    directive: sinon.stub(),
     constant: sinon.stub(),
     run: sinon.stub(),
     bootstrap: sinon.stub()
@@ -28,17 +27,8 @@ var configStub = {
     router: 'routerConfig',
     translate: 'translateConfig'
 };
-var partialsStub = {
-    nav: {name: 'nav'},
-    home: {name: 'home'},
-    login: {name: 'login'},
-    chat: {name: 'chat'}
-};
 var serviceStub = {
     translateStorage: 'translateStorage'
-};
-var directiveStub = {
-    spaNav: 'spaNav'
 };
 
 // Mock App's require statements
@@ -48,15 +38,16 @@ var App = proxyquire('./app', {
     'angular-ui-router': 'angular-ui-router',
     'angular-translate': 'angular-translate',
     './config': configStub,
-    './partials': partialsStub,
     './service': serviceStub,
-    './directive': directiveStub,
     '../modules/session/session-module': 'session',
     '../modules/logging/logging-module': 'logging',
     '../modules/error/error-module': 'error',
     '../modules/notifications/notifications-module': 'notifications',
     '../modules/auth/auth-module': 'auth',
+    '../modules/nav/nav-module': 'nav',
+    '../modules/home/home-module': 'home',
     '../modules/todo/todo-module': 'todo',
+    '../modules/chat/chat-module': 'chat',
     // By default proxyquireify calls the function defined on the
     // original dependency whenever it is not found on the stub.
     '@noCallThru': true  // Prevent call thru for all contained stubs.

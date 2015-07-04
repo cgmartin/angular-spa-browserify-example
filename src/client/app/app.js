@@ -7,9 +7,7 @@ var angular = require('angular');
 var uiRouter = require('angular-ui-router');
 var ngTranslate = require('angular-translate');
 var ngConfigs = require('./config');
-var ngPartials = require('./partials');
 var ngServices = require('./service');
-var ngDirectives = require('./directive');
 
 // App Modules
 var sessionModule = require('../modules/session/session-module');
@@ -17,7 +15,10 @@ var loggingModule = require('../modules/logging/logging-module');
 var errorModule = require('../modules/error/error-module');
 var notificationsModule = require('../modules/notifications/notifications-module');
 var authModule = require('../modules/auth/auth-module');
+var navModule = require('../modules/nav/nav-module');
+var homeModule = require('../modules/home/home-module');
 var todoModule = require('../modules/todo/todo-module');
+var chatModule = require('../modules/chat/chat-module');
 
 module.exports = App;
 
@@ -39,17 +40,19 @@ function App(options) {
         _.noop;
 
     this.dependencies = [
-            'app.config',
-            uiRouter,
-            ngTranslate,
-            sessionModule,
-            loggingModule,
-            errorModule,
-            notificationsModule,
-            authModule,
-            todoModule
-        ]
-        .concat(_.pluck(ngPartials, 'name'));
+        'app.config',
+        uiRouter,
+        ngTranslate,
+        sessionModule,
+        loggingModule,
+        errorModule,
+        notificationsModule,
+        authModule,
+        navModule,
+        homeModule,
+        todoModule,
+        chatModule,
+    ];
 
     this.module = null;
 }
@@ -104,15 +107,12 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
 
         _this.module = angular.module(_this.name, _this.dependencies);
 
-        // Bind all configs, services, directives
+        // Bind all configs, services, etc
         _.forEach(ngConfigs, function(c) {
             _this.module.config(c);
         });
         _.forEach(ngServices, function(s, key) {
             _this.module.service(key, s);
-        });
-        _.forEach(ngDirectives, function(d, key) {
-            _this.module.directive(key, d);
         });
 
         angular.bootstrap(domElement, [_this.name], {strictDi: strictDi});

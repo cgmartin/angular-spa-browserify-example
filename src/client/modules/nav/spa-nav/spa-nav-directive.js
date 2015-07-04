@@ -9,16 +9,15 @@ function spaNavDirective() {
     return {
         restrict: 'EA',
         scope: {},
-        templateUrl: require('../partials/nav.partial.html').name,
+        templateUrl: require('./spa-nav.partial.html').name,
         controller: spaNavController
     };
 
     // @ngInject
-    function spaNavController($scope, $translate, bootConfig, authService, $state, notifications, $location) {
+    function spaNavController($scope, $translate, navConfig, authService, $state, notifications, $location) {
         var vm = $scope.vm = {};
-        vm.languages = bootConfig.supportedLanguages || [];
+        vm.languages = navConfig.supportedLanguages || [];
         vm.missingUrl = ($location.$$html5) ? '/missing-url' : '#/missing-url';
-        vm.isLoggedIn = authService.isLoggedIn;
 
         vm.logout = function() {
             authService.logout();

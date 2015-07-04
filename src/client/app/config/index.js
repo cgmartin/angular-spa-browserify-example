@@ -8,5 +8,7 @@ module.exports = {
     translate:           require('./translate-config'),
     httpProvider:        require('./http-provider'),
     serverLoggerConfig:  require('./server-logger-config'),
-    notificationsConfig: require('./notifications-config')
+    notificationsConfig: require('./notifications-config'),
+    homeConfig:          require('./home-config'),
+    navConfig:           require('./nav-config'),
 };
