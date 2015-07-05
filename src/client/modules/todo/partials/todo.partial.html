@@ -8,14 +8,20 @@
     <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
 
         <div class="todo-panel panel panel-default">
+            <div ng-if="!vm.todos" class="loading-indicator">
+                <div class="content" ng-if="vm.showLoading">
+                    <i class="fa fa-spinner fa-spin"></i>
+                    Loading...
+                </div>
+            </div>
 
-            <form role="form" ng-submit="vm.addNewTodo()">
+            <form role="form" ng-submit="vm.addNewTodo()" ng-if="vm.todos">
                 <input type="text" id="newTodoTitle"
                        placeholder="What needs to be done?"
                        ng-model="vm.newTodoTitle" class="form-control" autofocus/>
             </form>
 
-            <ul class="list-group">
+            <ul class="list-group" ng-if="vm.todos">
                 <li ng-repeat="todo in vm.todos track by $index"
                     ng-class="{
                         'list-group-item': true,
@@ -45,7 +51,7 @@
                 </li>
             </ul>
 
-            <div class="panel-footer clearfix">
+            <div class="panel-footer clearfix" ng-if="vm.todos">
                 <span class="pull-left">
                     <strong>{{vm.remainingCount}} </strong>
                     <ng-pluralize count="vm.remainingCount" when="{

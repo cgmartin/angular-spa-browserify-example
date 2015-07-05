@@ -4,6 +4,7 @@
 var _ = require('lodash');
 var $script = require('scriptjs');
 var angular = require('angular');
+var ngAnimate = require('angular-animate');
 var uiRouter = require('angular-ui-router');
 var ngTranslate = require('angular-translate');
 var ngConfigs = require('./config');
@@ -14,6 +15,7 @@ var sessionModule = require('../modules/session/session-module');
 var loggingModule = require('../modules/logging/logging-module');
 var errorModule = require('../modules/error/error-module');
 var notificationsModule = require('../modules/notifications/notifications-module');
+//var loadingModule = require('../modules/loading/loading-module');
 var authModule = require('../modules/auth/auth-module');
 var navModule = require('../modules/nav/nav-module');
 var homeModule = require('../modules/home/home-module');
@@ -43,10 +45,12 @@ function App(options) {
         'app.config',
         uiRouter,
         ngTranslate,
+        ngAnimate,
         sessionModule,
         loggingModule,
         errorModule,
         notificationsModule,
+        //loadingModule,
         authModule,
         navModule,
         homeModule,
