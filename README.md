@@ -23,7 +23,8 @@ deployed as a static file or routed to a dynamic backing service.
   and [TaffyDB](http://www.taffydb.com/). Stub functionality is conditionally loaded via separate JS bundle during bootstrap.
 * **Client-side Routing**: via [AngularUI Router](https://github.com/angular-ui/ui-router).
 * **Internationalization**: I18n and language selection using [angular-translate](https://github.com/angular-translate/angular-translate).
-* **Todo MVC module**: Demonstrates backend requests.
+* **JWT Authentication**: Login and logout functionality using JSON Web Tokens.
+* **Todo MVC module**: Demonstrates backend requests with authentication.
 * **Server-side Logging module**: Send client-side log messages, metrics, and event tracking to backend logger.
   Includes a custom exception handler logger and http interceptor request logging.
 * **Error module**: Global exception handler and Error router.
@@ -35,9 +36,8 @@ deployed as a static file or routed to a dynamic backing service.
 
 ### Roadmap
 
-* Session module: User activity detection.
-* JWT authentication example.
-* Route authorization with bearer tokens.
+* Route authorization with auth scopes.
+* Registration and Forgotten Password functionality.
 * Social login to Facebook, Google, Twitter, etc.
 * Chat module, with disconnected mock websocket server.
 * Real backend web service API and chat server (separate repos).
@@ -73,11 +73,16 @@ After installation, the following actions are available:
         │   └── styles           # Global styles
         │
         ├── modules              # Feature modules
-        │   ├── error            # Error handling module
-        │   ├── logging          # Server logging module
-        │   ├── notifications    # Notifications module
+        │   ├── auth             # Authentication and authorization utilities
+        │   ├── chat             # TODO: Chat module
+        │   ├── error            # Error handling utilities
+        │   ├── home             # Home page module
+        │   ├── loading          # Loading indicator utility
+        │   ├── logging          # Server logging utilities
+        │   ├── nav              # Navigation bar
+        │   ├── notifications    # On-screen notification utilities
         │   ├── session          # Session tracking module
-        │   └── todo             # Todo MVC Module
+        │   └── todo             # Todo MVC example
         │
         ├── assets               # Raw assets to optimize during build
         │   └── images
@@ -85,6 +90,8 @@ After installation, the following actions are available:
         ├── www-root             # Static files under web root
         │   ├── lang             # Language bundles
         │   └── spa-boot.js      # Boot configuration launcher (sample)
+        │
+        ├── vendor               # Copy/pasted 3rd-party vendor scripts
         │
         ├── main.js              # Main JS bundle entrypoint
         ├── stubs.js             # Fake HTTP stub bundle entrypoint

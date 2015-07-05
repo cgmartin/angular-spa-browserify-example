@@ -1,3 +1,7 @@
-<div class="modal-body">
-    <p>Loading...</p>
+<div ng-if="!isLoaded" class="loading-indicator">
+    <div class="content" ng-if="vm.showLoading">
+        <i class="fa fa-spinner fa-spin"></i>
+        Loading...
+    </div>
 </div>
+

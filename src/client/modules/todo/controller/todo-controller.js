@@ -5,13 +5,12 @@ var TodoItem = require('../model/todo-item');
 module.exports = TodoController;
 
 // @ngInject
-function TodoController($scope, todoStorage, filterFilter, notifications, $timeout) {
+function TodoController($scope, todoStorage, filterFilter, notifications) {
     var _this = this;
     this.todos = null;
     this.newTodoTitle = '';
     this.editTodo = null;
     this.statusFilter = null;
-    this.showLoading = false;
 
     // 'vm' stands for 'view model'. We're adding a reference to the controller to the scope
     // for its methods to be accessible from view / HTML
@@ -23,11 +22,6 @@ function TodoController($scope, todoStorage, filterFilter, notifications, $timeo
         _this.todos = data;
         _this.onTodoChanges();
     });
-
-    // Animate the loading indicator
-    $timeout(function() {
-        _this.showLoading = true;
-    }, 200);
 
     this.onTodoChanges = function(save) {
         this.remainingCount = filterFilter(this.todos, {isComplete: false}).length;

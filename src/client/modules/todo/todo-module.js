@@ -4,6 +4,7 @@ var angular = require('angular');
 var uiRouter = require('angular-ui-router');
 var ngTranslate = require('angular-translate');
 var notificationsModule = require('../notifications/notifications-module');
+var loadingModule = require('../loading/loading-module');
 var routerConfig = require('./config/router-config');
 var todoPartial = require('./partials/todo.partial.html');
 var TodoController = require('./controller/todo-controller');
@@ -17,7 +18,8 @@ var dependencies = [
     uiRouter,
     ngTranslate,
     todoPartial.name,
-    notificationsModule
+    notificationsModule,
+    loadingModule
 ];
 
 angular

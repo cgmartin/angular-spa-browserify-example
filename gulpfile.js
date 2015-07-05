@@ -69,7 +69,7 @@ gulp.task('clean', 'Remove all temporary files', ['clean-build', 'clean-coverage
  */
 
 gulp.task('lint-js', false, function() {
-    return gulp.src(['src/client/**/*.js', 'server/**/*.js', 'gulpfile.js'])
+    return gulp.src(['src/client/**/*.js', 'server/**/*.js', 'gulpfile.js', '!src/client/vendor/**'])
         .pipe($.plumber({errorHandler: onError}))
         .pipe(verbosePrintFiles('lint-js'))
         .pipe($.jscs())
