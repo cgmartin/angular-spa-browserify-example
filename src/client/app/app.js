@@ -9,13 +9,13 @@ var uiRouter = require('angular-ui-router');
 var ngTranslate = require('angular-translate');
 var ngConfigs = require('./config');
 var ngServices = require('./service');
+var unauthenticatedEventHandler = require('./run/unauthenticated-event-handler');
 
 // App Modules
 var sessionModule = require('../modules/session/session-module');
 var loggingModule = require('../modules/logging/logging-module');
 var errorModule = require('../modules/error/error-module');
 var notificationsModule = require('../modules/notifications/notifications-module');
-//var loadingModule = require('../modules/loading/loading-module');
 var authModule = require('../modules/auth/auth-module');
 var navModule = require('../modules/nav/nav-module');
 var homeModule = require('../modules/home/home-module');
@@ -118,6 +118,8 @@ App.prototype.bootstrap = function(strictDi, domElement, injector) {
         _.forEach(ngServices, function(s, key) {
             _this.module.service(key, s);
         });
+
+        _this.module.run(unauthenticatedEventHandler);
 
         angular.bootstrap(domElement, [_this.name], {strictDi: strictDi});
     }
