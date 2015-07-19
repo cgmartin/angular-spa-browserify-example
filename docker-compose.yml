@@ -1,0 +1,12 @@
+static:
+  extends:
+    file: docker-compose-common.yml
+    service: static
+  ports:
+    - "3000:3000"
+    - "5800:5800"
+  environment:
+    - STATIC_WEBROOT=./dist
+    - STATIC_STUBS=1
+    - STATIC_API_BASE_URL=
+

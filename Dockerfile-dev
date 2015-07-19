@@ -1,0 +1,15 @@
+FROM node:0.12
+
+RUN npm install -g gulp
+RUN mkdir -p /app
+WORKDIR /app
+
+COPY package.json /app/
+RUN npm install
+COPY . /app/
+
+ENTRYPOINT ["gulp"]
+CMD ["--help"]
+
+EXPOSE 3000
+EXPOSE 5800

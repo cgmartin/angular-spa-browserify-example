@@ -13,15 +13,15 @@ angular.module('appStubs', ['ngMockE2E'])
     .run(defineFakeBackend);
 
 // @ngInject
-function defineFakeBackend($httpBackend, $log) {
+function defineFakeBackend($httpBackend, $log, bootConfig) {
     $log.debug('[Run] HTTP stubs setup...');
 
     // Language bundles
     $httpBackend.whenGET(/^\/lang\//).passThrough();
 
     // Run module stubs
-    authStubs($httpBackend, $log);
-    todoStubs($httpBackend, $log);
+    authStubs($httpBackend, bootConfig, $log);
+    todoStubs($httpBackend, bootConfig, $log);
 }
 
 // @ngInject

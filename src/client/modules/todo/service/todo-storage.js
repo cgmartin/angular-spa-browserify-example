@@ -7,7 +7,8 @@ function TodoStorage($http) {
     this.get = function() {
         return $http({
             method: 'get',
-            url: '/api/todos',
+            url: '/todos',
+            useBaseUrl: true,
             useAuthorization: true
         }).then(function(result) {
             return result.data;
@@ -17,8 +18,9 @@ function TodoStorage($http) {
     this.put = function(todos) {
         return $http({
             method: 'post',
-            url: '/api/todos',
+            url: '/todos',
             data: todos,
+            useBaseUrl: true,
             useAuthorization: true
         }).then(function(result) {
             return result.data;

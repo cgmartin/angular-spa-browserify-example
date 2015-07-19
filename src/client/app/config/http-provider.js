@@ -18,8 +18,8 @@ function httpProvider($httpProvider) {
 function baseUrlInterceptor(bootConfig) {
     return {
         request: function(reqCfg) {
-            // Only process api prefixed urls
-            if (reqCfg.url.match(/^\/api\//)) {
+            // Only process requests that have `useBaseUrl` enabled,
+            if (reqCfg.useBaseUrl) {
                 var baseUrl = bootConfig.apiBaseUrl || '';
                 reqCfg.url = baseUrl + reqCfg.url;
             }

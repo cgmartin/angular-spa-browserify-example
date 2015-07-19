@@ -1,0 +1,5 @@
+.idea
+.git
+.git-hooks
+node_modules
+coverage

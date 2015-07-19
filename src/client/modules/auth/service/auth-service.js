@@ -9,7 +9,8 @@ function AuthService($http, tokenStorage, jwtHelper, $rootScope) {
 
     this.login = function(authData) {
         return $http({
-            url: '/api/auth/access-tokens',
+            url: '/auth/access-tokens',
+            useBaseUrl: true,
             method: 'POST',
             data: authData
         }).then(processTokenResponse);
@@ -19,7 +20,8 @@ function AuthService($http, tokenStorage, jwtHelper, $rootScope) {
         var refreshToken = tokenStorage.getRefreshToken();
         if (!refreshToken) { return null; }
         return $http({
-            url: '/api/auth/refresh-tokens',
+            url: '/auth/refresh-tokens',
+            useBaseUrl: true,
             useAuthorization: true,
             ignoreExpiredToken: true,
             method: 'POST',
@@ -44,7 +46,8 @@ function AuthService($http, tokenStorage, jwtHelper, $rootScope) {
 
     this.logout = function() {
         return $http({
-            url: '/api/auth/refresh-tokens/' + tokenStorage.getRefreshToken(),
+            url: '/auth/refresh-tokens/' + tokenStorage.getRefreshToken(),
+            useBaseUrl: true,
             useAuthorization: true,
             ignoreExpiredToken: true,
             method: 'DELETE'

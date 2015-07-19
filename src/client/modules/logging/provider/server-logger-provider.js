@@ -23,7 +23,7 @@ function ServerLoggerProvider() {
         loggingInterval: 120000,
         maxBufferSize: 1000,
         apiBaseUrl: '',
-        apiUrl: '/api/logs',
+        apiUrl: '/logs',
         isStubsEnabled: false,
         isConsoleLogEnabled: false,
 

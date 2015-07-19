@@ -14,7 +14,7 @@ var browserSync = require('browser-sync');
 var watchify    = require('watchify');
 var browserify  = require('browserify');
 var ngHtml2Js   = require('browserify-ng-html2js');
-var karma       = require('karma').server;
+var karma       = require('karma');
 
 process.setMaxListeners(0);    // Disable max listeners for gulp
 
@@ -256,11 +256,12 @@ gulp.task('index-html', false, function() {
  */
 
 gulp.task('karma', false, function(done) {
-    karma.start({
+    var karmaServer = new karma.Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true,
         browsers: ['PhantomJS']
     }, done);
+    karmaServer.start();
 });
 
 gulp.task('test', 'Run unit tests', function(cb) {
@@ -302,7 +303,7 @@ gulp.task('nodemon', false, function(cb) {
             'NODE_ENV': 'development',
             'PORT': serverPort
         },
-        nodeArgs: ['--debug=5700'],
+        nodeArgs: ['--debug=5800'],
         ignore: [
             'coverage/**', 'node_modules/**',
             'gulpfile.js', '.idea/**', '.git/**'

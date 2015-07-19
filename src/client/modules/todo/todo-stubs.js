@@ -5,7 +5,7 @@ var taffy = require('taffydb').taffy;
 
 module.exports = todoStubs;
 
-function todoStubs($httpBackend, $log) {
+function todoStubs($httpBackend, bootConfig, $log) {
     $log.debug('[Run] Adding todo stubs...');
 
     // Simulate CRUD in client with TaffyDB
@@ -22,12 +22,12 @@ function todoStubs($httpBackend, $log) {
     }
 
     // GET: /todos
-    $httpBackend.whenGET('/api/todos').respond(function() {
+    $httpBackend.whenGET(bootConfig.apiBaseUrl + '/todos').respond(function() {
         return [200, todoDb().get(), {}];
     });
 
     // POST: /todos
-    $httpBackend.whenPOST('/api/todos').respond(function(method, url, data) {
+    $httpBackend.whenPOST(bootConfig.apiBaseUrl + '/todos').respond(function(method, url, data) {
         var todos = angular.fromJson(data);
         todoDb().remove();
         todoDb.insert(todos);
