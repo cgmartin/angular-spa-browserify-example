@@ -1,13 +1,23 @@
 FROM node:0.12
 
+## Install gulp
 RUN npm install -g gulp
+
+## Set up application folder
 RUN mkdir -p /app
 WORKDIR /app
 
+## Cache 3rd-party NPM modules
 COPY package.json /app/
-RUN npm install
+RUN npm install --unsafe-perm
+
+## Copy source
 COPY . /app/
 
+## TODO: Cachebust this section to ensure using latest dependencies
+RUN npm install spa-express-static-server@latest
+
+## Expose gulp as default command
 ENTRYPOINT ["gulp"]
 CMD ["--help"]
 
