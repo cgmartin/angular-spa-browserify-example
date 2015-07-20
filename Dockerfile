@@ -12,10 +12,15 @@ COPY package.json /app/
 RUN npm install --production --unsafe-perm
 
 ## Copy source
-COPY . /app/
+COPY src /app/src
+COPY .js* /app/
+COPY *.js /app/
 
 ## TODO: Cachebust this section to ensure using latest dependencies
 RUN npm install spa-express-static-server@latest
+
+## Build the app
+RUN npm run build
 
 ## Run static service forever
 CMD [ "forever", "-f", "src/server/static-server.js" ]

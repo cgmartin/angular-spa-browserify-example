@@ -3,4 +3,8 @@ static:
   dockerfile: Dockerfile-dev
   command: serve
   volumes:
-    - src:/app/src:ro
+    - src:/app/src
+    - gulpfile.js:/app/gulpfile.js
+    - karma.conf.js:/app/karma.conf.js
+    - .jscsrc:/app/.jscsrc
+    - .jshintrc:/app/.jshintrc
