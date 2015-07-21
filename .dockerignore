@@ -1,5 +1,8 @@
-.idea
 .git
 .git-hooks
-node_modules
+.idea
 coverage
+dist
+node_modules
+docker-compose*
+
